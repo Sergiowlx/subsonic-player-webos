@@ -3,11 +3,16 @@ const { isHydrating } = useNuxtApp();
 
 const rootRef = useTemplateRef('rootRef');
 
-const loadSlot = ref(!!import.meta.server || !!isHydrating);
+const isWebOS =
+  import.meta.client &&
+  (window.location.protocol === 'file:' ||
+    window.location.search.includes('webos=true'));
+
+const loadSlot = ref(!!import.meta.server || !!isHydrating || isWebOS);
 const intersectionObserver = ref<IntersectionObserver | null>(null);
 
 onMounted(() => {
-  if (!rootRef.value || !!isHydrating) {
+  if (!rootRef.value || !!isHydrating || isWebOS) {
     return;
   }
 
@@ -20,7 +25,7 @@ onMounted(() => {
     },
     {
       root: null,
-      threshold: 0.1,
+      threshold: 0,
     },
   );
 

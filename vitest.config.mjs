@@ -33,7 +33,7 @@ export default defineVitestConfig({
       },
     },
     environment: 'nuxt',
-    exclude: [...configDefaults.exclude, '**/docs/**', '.nuxt/**'],
+    exclude: [...configDefaults.exclude, '**/docs/**', '**/e2e/**', '.nuxt/**'],
     globals: true,
     maxConcurrency: 4,
     pool: 'forks',

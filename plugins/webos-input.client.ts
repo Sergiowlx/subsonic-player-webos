@@ -100,6 +100,21 @@ export default defineNuxtPlugin((nuxtApp) => {
   document.addEventListener('focusin', onFocusIn);
   document.addEventListener('focusout', onFocusOut);
 
+  // Translate magic remote scroll wheel (wheel events) into window scroll.
+  // Chrome 53 on webOS does not automatically scroll the page on wheel events
+  // when the focused element is inside an overflow:hidden container.
+  document.addEventListener('wheel', (e) => {
+    let delta = e.deltaY;
+    if (e.deltaMode === 1) {
+      // DOM_DELTA_LINE: multiply by approximate line height
+      delta = delta * 40;
+    } else if (e.deltaMode === 2) {
+      // DOM_DELTA_PAGE
+      delta = delta * window.innerHeight;
+    }
+    window.scrollBy(0, delta);
+  });
+
   // Setup search input toggle behavior for TV (with retry logic)
   const setupSearchToggle = () => {
     let searchExpanded = false;

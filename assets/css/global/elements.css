@@ -21,7 +21,8 @@ img {
   max-width: 100%;
   height: auto;
   max-height: 100%;
-  aspect-ratio: 1;
+
+  /* aspect-ratio: 1 is handled by the container; images use natural dimensions */
   vertical-align: bottom;
   border-style: none;
 }

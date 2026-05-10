@@ -87,7 +87,8 @@ defineExpose({
   box-shadow: var(--dark-box-shadow-medium);
 
   @media (--mobile-only) {
-    inset: auto var(--space-12) calc(var(--header-height) + var(--space-12)) !important;
+    inset: auto var(--space-12) calc(var(--header-height) + var(--space-12))
+      var(--space-12) !important;
   }
 
   @media (--tablet-up) {

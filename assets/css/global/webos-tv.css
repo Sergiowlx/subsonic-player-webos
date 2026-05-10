@@ -79,7 +79,7 @@ body.webosTV .desktopOnly[class*='trackSeeker'] [class*='progressWrapper'] {
 body.webosTV .desktopOnly[class*='trackSeeker'] [class*='thumb'] {
   width: 18px !important;
   height: 18px !important;
-  box-shadow: 0 0 10px color-mix(in oklab, var(--theme-color) 50%, transparent) !important;
+  box-shadow: 0 0 10px rgb(99 19 188 / 50%) !important;
 }
 
 /* Hide the mobile play/pause button on TV (we use the desktop controls) */
@@ -273,14 +273,10 @@ body.webosTV h3 a svg {
 body.webosTV .focused {
   outline: 3px solid var(--theme-color) !important;
   outline-offset: 2px;
-  background-color: color-mix(
-    in oklab,
-    var(--theme-color) 25%,
-    transparent
-  ) !important;
+  background-color: rgb(99 19 188 / 25%) !important;
   box-shadow: 0 0 0 6px
-      color-mix(in oklab, var(--theme-color) 35%, transparent),
-    0 8px 24px color-mix(in oklab, var(--theme-color) 25%, transparent) !important;
+      rgb(99 19 188 / 35%),
+    0 8px 24px rgb(99 19 188 / 25%) !important;
   transition: background-color 0.15s ease;
 }
 
@@ -288,7 +284,7 @@ body.webosTV .focused {
 body.webosTV .layoutImage a.focused {
   outline: none !important;
   box-shadow: 0 0 0 4px var(--theme-color),
-    0 12px 32px color-mix(in oklab, var(--theme-color) 35%, transparent) !important;
+    0 12px 32px rgb(99 19 188 / 35%) !important;
 }
 
 /* Ensure album image links and genres are block-level for proper focus and dimensions */
@@ -326,18 +322,14 @@ body.webosTV .layoutImage figure {
 body.webosTV h2.focused {
   outline: 3px solid var(--theme-color) !important;
   outline-offset: 3px;
-  background-color: color-mix(
-    in oklab,
-    var(--theme-color) 20%,
-    transparent
-  ) !important;
+  background-color: rgb(99 19 188 / 20%) !important;
 }
 
 /* Playlist card focus - use box-shadow to avoid clipping */
 body.webosTV article[data-test-id='playlist'] a.focused {
   outline: none !important;
   box-shadow: 0 0 0 4px var(--theme-color),
-    0 12px 32px color-mix(in oklab, var(--theme-color) 35%, transparent) !important;
+    0 12px 32px rgb(99 19 188 / 35%) !important;
   transform: scale(1.02);
   transition: transform 0.2s ease;
 }
@@ -346,11 +338,7 @@ body.webosTV article[data-test-id='playlist'] a.focused {
 body.webosTV .trackRow.focused {
   outline: 2px solid var(--theme-color) !important;
   outline-offset: -2px;
-  background-color: color-mix(
-    in oklab,
-    var(--theme-color) 30%,
-    transparent
-  ) !important;
+  background-color: rgb(99 19 188 / 30%) !important;
   transform: scale(1.005);
   transform-origin: left center;
   transition: transform 0.12s ease, background-color 0.15s ease;
@@ -451,11 +439,7 @@ body.webosTV .pageLink.focused {
   font-weight: var(--font-weight-bold) !important;
   outline: 3px solid var(--theme-color) !important;
   outline-offset: 2px;
-  background-color: color-mix(
-    in oklab,
-    var(--theme-color) 40%,
-    transparent
-  ) !important;
+  background-color: rgb(99 19 188 / 40%) !important;
   transform: scale(1.05);
   transition: all 0.15s ease;
 }
@@ -487,7 +471,7 @@ body.webosTV [class*='mediaListWrapper'] {
 
 /* Stronger card surfaces for album/artist items so they read as cards, not items in a doc */
 body.webosTV .layoutImage {
-  box-shadow: 0 4px 12px color-mix(in oklab, var(--black-color) 25%, transparent);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
@@ -506,4 +490,50 @@ body.webosTV h1 {
 /* Make the player footer text bigger, easier to read across the room */
 body.webosTV footer [class*='trackInformation'] {
   font-size: var(--body-font-size);
+}
+
+/* ============================================
+   Chrome 53 compatibility: aspect-ratio fallbacks
+   aspect-ratio is unsupported in Chrome 53 (added in Chrome 88).
+   For square containers we set height = width via explicit sizing or
+   the padding-top intrinsic trick.
+   ============================================ */
+
+/* Track play/pause square buttons */
+html.webosTV [class*='playPauseWrapper'],
+html.webosTV [class*='trackPlayPause'] {
+  height: var(--track-width-height-default);
+}
+
+/* Large track image (list layout thumbnail) */
+html.webosTV .listLayout .layoutImage {
+  height: var(--track-width-height-default);
+}
+
+/* PreloadImage container: use padding-top to create square aspect.
+   Children are absolutely positioned, so this keeps the skeleton visible. */
+html.webosTV [class*='preloadImage'] {
+  height: auto;
+  min-height: 80px;
+}
+
+/* EntryHeader figure (album/artist large cover art) */
+html.webosTV [class*='entryHeader'] figure {
+  height: 270px;
+}
+
+/* ============================================
+   Chrome 53 compatibility: clamp() fallbacks
+   clamp() is unsupported in Chrome 53 (added in Chrome 79).
+   At 1920px viewport with 18px root font, all values hit their max.
+   ============================================ */
+
+html.webosTV,
+html.webosTV body {
+  --h1-font-size: 2.25rem;
+  --h2-font-size: 1.875rem;
+  --h3-font-size: 1.5rem;
+  --h4-font-size: 1.25rem;
+  --body-font-size: 1.125rem;
+  --small-font-size: 1rem;
 }

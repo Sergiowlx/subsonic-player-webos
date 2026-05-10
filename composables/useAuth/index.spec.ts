@@ -45,6 +45,7 @@ describe('useAuth', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    useCookieMock.value = null;
   });
 
   describe('when cookie is undefined', () => {
@@ -77,18 +78,16 @@ describe('useAuth', () => {
         expect(result.composable.isAuthenticated.value).toBe(false);
       });
 
-      it('calls the clearNuxtData function', () => {
-        expect(clearNuxtDataMock).toHaveBeenCalled();
+      it('does not call the clearNuxtData function', () => {
+        expect(clearNuxtDataMock).not.toHaveBeenCalled();
       });
 
-      it('calls the resetAllUserState function', () => {
-        expect(resetAllUserStateMock).toHaveBeenCalled();
+      it('does not call the resetAllUserState function', () => {
+        expect(resetAllUserStateMock).not.toHaveBeenCalled();
       });
 
-      it('calls the navigateTo function with the correct parameters', () => {
-        expect(navigateToMock).toHaveBeenCalledWith({
-          name: ROUTE_NAMES.login,
-        });
+      it('does not call the navigateTo function', () => {
+        expect(navigateToMock).not.toHaveBeenCalled();
       });
     });
 
@@ -131,26 +130,17 @@ describe('useAuth', () => {
 
             result.composable.autoLogin();
           });
-          it('sets the correct useCookie value', () => {
-            expect(useCookieMock.value).toBe(null);
+
+          it('does not call the clearNuxtData function', () => {
+            expect(clearNuxtDataMock).not.toHaveBeenCalled();
           });
 
-          it('sets the correct isAuthenticated value', () => {
-            expect(result.composable.isAuthenticated.value).toBe(false);
+          it('does not call the resetAllUserState function', () => {
+            expect(resetAllUserStateMock).not.toHaveBeenCalled();
           });
 
-          it('calls the clearNuxtData function', () => {
-            expect(clearNuxtDataMock).toHaveBeenCalled();
-          });
-
-          it('calls the resetAllUserState function', () => {
-            expect(resetAllUserStateMock).toHaveBeenCalled();
-          });
-
-          it('calls the navigateTo function with the correct parameters', () => {
-            expect(navigateToMock).toHaveBeenCalledWith({
-              name: ROUTE_NAMES.login,
-            });
+          it('does not call the navigateTo function', () => {
+            expect(navigateToMock).not.toHaveBeenCalled();
           });
         });
       });

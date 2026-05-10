@@ -1,5 +1,5 @@
 module.exports = {
   '*.{css,vue}': 'stylelint',
   '*.{json,ts,vue}': 'eslint',
-  '*.{ts,vue}': () => ['yarn check-types', 'yarn test:once'],
+  '*.{ts,vue}': () => ['yarn check-types', 'npx vitest --run --coverage=false'],
 };

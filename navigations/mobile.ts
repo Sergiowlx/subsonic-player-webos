@@ -7,10 +7,20 @@ export const MOBILE_NAVIGATION: SidebarItem[] = [
     },
   },
   {
-    icon: ICONS.music,
-    title: 'Your library',
+    icon: ICONS.album,
+    title: 'Albums',
     to: {
-      name: ROUTE_NAMES.library,
+      name: ROUTE_NAMES.albums,
+      params: {
+        [ROUTE_PARAM_KEYS.albums.sortBy]: ROUTE_ALBUMS_SORT_BY_PARAMS['A-Z'],
+      },
+    },
+  },
+  {
+    icon: ICONS.artist,
+    title: 'Artists',
+    to: {
+      name: ROUTE_NAMES.artists,
     },
   },
   {
@@ -21,10 +31,10 @@ export const MOBILE_NAVIGATION: SidebarItem[] = [
     },
   },
   {
-    icon: ICONS.bookmark,
-    title: 'Bookmarks',
+    icon: ICONS.queue,
+    title: 'Queue',
     to: {
-      name: ROUTE_NAMES.bookmarks,
+      name: ROUTE_NAMES.queue,
     },
   },
 ];

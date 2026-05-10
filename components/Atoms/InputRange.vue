@@ -259,11 +259,7 @@ onUnmounted(() => {
   background-color: var(--theme-color);
 
   .standard & {
-    --process-background-color: color-mix(
-      in oklab,
-      var(--body-font-color) 25%,
-      transparent
-    );
+    --process-background-color: rgb(0 0 0 / 25%);
 
     background-image: linear-gradient(
       -45deg,

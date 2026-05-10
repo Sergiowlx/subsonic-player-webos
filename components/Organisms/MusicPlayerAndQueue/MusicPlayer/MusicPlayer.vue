@@ -100,7 +100,7 @@ const { currentTrack } = useAudioPlayer();
   --music-player-bottom: var(--header-height);
 
   position: fixed;
-  inset: auto 0 var(--music-player-bottom);
+  inset: auto 0 var(--music-player-bottom) 0;
   z-index: 10;
   height: var(--media-player-height);
   max-height: var(--media-player-height);
