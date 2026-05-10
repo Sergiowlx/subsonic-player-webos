@@ -21,25 +21,35 @@ echo "📋 Step 3: Copying build output to webOS directory..."
 cp -r .output/public/* webos/
 
 # Step 3.5: Fix absolute paths for webOS file:// protocol
+# Use perl -i for cross-platform compatibility (BSD sed on macOS treats
+# the next arg after -i as the backup extension, which silently breaks
+# all the substitutions below).
 echo "🔧 Step 3.5: Converting absolute paths to relative paths..."
 # Fix HTML attributes (href, src)
-find webos -name "*.html" -type f -exec sed -i 's|href="/|href="./|g; s|src="/|src="./|g' {} \;
+find webos -name "*.html" -type f -exec perl -i -pe 's|href="/|href="./|g; s|src="/|src="./|g' {} \;
 # Fix importmap JSON in HTML ({"imports":{"#entry":"/_nuxt/...)
-find webos -name "*.html" -type f -exec sed -i 's|"/_nuxt/|"./_nuxt/|g; s|"/builds/|"./builds/|g' {} \;
+find webos -name "*.html" -type f -exec perl -i -pe 's|"/_nuxt/|"./_nuxt/|g; s|"/builds/|"./builds/|g' {} \;
 # Fix JavaScript module imports and fetch calls
-find webos -name "*.js" -type f -exec sed -i 's|"/_nuxt/|"./_nuxt/|g; s|'\''/_nuxt/|'\''./_nuxt/|g; s|"/builds/|"./builds/|g; s|'\''/builds/|'\''./builds/|g' {} \;
+find webos -name "*.js" -type f -exec perl -i -pe 's|"/_nuxt/|"./_nuxt/|g; s|'\''/_nuxt/|'\''./_nuxt/|g; s|"/builds/|"./builds/|g; s|'\''/builds/|'\''./builds/|g' {} \;
 
 # Step 3.6: Remove crossorigin attributes (file:// protocol doesn't support CORS)
 echo "🔧 Step 3.6: Removing crossorigin attributes for file:// compatibility..."
-find webos -name "*.html" -type f -exec sed -i 's| crossorigin||g' {} \;
+find webos -name "*.html" -type f -exec perl -i -pe 's| crossorigin||g' {} \;
+
+# Step 3.6b: Replace type="module" with defer (webOS 4.x/older 5.x runs
+# Chromium 53, which has no module support — bundle is built as classic
+# IIFE for webOS). defer preserves the post-parse execution order so the
+# inline window.__NUXT__ config script in <body> runs first.
+echo "🔧 Step 3.6b: Replacing type=\"module\" with defer on script tags..."
+find webos -name "*.html" -type f -exec perl -i -pe 's| type="module"| defer|g' {} \;
 
 # Step 3.7: Removing modulepreload links...
 echo "🔧 Step 3.7: Removing modulepreload links..."
-find webos -name "*.html" -type f -exec sed -i 's|<link rel="modulepreload"[^>]*>||g' {} \;
+find webos -name "*.html" -type f -exec perl -i -pe 's|<link rel="modulepreload"[^>]*>||g' {} \;
 
 # Step 3.8: Fix runtime config baseURL in inline script
 echo "🔧 Step 3.8: Fixing runtime config baseURL..."
-find webos -name "*.html" -type f -exec sed -i 's|baseURL:"/"|baseURL:"./"|g' {} \;
+find webos -name "*.html" -type f -exec perl -i -pe 's|baseURL:"/"|baseURL:"./"|g' {} \;
 
 # Step 4: Create icons (using existing favicon)
 echo "🎨 Step 4: Creating webOS icons..."
