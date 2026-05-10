@@ -5,20 +5,38 @@ export function useInfinityLoading<T>(id: string) {
   const items = useState<T[]>(`${STATE_NAMES.infinityItems}-${id}`, () => []);
   const offset = useState(`${STATE_NAMES.infinityOffset}-${id}`, () => 0);
   const hasMore = useState(`${STATE_NAMES.infinityHasMore}-${id}`, () => true);
+  const isLoading = ref(false);
 
   async function fetchMoreData<T>(
     dataToFetch: (offset: number) => Promise<T> | T,
   ) {
-    const values = await dataToFetch(offset.value);
-
-    if (!values || (Array.isArray(values) && !values.length)) {
-      hasMore.value = false;
+    if (isLoading.value || !hasMore.value) {
+      return items.value;
     }
 
-    if (Array.isArray(values)) {
-      items.value.push(...values);
-      offset.value = items.value.length;
-      hasMore.value = values.length >= Number(LOAD_SIZE);
+    isLoading.value = true;
+
+    try {
+      const values = await dataToFetch(offset.value);
+
+      if (!values || (Array.isArray(values) && !values.length)) {
+        hasMore.value = false;
+      }
+
+      if (Array.isArray(values)) {
+        const existingIds = new Set(
+          items.value.map((item: any) => item.id || item.name || JSON.stringify(item)),
+        );
+        const newItems = values.filter(
+          (item: any) => !existingIds.has(item.id || item.name || JSON.stringify(item)),
+        );
+
+        items.value.push(...newItems);
+        offset.value = items.value.length;
+        hasMore.value = values.length >= Number(LOAD_SIZE);
+      }
+    } finally {
+      isLoading.value = false;
     }
 
     return items.value;

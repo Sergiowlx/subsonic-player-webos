@@ -216,7 +216,7 @@ function openDropdownMenu(event: MouseEvent | TouchEvent) {
 }
 
 .column {
-  display: grid;
+  display: block;
   flex: 1;
   align-self: start;
 }

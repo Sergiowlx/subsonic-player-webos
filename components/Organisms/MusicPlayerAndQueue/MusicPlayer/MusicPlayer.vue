@@ -122,22 +122,34 @@ const { currentTrack } = useAudioPlayer();
 
 .inner {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   height: var(--width-height-100);
-
-  @media (--tablet-up) {
-    display: grid;
-    grid-template-columns: 25% auto 25%;
-  }
 }
 
 .trackDetailsWrapper {
   position: relative;
+  display: flex;
+  align-items: center;
   gap: var(--default-space);
+
+  @media (--tablet-up) {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+
+.playerOptions {
+  justify-content: end;
+
+  @media (--tablet-up) {
+    flex: 0 0 25%;
+  }
 }
 
 .trackDetails,
 .trackDetailsWrapper {
-  flex: 1;
   overflow: hidden;
 }
 
@@ -149,7 +161,8 @@ const { currentTrack } = useAudioPlayer();
 }
 
 .image {
-  background-color: var(--white-color);
+  /* Remove white background that causes empty space issues */
+  background-color: transparent;
 }
 
 .image,
@@ -159,11 +172,13 @@ const { currentTrack } = useAudioPlayer();
   height: var(--media-player-height);
 }
 
-.playPauseButton {
-  justify-content: center;
+.image :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.playerOptions {
-  justify-content: end;
+.playPauseButton {
+  justify-content: center;
 }
 </style>

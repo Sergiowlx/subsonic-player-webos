@@ -3,14 +3,17 @@ export function formatAlbum(album: AlbumID3 & AlbumWithSongsID3): Album {
     coverArt: image = IMAGE_DEFAULT_BY_TYPE.album,
     created,
     duration,
+    folder,
+    folderId,
     id,
+    musicFolderId,
     name,
     playCount = 0,
     song = [],
     songCount: trackCount,
     starred,
     year = DEFAULT_VALUE,
-  } = album;
+  } = album as any;
 
   const tracks = song.map(formatTrack);
   const tracksByDiscNumber = groupTracksByDiscNumber(tracks);
@@ -27,7 +30,9 @@ export function formatAlbum(album: AlbumID3 & AlbumWithSongsID3): Album {
     information: {
       playCount,
     },
+    musicFolderId: musicFolderId || folderId || folder,
     name,
+    path: album.song?.[0]?.path,
     size: bytesToMB(getAlbumSize(song)),
     totalDiscNumber: Object.keys(tracksByDiscNumber).length,
     trackCount,
@@ -62,18 +67,26 @@ export function formatArtist(
     artistImageUrl = IMAGE_DEFAULT_BY_TYPE.artist,
     biography,
     coverArt,
+    folder,
+    folderId,
     id,
     lastFmUrl,
     musicBrainzId,
+    musicFolderId,
     name = DEFAULT_VALUE,
+    parent,
     similarArtist = [],
     similarSongs = [],
     starred,
     topSongs = [],
-  } = artistData;
+  } = artistData as any;
+
+  const resolvedMusicFolderId = musicFolderId || folderId || folder || parent;
 
   return {
-    albums: album.map(formatAlbum),
+    albums: album.map((a: any) =>
+      formatAlbum({ ...a, musicFolderId: resolvedMusicFolderId }),
+    ),
     biography,
     favourite: !!starred,
     genres: getUniqueGenres(album),
@@ -83,8 +96,12 @@ export function formatArtist(
     musicBrainzUrl: musicBrainzId
       ? `https://musicbrainz.org/artist/${musicBrainzId}`
       : undefined,
+    musicFolderId: resolvedMusicFolderId,
     name,
-    similarArtist: similarArtist.map(formatSimilarArtist),
+    path: artistData.album?.[0]?.song?.[0]?.path || (artistData as any).path,
+    similarArtist: similarArtist.map((s: any) =>
+      formatSimilarArtist({ ...s, musicFolderId: resolvedMusicFolderId }),
+    ),
     similarTracks: similarSongs.map(formatTrack),
     topTracks: topSongs.map(formatTrack),
     totalAlbums,
@@ -257,7 +274,10 @@ export function formatTrack(track: Base, index: number): Track {
     created,
     discNumber = DEFAULT_VALUE,
     duration,
+    folder,
+    folderId,
     id,
+    musicFolderId,
     parent,
     path = DEFAULT_VALUE,
     playCount = 0,
@@ -269,7 +289,7 @@ export function formatTrack(track: Base, index: number): Track {
     transcodedContentType = DEFAULT_VALUE,
     transcodedSuffix = DEFAULT_VALUE,
     year = DEFAULT_VALUE,
-  } = track;
+  } = track as any;
 
   return {
     album,
@@ -293,7 +313,9 @@ export function formatTrack(track: Base, index: number): Track {
       transcodedContentType,
       transcodedSuffix,
     },
+    musicFolderId: musicFolderId || folderId || folder,
     name,
+    path: (track as any).path,
     size: bytesToMB(size),
     streamUrlId: id,
     trackNumber,
@@ -303,11 +325,17 @@ export function formatTrack(track: Base, index: number): Track {
 }
 
 function formatSimilarArtist(similarArtist: ArtistID3): SimilarArtist {
-  const { coverArt = IMAGE_DEFAULT_BY_TYPE.artist, id, name } = similarArtist;
+  const {
+    coverArt = IMAGE_DEFAULT_BY_TYPE.artist,
+    id,
+    musicFolderId,
+    name,
+  } = similarArtist as any;
 
   return {
     id,
     image: coverArt,
+    musicFolderId,
     name,
   };
 }

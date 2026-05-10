@@ -257,13 +257,20 @@ export default defineNuxtPlugin((nuxtApp) => {
       // Check if this is the actual sidebar (not the page tabs navigation)
       const nav = element.closest('nav');
       if (nav) {
-        // The sidebar has links like Browse, Your library, Playlists
-        // The page tabs have links like Discover, Podcasts, Radio Stations
+        // On TV, the mobileNavigation class is used for the sidebar
+        if (element.closest('[class*="mobileNavigation"]')) {
+          return 'sidebar';
+        }
+
+        // The sidebar has links like Browse, Albums, Artists, Playlists, Queue
         const text = element.textContent?.trim().toLowerCase() || '';
         if (
           text === 'browse' ||
-          text === 'your library' ||
+          text === 'albums' ||
+          text === 'artists' ||
           text === 'playlists' ||
+          text === 'queue' ||
+          text === 'your library' ||
           element.closest('[class*="sidebarNavigation"]')
         ) {
           return 'sidebar';

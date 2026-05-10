@@ -17,9 +17,28 @@ export function useFavourite() {
   }
 
   async function getFavourites() {
+    const { isMusicFolderDisabled } = useMediaLibrary();
+
     const { data: favouritesData } = await fetchData('/getStarred2', {
-      transform: /* istanbul ignore next -- @preserve */ (response) =>
-        formatAllMedia(response.starred2),
+      transform: /* istanbul ignore next -- @preserve */ (response) => {
+        const results = formatAllMedia(response.starred2);
+
+        return {
+          albums: results.albums.filter(
+            (album) => !isMusicFolderDisabled(album.musicFolderId, album.path),
+          ),
+          artists: results.artists.filter(
+            (artist) => !isMusicFolderDisabled(artist.musicFolderId),
+          ),
+          tracks: results.tracks.filter(
+            (track) =>
+              !isMusicFolderDisabled(
+                track.musicFolderId,
+                track.path || track.information.path,
+              ),
+          ),
+        };
+      },
     });
 
     favourites.value = favouritesData || DEFAULT_ALL_MEDIA;

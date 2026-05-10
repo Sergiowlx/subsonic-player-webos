@@ -76,14 +76,14 @@ const swiper = useSwiper(swiperRef, {
 
 swiper-container {
   position: relative;
-  text-size-adjust: none;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  display: flex;
+  flex-direction: row;
   padding: 0;
   margin-right: auto;
   margin-left: auto;
   overflow: hidden;
   list-style: none;
+  text-size-adjust: none;
 }
 
 .next,

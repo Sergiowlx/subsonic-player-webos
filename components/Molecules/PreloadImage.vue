@@ -111,6 +111,7 @@ onUnmounted(() => {
 }
 
 .image {
+  width: var(--width-height-100);
   height: var(--width-height-100);
   object-fit: cover;
 }

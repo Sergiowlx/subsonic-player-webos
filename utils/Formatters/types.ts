@@ -8,7 +8,9 @@ export interface Album {
   id: string;
   image: string;
   information: AlbumTrack;
+  musicFolderId?: string;
   name: string;
+  path?: string;
   size: string;
   totalDiscNumber: number;
   trackCount: number;
@@ -31,6 +33,9 @@ export interface Artist extends BaseArtist {
   image: string;
   lastFmUrl?: string;
   musicBrainzUrl?: string;
+  musicFolderId?: string;
+  name: string;
+  path?: string;
   similarArtist: SimilarArtist[];
   similarTracks: Track[];
   topTracks: Track[];
@@ -114,6 +119,7 @@ export interface RadioStation {
 
 export interface SimilarArtist extends BaseArtist {
   image: string;
+  musicFolderId?: string;
 }
 
 export interface Track {
@@ -129,7 +135,9 @@ export interface Track {
   image: string;
   index: number;
   information: TrackInformation;
+  musicFolderId?: string;
   name: string;
+  path?: string;
   size: string;
   streamUrlId: string;
   trackNumber: number | string;

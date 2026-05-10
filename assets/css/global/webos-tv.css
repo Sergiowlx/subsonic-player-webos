@@ -298,9 +298,19 @@ body.webosTV .listLayout .layoutImage {
   overflow: visible !important;
 }
 
-/* Allow focus box-shadow to be visible on carousel swiper items */
+/* Allow focus box-shadow to be visible on carousel swiper items and force grid layout */
 body.webosTV swiper-container {
+  display: flex !important;
+  flex-flow: row wrap !important;
+  gap: var(--space-24) !important;
   overflow: visible !important;
+}
+
+body.webosTV swiper-slide {
+  display: block !important;
+  flex: 0 0 calc((100% / 5) - var(--space-24)) !important;
+  width: calc((100% / 5) - var(--space-24)) !important;
+  margin-bottom: var(--space-24) !important;
 }
 
 /* Add padding to carousel wrapper to accommodate focus box-shadow */
@@ -511,10 +521,28 @@ html.webosTV .listLayout .layoutImage {
   height: var(--track-width-height-default);
 }
 
-/* PreloadImage container: explicit square size as aspect-ratio fallback.
+/* Ensure the music player doesn't overlap with the sidebar and has proper image sizing */
+body.webosTV [class*='musicPlayer'] {
+  left: 100px !important;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='preloadImage'] {
+  width: var(--media-player-height) !important;
+  height: var(--media-player-height) !important;
+}
+
+/* Adjust playlist item image sizing */
+body.webosTV article[data-test-id='playlist'] [class*='preloadImage'] {
+  width: 75px !important;
+  height: 75px !important;
+}
+
+/* PreloadImage container: explicit square size as aspect-ratio fallback for grids.
    At viewport=1280px, 5-col grid with 24px gap and 3vw inner padding:
    (1280-100-77-4×24)/5 ≈ 201px. Physical at DPR 1.5 ≈ 300px — TV-appropriate. */
-html.webosTV [class*='preloadImage'] {
+html.webosTV [class*='row'] [class*='preloadImage'],
+html.webosTV [class*='mediaListWrapper'] [class*='preloadImage'],
+html.webosTV swiper-slide [class*='preloadImage'] {
   width: 200px;
   min-width: 80px;
   height: 200px;

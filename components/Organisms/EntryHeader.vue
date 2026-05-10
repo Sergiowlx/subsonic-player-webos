@@ -116,25 +116,30 @@ function onDragStart(event: DragEvent) {
   --figure-margin: auto;
 
   position: relative;
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   flex-shrink: 0;
   gap: var(--figure-spacing);
   width: var(--width-height-100);
   max-width: var(--figure-width-height);
   height: var(--width-height-100);
   max-height: var(--figure-width-height);
-  aspect-ratio: 1;
   padding: var(--figure-spacing);
   margin: 0 var(--figure-margin);
   overflow: hidden;
   background-image: var(--image-blur);
 
-  :nth-child(2) {
-    grid-column-start: 2;
+  /* Fallback for multi-image grids in EntryHeader for non-grid browsers */
+  > * {
+    flex: 0 0 calc(50% - var(--figure-spacing));
+    width: calc(50% - var(--figure-spacing));
+    height: calc(50% - var(--figure-spacing));
   }
 
-  :nth-child(1):nth-last-child(3) {
-    grid-row-start: span 2;
+  > :only-child {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
   }
 
   @media (--tablet-up) {

@@ -31,6 +31,13 @@ export const MOBILE_NAVIGATION: SidebarItem[] = [
     },
   },
   {
+    icon: ICONS.folder,
+    title: 'Library',
+    to: {
+      name: ROUTE_NAMES.files,
+    },
+  },
+  {
     icon: ICONS.queue,
     title: 'Queue',
     to: {

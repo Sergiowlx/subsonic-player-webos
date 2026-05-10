@@ -4,6 +4,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { closeModal } = useModal();
   const { resetQueue } = useQueue();
   const { getPlaylists, playlists } = usePlaylist();
+  const { getMusicFolders } = useMediaLibrary();
 
   closeModal();
   resetQueue();
@@ -38,8 +39,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     });
   }
 
-  if (isAuthenticated.value && !playlists.value.length) {
-    await getPlaylists();
+  if (isAuthenticated.value) {
+    if (!playlists.value.length) {
+      await getPlaylists();
+    }
+
+    await getMusicFolders();
   }
 
   if (to.name === ROUTE_NAMES.login && isAuthenticated.value) {

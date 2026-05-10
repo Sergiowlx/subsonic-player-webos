@@ -34,9 +34,11 @@ withDefaults(
   --loop-columns: var(--loop-rows-mobile);
 
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(var(--loop-columns), 1fr);
-  gap: var(--loop-grid-gap);
+  display: flex;
+  flex-wrap: wrap;
+  width: calc(100% + var(--loop-grid-gap));
+  margin-left: calc(var(--loop-grid-gap) * -0.5);
+  margin-right: calc(var(--loop-grid-gap) * -0.5);
 
   @media (--tablet-up) {
     --loop-columns: var(--loop-rows-tablet);
@@ -45,5 +47,10 @@ withDefaults(
   @media (width >= 1100px) {
     --loop-columns: var(--loop-rows-desktop);
   }
+}
+
+.mediaListWrapper > * {
+  width: calc((100% / var(--loop-columns)) - var(--loop-grid-gap));
+  margin: calc(var(--loop-grid-gap) * 0.5);
 }
 </style>

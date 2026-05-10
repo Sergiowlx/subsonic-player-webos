@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import LazyLoadContent from '@/components/Atoms/LazyLoadContent.vue';
 import MarqueeScroll from '@/components/Atoms/MarqueeScroll.vue';
 import PreloadImage from '@/components/Molecules/PreloadImage.vue';
@@ -16,6 +17,8 @@ defineEmits<{
   mediaInformation: [track: Track];
   playTrack: [index: number];
 }>();
+
+const { isMusicFolderDisabled, toggleMusicFolder } = useMediaLibrary();
 </script>
 
 <template>
@@ -35,7 +38,9 @@ defineEmits<{
             :class="$style.trackImage"
             :image="IMAGE_DEFAULT_BY_TYPE.folderBack"
           />
-          ...
+
+          <MarqueeScroll inert> Go back </MarqueeScroll>
+
           <p class="visuallyHidden">Go back</p>
         </NuxtLink>
       </div>
@@ -62,6 +67,21 @@ defineEmits<{
                 {{ folder.name }}
               </MarqueeScroll>
             </NuxtLink>
+          </div>
+
+          <div
+            v-if="!$route.params[ROUTE_PARAM_KEYS.files.id]"
+            :class="['trackCell', $style.libraryToggleCell]"
+          >
+            <ButtonLink
+              :class="$style.toggleButton"
+              :icon="isMusicFolderDisabled(folder.id) ? ICONS.visibilityOff : ICONS.visibility"
+              showText
+              :title="isMusicFolderDisabled(folder.id) ? 'Enable library' : 'Disable library'"
+              @click.stop="toggleMusicFolder(folder.id)"
+            >
+              {{ isMusicFolderDisabled(folder.id) ? 'Disabled' : 'Enabled' }}
+            </ButtonLink>
           </div>
         </LazyLoadContent>
       </template>
@@ -102,5 +122,19 @@ defineEmits<{
   height: var(--track-width-height-default);
   overflow: hidden;
   border-radius: var(--border-radius-medium);
+}
+
+.libraryToggleCell {
+  flex: 0 0 160px;
+  justify-content: flex-end;
+  padding-right: var(--default-space);
+}
+
+.toggleButton {
+  padding: var(--space-8) var(--space-16);
+  border: 2px solid var(--theme-color);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-secondary);
+  font-weight: var(--font-weight-bold);
 }
 </style>

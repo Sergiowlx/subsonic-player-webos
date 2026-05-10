@@ -1,16 +1,16 @@
 .overlapWrapper {
-  display: grid;
+  position: relative;
+  display: flex;
   flex-shrink: 0;
-  grid-template-columns: 1fr;
   align-items: center;
   justify-content: center;
 }
 
 .overlap {
+  position: absolute;
+  inset: 0;
   z-index: 0;
-  display: grid;
-  grid-row-start: 1;
-  grid-column-start: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
 }

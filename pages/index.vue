@@ -19,6 +19,7 @@ const { dragStart } = useDragAndDrop();
 const { frequentAlbums, getDiscoverAlbums, newestAlbums, recentAlbums } =
   useAlbum();
 const { getMediaTracks } = useMediaTracks();
+const { disabledMusicFolderIds } = useMediaLibrary();
 
 /* istanbul ignore next -- @preserve */
 // Use useLazyAsyncData for normal web, but ensure immediate execution on WebOS
@@ -54,6 +55,10 @@ const { refresh, status } = (isWebOS ? useAsyncData : useLazyAsyncData)(
     },
   },
 );
+
+watch(disabledMusicFolderIds, () => {
+  refresh();
+});
 
 async function addAlbumToQueue(album: Album) {
   const tracks = await getMediaTracks(album);

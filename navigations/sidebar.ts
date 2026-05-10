@@ -37,6 +37,13 @@ export const SIDEBAR_DESKTOP_NAVIGATION: SidebarNavigation[] = [
           name: ROUTE_NAMES.bookmarks,
         },
       },
+      {
+        icon: ICONS.folder,
+        title: 'Library',
+        to: {
+          name: ROUTE_NAMES.files,
+        },
+      },
     ],
     title: 'Browse',
   },

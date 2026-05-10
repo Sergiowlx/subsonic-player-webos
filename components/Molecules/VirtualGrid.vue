@@ -97,21 +97,23 @@ watch(columnCount, () => {
           :class="$style.row"
           data-virtual-grid-row
           :style="{
-            gap: `${gap}px`,
-            gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
             paddingBottom: `${gap}px`,
           }"
         >
-          <template
+          <div
             v-for="(item, colIndex) in row"
             :key="
               getKey
                 ? getKey(item, rowIndex * columnCount + colIndex)
                 : rowIndex * columnCount + colIndex
             "
+            :style="{
+              marginRight: colIndex < columnCount - 1 ? `${gap}px` : '0',
+              width: `calc((100% - ${(columnCount - 1) * gap}px) / ${columnCount})`,
+            }"
           >
             <slot :index="rowIndex * columnCount + colIndex" :item />
-          </template>
+          </div>
         </div>
       </template>
     </VirtualList>
@@ -120,7 +122,7 @@ watch(columnCount, () => {
 
 <style module>
 .row {
-  display: grid;
+  display: flex;
   width: 100%;
 }
 </style>

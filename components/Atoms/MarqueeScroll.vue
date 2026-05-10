@@ -137,7 +137,7 @@ onUnmounted(() => {
 
 <style module>
 .marqueeScroll {
-  display: grid;
+  display: block;
   width: var(--width-height-100);
   overflow: hidden;
 }
