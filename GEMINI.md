@@ -69,3 +69,5 @@ Since Chrome 53 has limited inspector support and many TVs are hard to access:
 - **CSS:** Use standard CSS. Avoid Tailwind.
 - **TS:** Maintain strict typing.
 - **Components:** Ensure all new components are reachable via DPAD navigation. Check `isVisible()` and `shouldSkipElement()` in the navigation plugin if items aren't focusing.
+- **Targeting:** Use `data-test-id` for reliable CSS targeting of specific components on webOS (e.g., `[data-test-id='playlist']`) to avoid reliance on unstable generated classes.
+via DPAD navigation. Check `isVisible()` and `shouldSkipElement()` in the navigation plugin if items aren't focusing.
