@@ -221,8 +221,8 @@ export default defineNuxtConfig({
     plugins: {
       '@csstools/postcss-global-data': {
         files: [
-          resolve(__dirname, 'assets/css/breakpoints.css'),
-          resolve(__dirname, 'assets/css/main.css'),
+          resolve('./assets/css/breakpoints.css'),
+          resolve('./assets/css/main.css'),
         ],
       },
       autoprefixer: {},

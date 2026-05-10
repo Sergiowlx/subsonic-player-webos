@@ -39,6 +39,7 @@ function openDropdownMenu(event: MouseEvent | TouchEvent) {
   <InteractionWrapper
     is="article"
     :class="$style.playlistsListItem"
+    data-test-id="playlist"
     @click="navigateToPlaylist"
     @contextMenu="openDropdownMenu"
   >

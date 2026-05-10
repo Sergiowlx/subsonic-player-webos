@@ -82,7 +82,7 @@ body.webosTV .desktopOnly[class*='trackSeeker'] [class*='thumb'] {
   box-shadow: 0 0 10px rgb(99 19 188 / 50%) !important;
 }
 
-/* Hide the mobile play/pause button on TV (we use the desktop controls) */
+/* Hide the mobile play/pause button on TV ( we use the desktop controls ) */
 body.webosTV .mobileOnly[class*='playPauseButton'] {
   display: none !important;
 }
@@ -173,7 +173,7 @@ body.webosTV header[class*='header'] {
   margin-left: 100px !important;
 }
 
-/* Hide the music logo in mobile header on TV (we don't need it) */
+/* Hide the music logo in mobile header on TV ( we don't need it ) */
 body.webosTV .mobileOnly[class*='MusicLogo'] {
   display: none !important;
 }
@@ -531,10 +531,25 @@ body.webosTV [class*='musicPlayer'] [class*='preloadImage'] {
   height: var(--media-player-height) !important;
 }
 
-/* Adjust playlist item image sizing */
-body.webosTV article[data-test-id='playlist'] [class*='preloadImage'] {
-  width: 75px !important;
-  height: 75px !important;
+/* Adjust playlist item image sizing, padding and separation */
+body.webosTV [data-test-id='playlist'] [class*='playlistDetails'] {
+  gap: var(--space-32) !important;
+  padding: var(--space-24) !important;
+}
+
+body.webosTV [data-test-id='playlist'] [class*='preloadImage'] {
+  width: 90px !important;
+  height: 90px !important;
+}
+
+/* Make list item metadata more legible */
+body.webosTV [data-test-id='playlist'] h4 {
+  font-size: 1.25rem !important;
+  margin-bottom: var(--space-8) !important;
+}
+
+body.webosTV [data-test-id='playlist'] .bulletList {
+  font-size: 1.1rem !important;
 }
 
 /* PreloadImage container: explicit square size as aspect-ratio fallback for grids.
@@ -564,6 +579,132 @@ html.webosTV [class*='entryHeader'] figure {
 html.webosTV [class*='entryHeader'] [class*='preloadImage'] {
   height: 100%;
   overflow: hidden;
+}
+
+/* ============================================
+   Playlist & EntryHeader Layout Fixes
+   Force side-by-side (row) layout for detail pages
+   ============================================ */
+
+/* Target the actual flex container inside EntryHeader */
+body.webosTV [class*='entryHeader'] [class*='content'] {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: var(--space-128) !important;
+  align-items: center !important;
+}
+
+body.webosTV [class*='entryHeader'] [class*='imageWrapper'] {
+  flex-shrink: 0 !important;
+  margin-right: var(--space-64) !important; /* Extra insurance padding */
+}
+
+body.webosTV [class*='entryHeader'] [class*='detailsWrapper'] {
+  flex: 1 !important;
+  width: auto !important;
+  padding: var(--space-48) !important; /* Increased padding inside the box */
+  text-align: left !important;
+  background-color: rgb(0 0 0 / 60%) !important; /* Slightly darker for even better contrast */
+  border-radius: var(--border-radius-large) !important;
+  box-shadow: 0 12px 48px rgb(0 0 0 / 40%) !important;
+}
+
+/* Adjust playlist item list layout separation */
+body.webosTV [data-test-id='playlist'] [class*='playlistDetails'] {
+  gap: var(--space-48) !important; /* Increased from 32px */
+  padding: var(--space-32) !important;
+}
+
+body.webosTV [data-test-id='playlist'] [class*='imageLink'] {
+  margin-right: var(--space-24) !important; /* Push text away from image */
+}
+
+body.webosTV [class*='detailsWrapper'] h1,
+body.webosTV [class*='detailsWrapper'] p,
+body.webosTV [class*='detailsWrapper'] li,
+body.webosTV [class*='detailsWrapper'] a,
+body.webosTV [class*='detailsWrapper'] span {
+  color: var(--white-color) !important;
+}
+
+/* Ensure headings inside details are white */
+body.webosTV [class*='detailsWrapper'] h1 {
+  margin-bottom: var(--space-16) !important;
+}
+
+/* Make metadata (track count, duration) more prominent on TV */
+body.webosTV [class*='detailsWrapper'] .bulletList {
+  display: flex !important;
+  flex-direction: column !important; /* Stack metadata vertically for even more separation and clarity */
+  gap: var(--space-8) !important;
+  margin-top: var(--space-24) !important;
+  margin-bottom: var(--space-40) !important;
+}
+
+body.webosTV [class*='detailsWrapper'] .bulletList li {
+  font-size: 1.3rem !important;
+  color: var(--white-color) !important;
+}
+
+/* Hide the dot separator since we are stacking vertically */
+body.webosTV [class*='detailsWrapper'] .bulletList li::after {
+  display: none !important;
+}
+
+body.webosTV [class*='detailsWrapper'] .bulletList .strong {
+  color: var(--theme-color) !important;
+  font-size: 1.6rem !important;
+  margin-right: var(--space-8) !important;
+}
+
+/* ============================================
+   Media Grid & Square Tiles Fixes
+   Ensure discover/albums/artists tiles are strictly square
+   ============================================ */
+
+/* Force desktop column count for all GridWrapper-based views on TV */
+body.webosTV [class*='mediaListWrapper'] {
+  --loop-columns: var(--loop-rows-desktop) !important;
+}
+
+/* Ensure discover swiper slides are square to match images */
+body.webosTV swiper-slide {
+  width: 200px !important;
+  flex: 0 0 200px !important;
+}
+
+/* Ensure VirtualGrid rows (Albums) also look correct by forcing column width */
+body.webosTV [data-virtual-grid-row] > div {
+  width: 200px !important;
+  flex: 0 0 200px !important;
+}
+
+/* Ensure the tiles themselves and their focusable links are strictly square */
+body.webosTV .layoutItem {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 200px !important;
+}
+
+body.webosTV .layoutImage,
+body.webosTV .layoutImage a,
+body.webosTV .layoutImage figure {
+  width: 200px !important;
+  height: 200px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Reset margin for focus highlight padding added earlier */
+body.webosTV .layoutImage {
+  padding: 0 !important;
+}
+
+/* Re-apply focus padding specifically to the link to keep shadow visible */
+body.webosTV .layoutImage a {
+  padding: 4px !important;
+  margin: -4px !important;
 }
 
 /* ============================================
