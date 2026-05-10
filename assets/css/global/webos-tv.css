@@ -515,7 +515,10 @@ html.webosTV .listLayout .layoutImage {
    At viewport=1280px, 5-col grid with 24px gap and 3vw inner padding:
    (1280-100-77-4×24)/5 ≈ 201px. Physical at DPR 1.5 ≈ 300px — TV-appropriate. */
 html.webosTV [class*='preloadImage'] {
+  width: 200px;
+  min-width: 80px;
   height: 200px;
+  min-height: 80px;
   overflow: hidden;
 }
 
@@ -523,7 +526,10 @@ html.webosTV [class*='preloadImage'] {
    At tablet-up the figure max-width/max-height is 300px; match it here since
    aspect-ratio is unsupported. */
 html.webosTV [class*='entryHeader'] figure {
+  width: 300px;
+  min-width: 80px;
   height: 300px;
+  min-height: 80px;
 }
 
 /* Inside EntryHeader the preloadImage fills the figure, not a grid column. */

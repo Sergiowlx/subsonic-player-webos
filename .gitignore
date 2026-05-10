@@ -60,3 +60,6 @@ webos/*
 !webos/tools
 !webos/e2e
 !webos/polyfills.client.ts
+
+.claude/
+.gemini/
