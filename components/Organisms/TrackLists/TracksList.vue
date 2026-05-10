@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
+import VirtualList from '@/components/Molecules/VirtualList.vue';
 import TracksListItem from '@/components/Organisms/TrackLists/TracksListItem.vue';
 
 defineProps<{
   tracks: Track[];
 }>();
+
+const TRACK_ROW_HEIGHT = 55;
 
 defineEmits<{
   addToPlaylist: [trackId: string];
@@ -28,17 +31,27 @@ const trackHeaderNames = TRACK_HEADER_NAMES.tracks;
       <div class="trackCell trackOptions" />
     </div>
 
-    <TracksListItem
-      v-for="(track, index) in tracks"
-      :key="track.id"
-      :track
-      @addToPlaylist="$emit('addToPlaylist', track.id)"
-      @addToQueue="$emit('addToQueue', track)"
-      @downloadMedia="$emit('downloadMedia', track)"
-      @dragStart="(event) => $emit('dragStart', track, event)"
-      @mediaInformation="$emit('mediaInformation', track)"
-      @playTrack="$emit('playTrack', index)"
-    />
+    <VirtualList
+      v-slot="{ index, item: track }"
+      :itemHeight="TRACK_ROW_HEIGHT"
+      :items="tracks"
+    >
+      <TracksListItem
+        :key="track.id"
+        :style="
+          index % 2 === 1
+            ? { backgroundColor: 'var(--hover-selected-color)' }
+            : undefined
+        "
+        :track
+        @addToPlaylist="$emit('addToPlaylist', track.id)"
+        @addToQueue="$emit('addToQueue', track)"
+        @downloadMedia="$emit('downloadMedia', track)"
+        @dragStart="(event) => $emit('dragStart', track, event)"
+        @mediaInformation="$emit('mediaInformation', track)"
+        @playTrack="$emit('playTrack', index)"
+      />
+    </VirtualList>
   </div>
 
   <NoMediaMessage

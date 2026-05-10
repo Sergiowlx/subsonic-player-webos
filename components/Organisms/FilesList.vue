@@ -55,6 +55,7 @@ defineEmits<{
                 :alt="folder.name"
                 :class="$style.trackImage"
                 :image="folder.image"
+                size="100"
               />
 
               <MarqueeScroll class="mBXS" inert>

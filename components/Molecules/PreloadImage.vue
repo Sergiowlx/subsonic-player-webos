@@ -6,6 +6,7 @@ const props = withDefaults(
     alt?: string;
     image: string;
     lazyLoad?: boolean;
+    size?: string;
   }>(),
   {
     alt: 'Image',
@@ -30,7 +31,7 @@ const imageSrc = computed(() => {
     return null;
   }
 
-  return getImageUrl(props.image);
+  return getImageUrl(props.image, props.size);
 });
 
 onMounted(() => {
@@ -47,7 +48,8 @@ onMounted(() => {
     },
     {
       root: null,
-      threshold: 0.1,
+      rootMargin: '300px 0px',
+      threshold: 0,
     },
   );
 

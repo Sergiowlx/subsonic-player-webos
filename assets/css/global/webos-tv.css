@@ -269,7 +269,7 @@ body.webosTV h3 a svg {
    Solid outline + background for maximum visibility on TV
    ============================================ */
 
-/* Default focus style - solid purple outline + background tint */
+/* Default focus style - solid purple outline + glow + background tint */
 body.webosTV .focused {
   outline: 3px solid var(--theme-color) !important;
   outline-offset: 2px;
@@ -278,14 +278,17 @@ body.webosTV .focused {
     var(--theme-color) 25%,
     transparent
   ) !important;
-  box-shadow: none;
+  box-shadow: 0 0 0 6px
+      color-mix(in oklab, var(--theme-color) 35%, transparent),
+    0 8px 24px color-mix(in oklab, var(--theme-color) 25%, transparent) !important;
   transition: background-color 0.15s ease;
 }
 
 /* Album/artist/playlist image links - use box-shadow to avoid clipping */
 body.webosTV .layoutImage a.focused {
   outline: none !important;
-  box-shadow: 0 0 0 4px var(--theme-color) !important;
+  box-shadow: 0 0 0 4px var(--theme-color),
+    0 12px 32px color-mix(in oklab, var(--theme-color) 35%, transparent) !important;
 }
 
 /* Ensure album image links and genres are block-level for proper focus and dimensions */
@@ -333,12 +336,13 @@ body.webosTV h2.focused {
 /* Playlist card focus - use box-shadow to avoid clipping */
 body.webosTV article[data-test-id='playlist'] a.focused {
   outline: none !important;
-  box-shadow: 0 0 0 4px var(--theme-color) !important;
+  box-shadow: 0 0 0 4px var(--theme-color),
+    0 12px 32px color-mix(in oklab, var(--theme-color) 35%, transparent) !important;
   transform: scale(1.02);
   transition: transform 0.2s ease;
 }
 
-/* Track row focus - full row highlight */
+/* Track row focus - full row highlight + soft scale for motion feedback */
 body.webosTV .trackRow.focused {
   outline: 2px solid var(--theme-color) !important;
   outline-offset: -2px;
@@ -347,6 +351,9 @@ body.webosTV .trackRow.focused {
     var(--theme-color) 30%,
     transparent
   ) !important;
+  transform: scale(1.005);
+  transform-origin: left center;
+  transition: transform 0.12s ease, background-color 0.15s ease;
 }
 
 /* Track row links don't need extra styling */
@@ -451,4 +458,52 @@ body.webosTV .pageLink.focused {
   ) !important;
   transform: scale(1.05);
   transition: all 0.15s ease;
+}
+
+/* ============================================
+   TV Polish: 10-foot UI scale & breathing room
+   ============================================ */
+
+/* Bump root font-size so all rem-based sizes scale up for couch viewing.
+   16px → 18px = ~12% larger across the whole UI. */
+html.webosTV {
+  font-size: 18px;
+}
+
+/* Roomier track rows for legibility at distance */
+body.webosTV .trackRow,
+body.webosTV .trackHeader {
+  min-height: calc(var(--track-table-header-row-height) + 8px) !important;
+}
+
+body.webosTV .trackCell {
+  padding: var(--space-12) calc(var(--default-space) * 2) !important;
+}
+
+/* Larger gap between album cards */
+body.webosTV [class*='mediaListWrapper'] {
+  --loop-grid-gap: var(--space-32) !important;
+}
+
+/* Stronger card surfaces for album/artist items so they read as cards, not items in a doc */
+body.webosTV .layoutImage {
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--black-color) 25%, transparent);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Slightly larger/legible fonts in card text */
+body.webosTV .layoutContent {
+  padding-top: var(--space-4);
+  font-size: var(--body-font-size);
+  line-height: 1.4;
+}
+
+/* More vertical breathing room above page headings on TV */
+body.webosTV h1 {
+  margin-bottom: var(--space-24);
+}
+
+/* Make the player footer text bigger, easier to read across the room */
+body.webosTV footer [class*='trackInformation'] {
+  font-size: var(--body-font-size);
 }

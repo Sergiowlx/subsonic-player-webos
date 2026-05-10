@@ -85,7 +85,7 @@ exports[`MixedTracksList > matches the snapshot 1`] = `
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -235,7 +235,7 @@ exports[`MixedTracksList > matches the snapshot 1`] = `
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -473,7 +473,7 @@ exports[`MixedTracksList > when the tracks prop is not an empty array > matches 
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -623,7 +623,7 @@ exports[`MixedTracksList > when the tracks prop is not an empty array > matches 
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -859,7 +859,7 @@ exports[`MixedTracksList > when the tracks prop is not an empty array > when the
       <!--v-if-->
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -1005,7 +1005,7 @@ exports[`MixedTracksList > when the tracks prop is not an empty array > when the
       <!--v-if-->
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -1239,7 +1239,7 @@ exports[`MixedTracksList > when the tracks prop is not an empty array > when the
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -1389,7 +1389,7 @@ exports[`MixedTracksList > when the tracks prop is not an empty array > when the
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>

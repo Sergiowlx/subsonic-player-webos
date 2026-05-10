@@ -5,6 +5,7 @@ import { mount } from '@vue/test-utils';
 
 import GridWrapper from '@/components/Atoms/GridWrapper.vue';
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
+import VirtualGrid from '@/components/Molecules/VirtualGrid.vue';
 import AlbumItem from '@/components/Organisms/AlbumItem.vue';
 import { gridWrapperPropsMock } from '@/test/fixtures';
 import { getFormattedAlbumsMock } from '@/test/helpers';
@@ -61,10 +62,6 @@ describe('AlbumsList', () => {
       expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('shows the GridWrapper component', () => {
-      expect(wrapper.findComponent(GridWrapper).exists()).toBe(true);
-    });
-
     it('shows the correct number of the AlbumItem component', () => {
       expect(wrapper.findAllComponents(AlbumItem).length).toBe(5);
     });
@@ -73,16 +70,43 @@ describe('AlbumsList', () => {
       expect(wrapper.findComponent(NoMediaMessage).exists()).toBe(false);
     });
 
-    describe.each([
-      ['gridLayout', gridWrapperPropsMock.gridView],
-      ['listLayout', gridWrapperPropsMock.listView],
-    ])('when viewLayout is %s', (layout, expectedProps) => {
+    describe('when viewLayout is gridLayout', () => {
       beforeEach(() => {
-        viewLayoutMock.value = layout as Layout;
+        viewLayoutMock.value = 'gridLayout';
       });
 
       it('matches the snapshot', () => {
         expect(wrapper.html()).toMatchSnapshot();
+      });
+
+      it('shows the VirtualGrid component', () => {
+        expect(wrapper.findComponent(VirtualGrid as never).exists()).toBe(true);
+      });
+
+      it('does not show the GridWrapper component', () => {
+        expect(wrapper.findComponent(GridWrapper).exists()).toBe(false);
+      });
+    });
+
+    describe('when viewLayout is listLayout', () => {
+      const expectedProps = gridWrapperPropsMock.listView;
+
+      beforeEach(() => {
+        viewLayoutMock.value = 'listLayout';
+      });
+
+      it('matches the snapshot', () => {
+        expect(wrapper.html()).toMatchSnapshot();
+      });
+
+      it('shows the GridWrapper component', () => {
+        expect(wrapper.findComponent(GridWrapper).exists()).toBe(true);
+      });
+
+      it('does not show the VirtualGrid component', () => {
+        expect(wrapper.findComponent(VirtualGrid as never).exists()).toBe(
+          false,
+        );
       });
 
       it('sets the correct desktop prop on the GridWrapper component', () => {

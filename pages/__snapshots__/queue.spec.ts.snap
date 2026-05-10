@@ -185,7 +185,7 @@ exports[`queue > when queueList is not an empty array > matches the snapshot 1`]
         </button></div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>

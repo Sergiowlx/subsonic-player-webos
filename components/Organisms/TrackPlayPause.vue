@@ -42,6 +42,7 @@ const { currentTrack, isBuffering, isCurrentTrack, isPlaying } =
       ]"
       :image
       :lazyLoad="!hideImage"
+      size="100"
     />
 
     <p

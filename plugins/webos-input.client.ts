@@ -34,8 +34,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     router.replace('/');
   }
 
-  // Add webosTV class to body for TV-specific CSS styles
+  // Add webosTV class to body for TV-specific CSS styles.
+  // Also add to <html> so root-relative rules (rem scaling, etc.) can target TV.
   document.body.classList.add('webosTV');
+  document.documentElement.classList.add('webosTV');
 
   // Track currently focused element for .focused CSS class
   let currentFocusedElement: HTMLElement | null = null;

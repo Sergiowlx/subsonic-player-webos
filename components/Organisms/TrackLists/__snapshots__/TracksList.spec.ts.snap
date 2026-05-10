@@ -82,7 +82,7 @@ exports[`TracksList > matches the snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -228,7 +228,7 @@ exports[`TracksList > matches the snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -459,7 +459,7 @@ exports[`TracksList > when the tracks prop is not an empty array > matches the s
       </div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>
@@ -605,7 +605,7 @@ exports[`TracksList > when the tracks prop is not an empty array > matches the s
       </div>
     </div>
   </div>
-  <div class="lazyLoadContent trackRow">
+  <div class="lazyLoadContent trackRow" style="background-color: var(--hover-selected-color);">
     <div class="interactionWrapper" draggable="false">
       <div class="trackCell">
         <div>

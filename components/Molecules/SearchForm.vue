@@ -2,6 +2,9 @@
 import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import InputField from '@/components/Atoms/InputField.vue';
 
+const DEBOUNCE_MS = 500;
+const MIN_QUERY_LENGTH = 2;
+
 const emit = defineEmits<{
   submit: [value: string];
 }>();
@@ -16,21 +19,64 @@ const formInputs = {
 
 const form = createForm(formInputs);
 
+let debounceTimer: null | ReturnType<typeof setTimeout> = null;
+let lastSubmitted = '';
+
+function clearDebounce() {
+  if (debounceTimer !== null) {
+    clearTimeout(debounceTimer);
+    debounceTimer = null;
+  }
+}
+
 function onFormSubmit() {
+  clearDebounce();
   validateInputs(form);
 
   if (!form.isValid.value) {
     return;
   }
 
-  const query = replaceSpacesWithCharacter(
-    form.fields.query.value.value as string,
-  ).toLowerCase();
+  submitQuery(form.fields.query.value.value as string, { clearField: true });
+}
 
-  form.fields.query.value.value = '';
+function submitQuery(
+  rawQuery: string,
+  { clearField }: { clearField: boolean },
+) {
+  const query = replaceSpacesWithCharacter(rawQuery).toLowerCase();
+
+  if (!query || query === lastSubmitted) {
+    return;
+  }
+
+  lastSubmitted = query;
+
+  if (clearField) {
+    form.fields.query.value.value = '';
+  }
 
   emit('submit', query);
 }
+
+watch(
+  () => form.fields.query.value.value,
+  (newValue) => {
+    clearDebounce();
+
+    const value = (newValue ?? '').toString().trim();
+
+    if (value.length < MIN_QUERY_LENGTH) {
+      return;
+    }
+
+    debounceTimer = setTimeout(() => {
+      submitQuery(value, { clearField: false });
+    }, DEBOUNCE_MS);
+  },
+);
+
+onUnmounted(clearDebounce);
 </script>
 
 <template>

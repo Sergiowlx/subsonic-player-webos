@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
+import VirtualList from '@/components/Molecules/VirtualList.vue';
 import MixedTracksListItem from '@/components/Organisms/TrackLists/MixedTracksListItem.vue';
+
+const TRACK_ROW_HEIGHT = 55;
 
 defineProps<{
   hideRemoveOption?: boolean;
@@ -50,22 +53,32 @@ const hasDragStartEvent = computed(
       />
     </div>
 
-    <MixedTracksListItem
-      v-for="(track, index) in tracks"
-      :key="track.id"
-      :hasAddToQueueEvent
-      :hasDragStartEvent
-      :hideRemoveOption
-      :index
-      :track
-      @addToPlaylist="$emit('addToPlaylist', track.id, index)"
-      @addToQueue="$emit('addToQueue', track)"
-      @downloadMedia="$emit('downloadMedia', track)"
-      @dragStart="(event) => $emit('dragStart', track, event)"
-      @mediaInformation="$emit('mediaInformation', track)"
-      @playTrack="$emit('playTrack', index)"
-      @remove="$emit('remove', { id: track.id, index })"
-    />
+    <VirtualList
+      v-slot="{ index, item: track }"
+      :itemHeight="TRACK_ROW_HEIGHT"
+      :items="tracks"
+    >
+      <MixedTracksListItem
+        :key="track.id"
+        :hasAddToQueueEvent
+        :hasDragStartEvent
+        :hideRemoveOption
+        :index
+        :style="
+          index % 2 === 1
+            ? { backgroundColor: 'var(--hover-selected-color)' }
+            : undefined
+        "
+        :track
+        @addToPlaylist="$emit('addToPlaylist', track.id, index)"
+        @addToQueue="$emit('addToQueue', track)"
+        @downloadMedia="$emit('downloadMedia', track)"
+        @dragStart="(event) => $emit('dragStart', track, event)"
+        @mediaInformation="$emit('mediaInformation', track)"
+        @playTrack="$emit('playTrack', index)"
+        @remove="$emit('remove', { id: track.id, index })"
+      />
+    </VirtualList>
   </div>
 
   <NoMediaMessage
