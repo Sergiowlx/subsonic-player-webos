@@ -184,12 +184,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   setupSearchToggle();
 
-  // Force tablet responsive design by setting viewport to tablet width
-  // This triggers CSS media queries like @media (width >= 769px) for --tablet-up
-  // but we disable hover effects via CSS since TV has no mouse
+  // Force desktop responsive design by setting viewport to desktop width.
+  // 1280px triggers both --tablet-up (≥769px) and the desktop grid breakpoint
+  // (≥1100px), giving 5 grid columns instead of 3 at tablet width=1024.
+  // At 1920px physical / 1280px CSS = 1.5 DPR → ~300px physical per card.
   const viewport = document.querySelector('meta[name="viewport"]');
   if (viewport) {
-    viewport.setAttribute('content', 'width=1024, initial-scale=1');
+    viewport.setAttribute('content', 'width=1280, initial-scale=1');
   }
 
   /**

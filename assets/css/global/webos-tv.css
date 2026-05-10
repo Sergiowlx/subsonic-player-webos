@@ -464,9 +464,10 @@ body.webosTV .trackCell {
   padding: var(--space-12) calc(var(--default-space) * 2) !important;
 }
 
-/* Larger gap between album cards */
+/* Album/artist grid: 5 columns with modest gap.
+   At viewport=1280px: (1280-100-2×38px inner gap - 4×24px) / 5 ≈ 195px per card. */
 body.webosTV [class*='mediaListWrapper'] {
-  --loop-grid-gap: var(--space-32) !important;
+  --loop-grid-gap: var(--space-24) !important;
 }
 
 /* Stronger card surfaces for album/artist items so they read as cards, not items in a doc */
@@ -510,16 +511,25 @@ html.webosTV .listLayout .layoutImage {
   height: var(--track-width-height-default);
 }
 
-/* PreloadImage container: use padding-top to create square aspect.
-   Children are absolutely positioned, so this keeps the skeleton visible. */
+/* PreloadImage container: explicit square size as aspect-ratio fallback.
+   At viewport=1280px, 5-col grid with 24px gap and 3vw inner padding:
+   (1280-100-77-4×24)/5 ≈ 201px. Physical at DPR 1.5 ≈ 300px — TV-appropriate. */
 html.webosTV [class*='preloadImage'] {
-  height: auto;
-  min-height: 80px;
+  height: 200px;
+  overflow: hidden;
 }
 
-/* EntryHeader figure (album/artist large cover art) */
+/* EntryHeader figure (album/artist large cover art).
+   At tablet-up the figure max-width/max-height is 300px; match it here since
+   aspect-ratio is unsupported. */
 html.webosTV [class*='entryHeader'] figure {
-  height: 270px;
+  height: 300px;
+}
+
+/* Inside EntryHeader the preloadImage fills the figure, not a grid column. */
+html.webosTV [class*='entryHeader'] [class*='preloadImage'] {
+  height: 100%;
+  overflow: hidden;
 }
 
 /* ============================================
@@ -536,4 +546,11 @@ html.webosTV body {
   --h4-font-size: 1.25rem;
   --body-font-size: 1.125rem;
   --small-font-size: 1rem;
+
+  /* Larger track thumbnails and play buttons for TV couch viewing.
+     Default 40px → 56px. Physical at DPR 1.5 ≈ 84px — easier to read. */
+  --track-width-height-default: 56px;
+
+  /* Slightly taller track rows to comfortably fit the 56px thumbnail. */
+  --track-table-header-row-height: 62px;
 }
