@@ -24,7 +24,7 @@ const visibleNavigation = computed(() =>
 <template>
   <ul class="mBM">
     <NavigationItem
-      v-for="items in visibleNavigation
+      v-for="items in visibleNavigation"
       :key="`navigation-${items.title}`"
       class="mBM"
       :collapsed
