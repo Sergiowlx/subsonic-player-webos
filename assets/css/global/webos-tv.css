@@ -1,16 +1,11 @@
 /**
- * webOS TV Optimizations
+ * webOS TV presentation layer
  *
- * Simple styles for TV navigation.
- * Uses the .webosTV body class added dynamically when running on webOS.
- *
- * Note: Tablet layout is triggered by setting viewport width to 1024px
- * in the webos-input plugin. Hover effects are disabled since TV has no mouse.
+ * Keep the same desktop layout as the web client. The input plugin sets a
+ * 1280px viewport on webOS, so the shared desktop navigation, header, player
+ * and carousels are used here. These rules only add TV-sized controls and
+ * visible focus feedback.
  */
-
-/* ============================================
-   Hide cursor on TV
-   ============================================ */
 
 body.webosTV,
 body.webosTV * {
@@ -23,92 +18,137 @@ body.webosTV select {
   cursor: text !important;
 }
 
-/* ============================================
-   Simplified Sidebar Navigation for TV
-   Replace desktop sidebar with mobile-style vertical menu on left
-   ============================================ */
-
-/* Override sidebar width for TV - make it narrower like mobile bottom bar */
 body.webosTV {
-  --sidebar-width: 100px !important;
-
   scroll-behavior: smooth;
 }
 
-/* Hide desktop sidebar components that are too complex for TV */
-body.webosTV .desktopOnly {
-  display: none !important;
+/* Ten-foot sizing: keep the desktop composition, with text and controls that
+   remain readable from across the room. */
+html.webosTV {
+  font-size: 18px;
+
+  --h1-font-size: 2.25rem;
+  --h2-font-size: 1.875rem;
+  --h3-font-size: 1.5rem;
+  --h4-font-size: 1.25rem;
+  --body-font-size: 1.125rem;
+  --small-font-size: 1rem;
+  --track-width-height-default: 56px;
+  --track-table-header-row-height: 62px;
 }
 
-/* ============================================
-   Music Player Layout for TV
-   Show desktop controls in proper positions
-   ============================================ */
-
-/* EXCEPT: Show player controls on TV (they're marked desktopOnly but we need them) */
-body.webosTV .desktopOnly[class*='PlayerControls'],
-body.webosTV .desktopOnly[class*='playerControls'] {
-  display: flex !important;
+/* The shared responsive classes select desktopOnly/mobileOnly from the
+   1280px webOS viewport. Keep the full search field visible as in the web app. */
+body.webosTV form {
+  position: relative;
 }
 
-/* Show player options (favourite, volume, etc.) on TV */
-body.webosTV .desktopOnly[class*='playerOptions'] {
-  display: flex !important;
+body.webosTV input[id='search-input'] {
+  min-height: 48px;
 }
 
-/* Show track seeker (progress bar) on TV */
-body.webosTV .desktopOnly[class*='trackSeeker'] {
+/* Strong focus indication for the remote. */
+body.webosTV .focused {
+  outline: 3px solid var(--theme-color) !important;
+  outline-offset: 3px;
+  background-color: rgb(99 19 188 / 25%) !important;
+  box-shadow: 0 0 0 5px rgb(99 19 188 / 30%),
+    0 8px 24px rgb(99 19 188 / 22%) !important;
+  transition: background-color 0.15s ease;
+}
+
+body.webosTV .layoutImage a.focused {
+  outline: none !important;
+  background-color: transparent !important;
+  box-shadow: inset 0 0 0 4px var(--theme-color),
+    0 0 0 2px rgb(99 19 188 / 45%) !important;
+}
+
+/* The existing web app grid and carousel breakpoints already work at 1280px.
+   Preserve their responsive widths instead of forcing every tile to 200px. */
+body.webosTV [class*='mediaListWrapper'] {
+  --loop-grid-gap: var(--space-24) !important;
+  --loop-columns: var(--loop-rows-desktop) !important;
+}
+
+body.webosTV .layoutItem {
+  min-width: 0;
+}
+
+body.webosTV .layoutImage,
+body.webosTV .layoutImage > figure,
+body.webosTV .layoutImage > figure > a {
   display: block !important;
+  width: 100% !important;
 }
 
-/* Make track seeker/progress bar more visible on TV - increase height */
-body.webosTV .desktopOnly[class*='trackSeeker'] [class*='slider'],
-body.webosTV .desktopOnly[class*='trackSeeker'] [class*='inputRange'] {
-  height: 10px !important;
-  min-height: 10px !important;
+/* Chrome 79 does not support aspect-ratio. Use the padding trick so artwork
+   stays square while following the responsive card width. */
+body.webosTV .layoutImage [class*='preloadImage'] {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
 }
 
-/* Increase progress bar thickness */
-body.webosTV .desktopOnly[class*='trackSeeker'] [class*='process'],
-body.webosTV .desktopOnly[class*='trackSeeker'] [class*='buffer'],
-body.webosTV .desktopOnly[class*='trackSeeker'] [class*='progressWrapper'] {
-  height: 10px !important;
+body.webosTV .layoutImage [class*='preloadImage']::before {
+  display: block;
+  width: 100%;
+  padding-top: 100%;
+  content: '';
 }
 
-/* Make thumb larger for TV */
-body.webosTV .desktopOnly[class*='trackSeeker'] [class*='thumb'] {
-  width: 18px !important;
-  height: 18px !important;
-  box-shadow: 0 0 10px rgb(99 19 188 / 50%) !important;
+body.webosTV .layoutImage [class*='preloadImage'] > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
-/* Hide the mobile play/pause button on TV ( we use the desktop controls ) */
-body.webosTV .mobileOnly[class*='playPauseButton'] {
+body.webosTV .layoutImage [class*='preloadImage'] img {
+  object-fit: cover;
+}
+
+/* Keep carousel rows horizontal like the desktop interface. Their arrow
+   controls stay visible because a TV remote has no hover state. */
+body.webosTV [class*='carouselSwiper'] {
+  padding: 6px;
+  margin: -6px;
+}
+
+body.webosTV [class*='carouselSwiper'] button[class*='previous'],
+body.webosTV [class*='carouselSwiper'] button[class*='next'] {
+  display: flex !important;
+  opacity: 0.9 !important;
+}
+
+/* Do not expose mouse-only artwork overlays. Their actions remain available
+   through the card context menu. */
+body.webosTV .layoutItem [class*='actions'] {
   display: none !important;
 }
 
-/* Hide the mobile queue button overlay on TV */
-body.webosTV .mobileOnly[class*='queueControl'] {
-  display: none !important;
+/* Track rows need larger play targets, and the whole row is a convenient
+   remote target while the visual design stays aligned with the web client. */
+body.webosTV [class*='playPauseWrapper'],
+body.webosTV [class*='trackPlayPause'] {
+  height: var(--track-width-height-default);
 }
 
-/* Hide bookmark-related elements on TV (not needed) */
-body.webosTV [class*='bookmark'],
-body.webosTV [class*='Bookmark'] {
-  display: none !important;
+body.webosTV .listLayout .layoutImage {
+  height: var(--track-width-height-default);
 }
 
-/* Hide bookmarks navigation link on TV */
-body.webosTV a[title='Bookmarks'],
-body.webosTV a[href*='bookmarks'] {
-  display: none !important;
+body.webosTV .trackRow,
+body.webosTV .trackHeader {
+  min-height: calc(var(--track-table-header-row-height) + 8px) !important;
 }
 
-/* Make track seeker completely non-selectable/non-focusable - use skip buttons instead */
-body.webosTV .desktopOnly[class*='trackSeeker'],
-body.webosTV .desktopOnly[class*='trackSeeker'] * {
+body.webosTV .trackCell {
+  padding: var(--space-12) calc(var(--default-space) * 2) !important;
+}
+
+body.webosTV .desktopOnly[class*='trackSeeker'] {
   pointer-events: none !important;
-  cursor: none !important;
   user-select: none !important;
 }
 
@@ -120,420 +160,53 @@ body.webosTV .desktopOnly[class*='trackSeeker'] *:focus-visible {
   box-shadow: none !important;
 }
 
-/* Show mobile navigation but reposition it to the left side */
-body.webosTV .mobileOnly {
-  display: flex !important;
-}
-
-/* Transform mobile bottom navigation into left vertical navigation for TV */
-body.webosTV nav ul[class*='mobileNavigation'] {
-  /* Change from bottom horizontal to left vertical */
-  position: fixed;
-  inset: 0 auto 0 0 !important;
-  z-index: 9 !important;
-  flex-direction: column !important;
-  gap: var(--space-16) !important;
-  width: 100px !important;
-  height: 100vh !important;
-  padding: var(--space-24) var(--space-8) !important;
-  border-top: none !important;
-  border-right: 1px solid var(--border-color) !important;
-}
-
-/* Adjust mobile navigation items for vertical layout */
-body.webosTV nav ul[class*='mobileNavigation'] li {
-  flex: 0 !important;
-  width: 100% !important;
-}
-
-/* Stack icon and text vertically */
-body.webosTV nav ul[class*='mobileNavigation'] a {
-  flex-direction: column !important;
-  gap: var(--space-4) !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: var(--space-12) var(--space-4) !important;
-  font-size: 0.7rem !important;
-  line-height: 1.2 !important;
-  text-align: center !important;
-}
-
-/* Make icons larger for TV */
-body.webosTV nav ul[class*='mobileNavigation'] svg {
-  width: 32px !important;
-  height: 32px !important;
-}
-
-/* Adjust main content to account for left sidebar */
-body.webosTV main[class*='mainContent'] {
-  margin-left: 100px !important;
-}
-
-body.webosTV header[class*='header'] {
-  margin-left: 100px !important;
-}
-
-/* Hide the music logo in mobile header on TV ( we don't need it ) */
-body.webosTV .mobileOnly[class*='MusicLogo'] {
-  display: none !important;
-}
-
-/* ============================================
-   Top Bar Modifications for TV
-   ============================================ */
-
-/* Hide logo completely on TV - not needed since we have sidebar navigation */
-body.webosTV header a[title='Home'] {
-  display: none !important;
-}
-
-/* Hide layout switcher button on TV */
-body.webosTV button[id='view-layout-button'],
-body.webosTV button[id*='viewLayout'] {
-  display: none !important;
-}
-
-/* Search form modifications for TV */
-body.webosTV form {
-  position: relative;
-}
-
-/* Target the search input wrapper (added via JS) */
-/* stylelint-disable-next-line selector-class-pattern */
-body.webosTV .webos-search-wrapper {
-  width: 0 !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-  opacity: 0 !important;
-  transition: all 0.3s ease !important;
-}
-
-/* Also hide the input itself */
-body.webosTV input[id='search-input'] {
-  width: 0 !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  opacity: 0 !important;
-  transition: all 0.3s ease !important;
-}
-
-/* When search is expanded (via JS class) - show wrapper */
-/* stylelint-disable-next-line selector-class-pattern */
-body.webosTV form.searchExpanded .webos-search-wrapper {
-  width: 300px !important;
-  min-width: 300px !important;
-  margin-right: var(--space-8) !important;
-  overflow: visible !important;
-  opacity: 1 !important;
-}
-
-/* When search is expanded - show and style input */
-body.webosTV form.searchExpanded input[id='search-input'] {
-  width: 100% !important;
-  min-width: 100% !important;
-  padding: calc(var(--space-12) - 2px) var(--space-12) !important;
-  border: 1px solid var(--border-color) !important;
-  opacity: 1 !important;
-}
-
-/* Search button should always be visible */
-body.webosTV form button[type='submit'] {
-  position: relative !important;
-  z-index: 2 !important;
-}
-
-/* ============================================
-   Hide "See All" Links - Not useful on TV
-   ============================================ */
-
-/* Hide the mobile "See all" text links */
-body.webosTV a.mobileOnly.link {
-  display: none !important;
-}
-
-/* Hide the header section links (both desktop and mobile "See all") */
-body.webosTV h3 a {
-  pointer-events: none !important;
-  cursor: default !important;
-}
-
-/* Hide the "more" icon specifically */
-body.webosTV h3 a svg {
-  display: none !important;
-}
-
-/* ============================================
-   Focus States for TV Remote
-   Uses .focused class (managed by webos-input plugin)
-   Solid outline + background for maximum visibility on TV
-   ============================================ */
-
-/* Default focus style - solid purple outline + glow + background tint */
-body.webosTV .focused {
-  outline: 3px solid var(--theme-color) !important;
-  outline-offset: 2px;
-  background-color: rgb(99 19 188 / 25%) !important;
-  box-shadow: 0 0 0 6px
-      rgb(99 19 188 / 35%),
-    0 8px 24px rgb(99 19 188 / 25%) !important;
-  transition: background-color 0.15s ease;
-}
-
-/* Album/artist/playlist image links - use box-shadow to avoid clipping */
-body.webosTV .layoutImage a.focused {
-  outline: none !important;
-  box-shadow: 0 0 0 4px var(--theme-color),
-    0 12px 32px rgb(99 19 188 / 35%) !important;
-}
-
-/* Ensure album image links and genres are block-level for proper focus and dimensions */
-body.webosTV .layoutImage,
-body.webosTV swiper-slide[data-test-id='random-genre-item'] {
-  padding: 4px !important;
-}
-
-/* Override overflow:hidden on listLayout to prevent clipping focus box-shadow */
-body.webosTV .listLayout .layoutImage {
-  overflow: visible !important;
-}
-
-/* Allow focus box-shadow to be visible on carousel swiper items and force grid layout */
-body.webosTV swiper-container {
-  display: flex !important;
-  flex-flow: row wrap !important;
-  gap: var(--space-24) !important;
-  overflow: visible !important;
-}
-
-body.webosTV swiper-slide {
-  display: block !important;
-  flex: 0 0 calc((100% / 5) - var(--space-24)) !important;
-  width: calc((100% / 5) - var(--space-24)) !important;
-  margin-bottom: var(--space-24) !important;
-}
-
-/* Add padding to carousel wrapper to accommodate focus box-shadow */
-body.webosTV [class*='carouselSwiper'] {
-  padding: 4px !important;
-  margin: -4px !important;
-}
-
-body.webosTV .layoutImage a {
-  display: block !important;
-  pointer-events: auto !important;
-}
-
-body.webosTV .layoutImage figure {
-  display: block !important;
-}
-
-/* h2 headings focus */
-body.webosTV h2.focused {
-  outline: 3px solid var(--theme-color) !important;
-  outline-offset: 3px;
-  background-color: rgb(99 19 188 / 20%) !important;
-}
-
-/* Playlist card focus - use box-shadow to avoid clipping */
-body.webosTV article[data-test-id='playlist'] a.focused {
-  outline: none !important;
-  box-shadow: 0 0 0 4px var(--theme-color),
-    0 12px 32px rgb(99 19 188 / 35%) !important;
-  transform: scale(1.02);
-  transition: transform 0.2s ease;
-}
-
-/* Track row focus - full row highlight + soft scale for motion feedback */
 body.webosTV .trackRow.focused {
   outline: 2px solid var(--theme-color) !important;
   outline-offset: -2px;
-  background-color: rgb(99 19 188 / 30%) !important;
-  transform: scale(1.005);
+  background-color: rgb(99 19 188 / 28%) !important;
+  transform: scale(1.003);
   transform-origin: left center;
   transition: transform 0.12s ease, background-color 0.15s ease;
 }
 
-/* Track row links don't need extra styling */
-body.webosTV .trackRow a.focused {
+body.webosTV .trackRow a.focused,
+body.webosTV .trackRow button.focused {
   outline: none !important;
   background-color: transparent !important;
+  box-shadow: none !important;
 }
 
-/* ============================================
-   Disable hover effects on TV (no mouse)
-   Hide elements that only appear on hover
-   ============================================ */
-
-/* Hide hover-only action buttons (like play/favourite on albums) */
-body.webosTV [class*='actions'] {
-  display: none !important;
+/* Keep compact labels from competing with the larger focus target. */
+body.webosTV .layoutContent {
+  padding-top: var(--space-4);
+  font-size: var(--body-font-size);
+  line-height: 1.35;
 }
 
-/* Hide dropdown menus on playlists list (not needed for TV navigation) */
-body.webosTV article[data-test-id='playlist'] [class*='dropdown'] {
-  display: none !important;
-}
-
-/* Hide carousel navigation buttons (Previous/Next slide) on TV */
-body.webosTV [class*='carouselSwiper'] button[class*='previous'],
-body.webosTV [class*='carouselSwiper'] button[class*='next'] {
-  display: none !important;
-}
-
-/* ============================================
-   Simplified Navigation for Albums/Artists/etc
-   Only album images are focusable, not titles or artist links
-   ============================================ */
-
-/* Make title/artist links inside layout items not interactive */
 body.webosTV .layoutContent a,
 body.webosTV .layoutContent button {
   pointer-events: none;
 }
 
-/* Ensure these links can't receive focus */
 body.webosTV .layoutContent a:focus,
 body.webosTV .layoutContent button:focus {
   outline: none !important;
 }
 
-/* ============================================
-   Enhanced Track Row Focus for Navigation
-   Make focused track rows clearly visible with strong highlight
-   ============================================ */
-
-/* Track row is highlighted via .focused class added by plugin */
-
-/* Extra emphasis on the focused play button */
-body.webosTV .trackRow button.focused {
-  outline: none !important;
-  background-color: transparent !important;
+/* Detail pages keep the upstream side-by-side cover and metadata layout.
+   Explicit dimensions replace aspect-ratio so the cover works in Chromium 79. */
+body.webosTV [class*='entryHeader'] figure {
+  flex: 0 0 300px;
+  width: 300px;
+  height: 300px;
 }
 
-/* Hide the bulletList (album/artist links) in track meta on TV */
-body.webosTV .trackRow .mobileOnly {
-  display: none !important;
+body.webosTV [class*='entryHeader'] [class*='preloadImage'] {
+  height: 100%;
 }
 
-/* Make play button cover the entire track row for easier focus on TV */
-body.webosTV .trackRow {
-  position: relative;
-}
-
-body.webosTV .trackRow [class*='playPauseWrapper'] {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 1;
-  visibility: visible !important;
-  width: 100% !important;
-  height: 100% !important;
-  opacity: 0 !important;
-  transform: unset !important;
-}
-
-/* The button inside should also cover the area */
-body.webosTV .trackRow [class*='playPauseWrapper'] button {
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 0 !important;
-}
-
-/* ============================================
-   Enhanced Page Navigation Focus
-   Add background highlight to focused page nav buttons
-   ============================================ */
-
-/* Enhanced focus for page navigation buttons (Discover, Podcasts, Radio) */
-body.webosTV .pageLink.focused {
-  font-weight: var(--font-weight-bold) !important;
-  outline: 3px solid var(--theme-color) !important;
-  outline-offset: 2px;
-  background-color: rgb(99 19 188 / 40%) !important;
-  transform: scale(1.05);
-  transition: all 0.15s ease;
-}
-
-/* ============================================
-   TV Polish: 10-foot UI scale & breathing room
-   ============================================ */
-
-/* Bump root font-size so all rem-based sizes scale up for couch viewing.
-   16px → 18px = ~12% larger across the whole UI. */
-html.webosTV {
-  font-size: 18px;
-}
-
-/* Roomier track rows for legibility at distance */
-body.webosTV .trackRow,
-body.webosTV .trackHeader {
-  min-height: calc(var(--track-table-header-row-height) + 8px) !important;
-}
-
-body.webosTV .trackCell {
-  padding: var(--space-12) calc(var(--default-space) * 2) !important;
-}
-
-/* Album/artist grid: 5 columns with modest gap.
-   At viewport=1280px: (1280-100-2×38px inner gap - 4×24px) / 5 ≈ 195px per card. */
-body.webosTV [class*='mediaListWrapper'] {
-  --loop-grid-gap: var(--space-24) !important;
-}
-
-/* Stronger card surfaces for album/artist items so they read as cards, not items in a doc */
-body.webosTV .layoutImage {
-  box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-/* Slightly larger/legible fonts in card text */
-body.webosTV .layoutContent {
-  padding-top: var(--space-4);
-  font-size: var(--body-font-size);
-  line-height: 1.4;
-}
-
-/* More vertical breathing room above page headings on TV */
-body.webosTV h1 {
-  margin-bottom: var(--space-24);
-}
-
-/* Make the player footer text bigger, easier to read across the room */
-body.webosTV footer [class*='trackInformation'] {
-  font-size: var(--body-font-size);
-}
-
-/* ============================================
-   Chrome 53 compatibility: aspect-ratio fallbacks
-   aspect-ratio is unsupported in Chrome 53 (added in Chrome 88).
-   For square containers we set height = width via explicit sizing or
-   the padding-top intrinsic trick.
-   ============================================ */
-
-/* Track play/pause square buttons */
-html.webosTV [class*='playPauseWrapper'],
-html.webosTV [class*='trackPlayPause'] {
-  height: var(--track-width-height-default);
-}
-
-/* Large track image (list layout thumbnail) */
-html.webosTV .listLayout .layoutImage {
-  height: var(--track-width-height-default);
-}
-
-/* Ensure the music player doesn't overlap with the sidebar and has proper image sizing */
-body.webosTV [class*='musicPlayer'] {
-  left: 100px !important;
-}
-
-body.webosTV [class*='musicPlayer'] [class*='preloadImage'] {
-  width: var(--media-player-height) !important;
-  height: var(--media-player-height) !important;
-}
-
-/* Adjust playlist item image sizing, padding and separation */
 body.webosTV [data-test-id='playlist'] [class*='playlistDetails'] {
-  gap: var(--space-32) !important;
+  gap: var(--space-24) !important;
   padding: var(--space-24) !important;
 }
 
@@ -542,7 +215,6 @@ body.webosTV [data-test-id='playlist'] [class*='preloadImage'] {
   height: 90px !important;
 }
 
-/* Make list item metadata more legible */
 body.webosTV [data-test-id='playlist'] h4 {
   font-size: 1.25rem !important;
   margin-bottom: var(--space-8) !important;
@@ -552,180 +224,23 @@ body.webosTV [data-test-id='playlist'] .bulletList {
   font-size: 1.1rem !important;
 }
 
-/* PreloadImage container: explicit square size as aspect-ratio fallback for grids.
-   At viewport=1280px, 5-col grid with 24px gap and 3vw inner padding:
-   (1280-100-77-4×24)/5 ≈ 201px. Physical at DPR 1.5 ≈ 300px — TV-appropriate. */
-html.webosTV [class*='row'] [class*='preloadImage'],
-html.webosTV [class*='mediaListWrapper'] [class*='preloadImage'],
-html.webosTV swiper-slide [class*='preloadImage'] {
-  width: 200px;
-  min-width: 80px;
-  height: 200px;
-  min-height: 80px;
-  overflow: hidden;
+/* The player sits beside the desktop sidebar, including when the sidebar is
+   collapsed by the user. */
+body.webosTV [class*='musicPlayer'] {
+  left: var(--sidebar-width) !important;
 }
 
-/* EntryHeader figure (album/artist large cover art).
-   At tablet-up the figure max-width/max-height is 300px; match it here since
-   aspect-ratio is unsupported. */
-html.webosTV [class*='entryHeader'] figure {
-  width: 300px;
-  min-width: 80px;
-  height: 300px;
-  min-height: 80px;
+body.webosTV [class*='musicPlayer'] [class*='preloadImage'] {
+  width: var(--media-player-height) !important;
+  height: var(--media-player-height) !important;
 }
 
-/* Inside EntryHeader the preloadImage fills the figure, not a grid column. */
-html.webosTV [class*='entryHeader'] [class*='preloadImage'] {
-  height: 100%;
-  overflow: hidden;
+/* Keep page navigation buttons clear when they receive remote focus. */
+body.webosTV .pageLink.focused {
+  font-weight: var(--font-weight-bold) !important;
+  outline: 3px solid var(--theme-color) !important;
+  outline-offset: 2px;
+  background-color: rgb(99 19 188 / 40%) !important;
 }
 
-/* ============================================
-   Playlist & EntryHeader Layout Fixes
-   Force side-by-side (row) layout for detail pages
-   ============================================ */
 
-/* Target the actual flex container inside EntryHeader */
-body.webosTV [class*='entryHeader'] [class*='content'] {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: var(--space-128) !important;
-  align-items: center !important;
-}
-
-body.webosTV [class*='entryHeader'] [class*='imageWrapper'] {
-  flex-shrink: 0 !important;
-  margin-right: var(--space-64) !important; /* Extra insurance padding */
-}
-
-body.webosTV [class*='entryHeader'] [class*='detailsWrapper'] {
-  flex: 1 !important;
-  width: auto !important;
-  padding: var(--space-48) !important; /* Increased padding inside the box */
-  text-align: left !important;
-  background-color: rgb(0 0 0 / 60%) !important; /* Slightly darker for even better contrast */
-  border-radius: var(--border-radius-large) !important;
-  box-shadow: 0 12px 48px rgb(0 0 0 / 40%) !important;
-}
-
-/* Adjust playlist item list layout separation */
-body.webosTV [data-test-id='playlist'] [class*='playlistDetails'] {
-  gap: var(--space-48) !important; /* Increased from 32px */
-  padding: var(--space-32) !important;
-}
-
-body.webosTV [data-test-id='playlist'] [class*='imageLink'] {
-  margin-right: var(--space-24) !important; /* Push text away from image */
-}
-
-body.webosTV [class*='detailsWrapper'] h1,
-body.webosTV [class*='detailsWrapper'] p,
-body.webosTV [class*='detailsWrapper'] li,
-body.webosTV [class*='detailsWrapper'] a,
-body.webosTV [class*='detailsWrapper'] span {
-  color: var(--white-color) !important;
-}
-
-/* Ensure headings inside details are white */
-body.webosTV [class*='detailsWrapper'] h1 {
-  margin-bottom: var(--space-16) !important;
-}
-
-/* Make metadata (track count, duration) more prominent on TV */
-body.webosTV [class*='detailsWrapper'] .bulletList {
-  display: flex !important;
-  flex-direction: column !important; /* Stack metadata vertically for even more separation and clarity */
-  gap: var(--space-8) !important;
-  margin-top: var(--space-24) !important;
-  margin-bottom: var(--space-40) !important;
-}
-
-body.webosTV [class*='detailsWrapper'] .bulletList li {
-  font-size: 1.3rem !important;
-  color: var(--white-color) !important;
-}
-
-/* Hide the dot separator since we are stacking vertically */
-body.webosTV [class*='detailsWrapper'] .bulletList li::after {
-  display: none !important;
-}
-
-body.webosTV [class*='detailsWrapper'] .bulletList .strong {
-  color: var(--theme-color) !important;
-  font-size: 1.6rem !important;
-  margin-right: var(--space-8) !important;
-}
-
-/* ============================================
-   Media Grid & Square Tiles Fixes
-   Ensure discover/albums/artists tiles are strictly square
-   ============================================ */
-
-/* Force desktop column count for all GridWrapper-based views on TV */
-body.webosTV [class*='mediaListWrapper'] {
-  --loop-columns: var(--loop-rows-desktop) !important;
-}
-
-/* Ensure discover swiper slides are square to match images */
-body.webosTV swiper-slide {
-  width: 200px !important;
-  flex: 0 0 200px !important;
-}
-
-/* Ensure VirtualGrid rows (Albums) also look correct by forcing column width */
-body.webosTV [data-virtual-grid-row] > div {
-  width: 200px !important;
-  flex: 0 0 200px !important;
-}
-
-/* Ensure the tiles themselves and their focusable links are strictly square */
-body.webosTV .layoutItem {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  width: 200px !important;
-}
-
-body.webosTV .layoutImage,
-body.webosTV .layoutImage a,
-body.webosTV .layoutImage figure {
-  width: 200px !important;
-  height: 200px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-/* Reset margin for focus highlight padding added earlier */
-body.webosTV .layoutImage {
-  padding: 0 !important;
-}
-
-/* Re-apply focus padding specifically to the link to keep shadow visible */
-body.webosTV .layoutImage a {
-  padding: 4px !important;
-  margin: -4px !important;
-}
-
-/* ============================================
-   Chrome 53 compatibility: clamp() fallbacks
-   clamp() is unsupported in Chrome 53 (added in Chrome 79).
-   At 1920px viewport with 18px root font, all values hit their max.
-   ============================================ */
-
-html.webosTV,
-html.webosTV body {
-  --h1-font-size: 2.25rem;
-  --h2-font-size: 1.875rem;
-  --h3-font-size: 1.5rem;
-  --h4-font-size: 1.25rem;
-  --body-font-size: 1.125rem;
-  --small-font-size: 1rem;
-
-  /* Larger track thumbnails and play buttons for TV couch viewing.
-     Default 40px → 56px. Physical at DPR 1.5 ≈ 84px — easier to read. */
-  --track-width-height-default: 56px;
-
-  /* Slightly taller track rows to comfortably fit the 56px thumbnail. */
-  --track-table-header-row-height: 62px;
-}
