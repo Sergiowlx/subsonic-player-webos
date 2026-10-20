@@ -100,20 +100,44 @@ export default defineNuxtPlugin((nuxtApp) => {
   document.addEventListener('focusin', onFocusIn);
   document.addEventListener('focusout', onFocusOut);
 
-  // Translate magic remote scroll wheel (wheel events) into window scroll.
-  // Chrome 53 on webOS does not automatically scroll the page on wheel events
-  // when the focused element is inside an overflow:hidden container.
-  document.addEventListener('wheel', (e) => {
-    let delta = e.deltaY;
-    if (e.deltaMode === 1) {
-      // DOM_DELTA_LINE: multiply by approximate line height
-      delta = delta * 40;
-    } else if (e.deltaMode === 2) {
-      // DOM_DELTA_PAGE
-      delta = delta * window.innerHeight;
-    }
-    window.scrollBy(0, delta);
-  });
+  // Scroll TV media grids in two-row blocks instead of animating one card at a time.
+  let lastGridWheelAt = 0;
+  document.addEventListener(
+    'wheel',
+    (event) => {
+      let delta = event.deltaY;
+      if (event.deltaMode === 1) {
+        delta *= 40;
+      } else if (event.deltaMode === 2) {
+        delta *= window.innerHeight;
+      }
+      if (!delta) return;
+
+      const eventTarget = event.target as HTMLElement | null;
+      const activeTarget = document.activeElement as HTMLElement | null;
+      const gridPage =
+        eventTarget?.closest('[data-webos-grid-page]') ??
+        activeTarget?.closest('[data-webos-grid-page]');
+
+      if (gridPage) {
+        event.preventDefault();
+        const now = Date.now();
+        if (now - lastGridWheelAt < 240) return;
+        lastGridWheelAt = now;
+
+        const pages = Array.from(
+          document.querySelectorAll<HTMLElement>('[data-webos-grid-page]'),
+        );
+        const currentIndex = pages.indexOf(gridPage as HTMLElement);
+        const nextPage = pages[currentIndex + (delta > 0 ? 1 : -1)];
+        nextPage?.scrollIntoView({ behavior: 'auto', block: 'start' });
+        return;
+      }
+
+      window.scrollBy(0, Math.sign(delta) * window.innerHeight * 0.72);
+    },
+    { passive: false },
+  );
 
   // Keep the shared desktop sidebar, player, and five-column grid on TV.
   // TV-specific sizing and remote focus are handled by webos-tv.css.
@@ -345,6 +369,34 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   /**
+   * Keep a focused media tile within its two-row page. Move the viewport only
+   * when focus crosses into another page; all TV scrolls are immediate.
+   */
+  function scrollToFocusedElement(
+    currentElement: HTMLElement,
+    targetElement: HTMLElement,
+  ): void {
+    const currentPage = currentElement.closest('[data-webos-grid-page]');
+    const targetPage = targetElement.closest('[data-webos-grid-page]');
+
+    if (targetPage) {
+      if (currentPage !== targetPage) {
+        (targetPage as HTMLElement).scrollIntoView({
+          behavior: 'auto',
+          block: 'start',
+        });
+      }
+      return;
+    }
+
+    targetElement.scrollIntoView({
+      behavior: 'auto',
+      block: 'nearest',
+      inline: 'nearest',
+    });
+  }
+
+  /**
    * Navigate to the nearest element in a direction
    * Uses a more predictable algorithm that prioritizes:
    * 1. Elements that are aligned (overlap on the perpendicular axis)
@@ -520,18 +572,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
 
     if (bestElement) {
-      bestElement.focus();
-
-      // Don't call scrollIntoView for swiper elements - it triggers swiper's
-      // group-based scroll-snap and causes the view to jump entire pages.
-      // Just focus the element; browsers naturally ensure focused elements are visible.
       const isInSwiper = bestElement.closest('swiper-slide');
+      bestElement.focus();
       if (!isInSwiper) {
-        bestElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
+        scrollToFocusedElement(currentElement, bestElement);
       }
       return true;
     }
@@ -566,18 +610,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (newIndex >= allElements.length) newIndex = 0;
 
     if (allElements[newIndex]) {
-      allElements[newIndex].focus();
-
-      // Don't call scrollIntoView for swiper elements - it triggers swiper's
-      // group-based scroll-snap and causes the view to jump entire pages.
-      // Just focus the element; browsers naturally ensure focused elements are visible.
-      const isInSwiper = allElements[newIndex].closest('swiper-slide');
-      if (!isInSwiper) {
-        allElements[newIndex].scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
+      const targetElement = allElements[newIndex];
+      const isInSwiper = targetElement.closest('swiper-slide');
+      targetElement.focus();
+      if (!isInSwiper && currentElement instanceof HTMLElement) {
+        scrollToFocusedElement(currentElement, targetElement);
       }
     }
   }
@@ -620,7 +657,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         // Focus the first player element
         playerElements[0].focus();
         playerElements[0].scrollIntoView({
-          behavior: 'smooth',
+          behavior: 'auto',
           block: 'center',
         });
       } else {
