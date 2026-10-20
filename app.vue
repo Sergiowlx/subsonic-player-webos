@@ -5,6 +5,7 @@ import SnackBar from '@/components/Molecules/SnackBar.vue';
 
 const { hook } = useNuxtApp();
 const { isDarkTheme } = useTheme();
+const { accentColor, accentColorRgb } = useWebOSTVSettings();
 const { width } = useSidebar();
 const { showMediaPlayer } = useAudioPlayer();
 
@@ -20,7 +21,8 @@ useHead({
       '--sidebar-bottom': () =>
         showMediaPlayer.value ? 'var(--media-player-height)' : '0px',
       '--sidebar-width': width,
-      '--theme-color': THEME_COLOUR,
+      '--theme-color': () => accentColor.value,
+      '--theme-color-rgb': () => accentColorRgb.value,
     },
   },
   htmlAttrs: {
