@@ -59,6 +59,6 @@ const expanded = ref(true);
 
 .chevron {
   flex-shrink: 0;
-  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 </style>

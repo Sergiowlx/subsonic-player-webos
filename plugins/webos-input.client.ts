@@ -115,9 +115,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       const eventTarget = event.target as HTMLElement | null;
       const activeTarget = document.activeElement as HTMLElement | null;
-      const sidebar =
-        eventTarget?.closest('[class*="sidebarNavigation"]') ??
-        activeTarget?.closest('[class*="sidebarNavigation"]');
+      // Only route to the sidebar when the wheel event actually came from it.
+      // A stale focused link must not capture scrolling over the settings area.
+      const sidebar = eventTarget?.closest('[class*="sidebarNavigation"]');
       const sidebarNav = sidebar?.querySelector('nav');
 
       if (sidebarNav) {
@@ -133,7 +133,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (gridPage) {
         event.preventDefault();
         const now = Date.now();
-        if (now - lastGridWheelAt < 240) return;
+        if (now - lastGridWheelAt < 140) return;
         lastGridWheelAt = now;
 
         const pages = Array.from(
@@ -145,6 +145,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return;
       }
 
+      event.preventDefault();
       window.scrollBy(0, Math.sign(delta) * window.innerHeight * 0.72);
     },
     { passive: false },
