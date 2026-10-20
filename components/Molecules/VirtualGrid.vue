@@ -45,6 +45,18 @@ const rows = computed<T[][]>(() => {
   return out;
 });
 
+// Keep two adjacent rows together so remote navigation can advance in a
+// predictable TV-sized block instead of scrolling for every focused card.
+const rowPages = computed<T[][][]>(() => {
+  const pages: T[][][] = [];
+  for (let i = 0; i < rows.value.length; i += 2) {
+    pages.push(rows.value.slice(i, i + 2));
+  }
+  return pages;
+});
+
+const pageHeight = computed(() => rowHeight.value * 2);
+
 const measureRef = useTemplateRef('measureRef');
 
 function measureFirstRow() {
@@ -59,7 +71,8 @@ function measureFirstRow() {
   }
   const measured = firstRow.getBoundingClientRect().height;
   if (measured > 0) {
-    rowHeight.value = Math.round(measured + props.gap);
+    // The row already includes its bottom gap in its measured box.
+    rowHeight.value = Math.round(measured);
   }
 }
 
@@ -81,38 +94,52 @@ onUnmounted(() => {
 watch(columnCount, () => {
   nextTick(measureFirstRow);
 });
+
+watch(rowPages, () => {
+  nextTick(measureFirstRow);
+});
 </script>
 
 <template>
   <div ref="measureRef">
     <VirtualList
-      :buffer="3"
-      :getKey="(_row, index) => index"
-      :itemHeight="rowHeight"
-      :items="rows"
-      :minItemsToVirtualize="Math.ceil(minItemsToVirtualize / columnCount)"
+      :buffer="2"
+      :getKey="(_page, index) => index"
+      :itemHeight="pageHeight"
+      :items="rowPages"
+      :minItemsToVirtualize="
+        Math.ceil(minItemsToVirtualize / columnCount / 2)
+      "
     >
-      <template #default="{ index: rowIndex, item: row }">
+      <template #default="{ index: pageIndex, item: page }">
         <div
-          :class="$style.row"
-          data-virtual-grid-row
-          :style="{
-            paddingBottom: `${gap}px`,
-          }"
+          data-webos-grid-page
+          :style="{ height: pageHeight + 'px' }"
         >
           <div
-            v-for="(item, colIndex) in row"
-            :key="
-              getKey
-                ? getKey(item, rowIndex * columnCount + colIndex)
-                : rowIndex * columnCount + colIndex
-            "
-            :style="{
-              marginRight: colIndex < columnCount - 1 ? `${gap}px` : '0',
-              width: `calc((100% - ${(columnCount - 1) * gap}px) / ${columnCount})`,
-            }"
+            v-for="(row, pageRowIndex) in page"
+            :key="pageIndex * 2 + pageRowIndex"
+            :class="$style.row"
+            data-virtual-grid-row
+            :style="{ paddingBottom: gap + 'px' }"
           >
-            <slot :index="rowIndex * columnCount + colIndex" :item />
+            <div
+              v-for="(item, colIndex) in row"
+              :key="
+                getKey
+                  ? getKey(item, (pageIndex * 2 + pageRowIndex) * columnCount + colIndex)
+                  : (pageIndex * 2 + pageRowIndex) * columnCount + colIndex
+              "
+              :style="{
+                marginRight: colIndex < columnCount - 1 ? gap + 'px' : '0',
+                width: 'calc((100% - ' + (columnCount - 1) * gap + 'px) / ' + columnCount + ')',
+              }"
+            >
+              <slot
+                :index="(pageIndex * 2 + pageRowIndex) * columnCount + colIndex"
+                :item
+              />
+            </div>
           </div>
         </div>
       </template>
