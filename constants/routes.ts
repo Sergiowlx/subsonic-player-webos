@@ -20,6 +20,7 @@ export const ROUTE_NAMES = {
   queue: 'queue',
   radioStations: 'radio-stations',
   search: 'search-mediaType-query',
+  settings: 'settings',
   userProfile: 'user-profile',
 } as const;
 
