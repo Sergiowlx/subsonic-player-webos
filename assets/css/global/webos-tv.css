@@ -255,7 +255,7 @@ body.webosTV .pageLink.focused {
 
 /* Keep webOS sidebar scrolling available to the remote without a visible bar. */
 body.webosTV [class*='sidebarNavigation'] {
-  bottom: var(--sidebar-bottom, 0px) !important;
+  bottom: 0 !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   scrollbar-width: none;
