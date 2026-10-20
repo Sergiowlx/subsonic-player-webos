@@ -1,0 +1,42 @@
+name: Build webOS IPK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download fork source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Enable Yarn
+        run: corepack enable
+
+      - name: Install project dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install LG webOS packaging tools
+        run: npm install --global @webos-tools/cli
+
+      - name: Build and package app
+        run: bash webos/package-webos.sh
+
+      - name: Verify that an IPK exists
+        run: test -n "$(find . -maxdepth 2 -name '*.ipk' -print -quit)"
+
+      - name: Upload IPK for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: subsonic-player-webos-ipk
+          path: |
+            ./*.ipk
+            webos/*.ipk
+          if-no-files-found: error
+          retention-days: 7
