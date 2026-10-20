@@ -19,7 +19,7 @@ body.webosTV select {
 }
 
 body.webosTV {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 /* Ten-foot sizing: keep the desktop composition, with text and controls that
@@ -51,9 +51,9 @@ body.webosTV input[id='search-input'] {
 body.webosTV .focused {
   outline: 3px solid var(--theme-color) !important;
   outline-offset: 3px;
-  background-color: rgb(99 19 188 / 25%) !important;
-  box-shadow: 0 0 0 5px rgb(99 19 188 / 30%),
-    0 8px 24px rgb(99 19 188 / 22%) !important;
+  background-color: rgba(var(--theme-color-rgb, 99, 19, 188), 0.25) !important;
+  box-shadow: 0 0 0 5px rgba(var(--theme-color-rgb, 99, 19, 188), 0.3),
+    0 8px 24px rgba(var(--theme-color-rgb, 99, 19, 188), 0.22) !important;
   transition: background-color 0.15s ease;
 }
 
@@ -61,7 +61,7 @@ body.webosTV .layoutImage a.focused {
   outline: none !important;
   background-color: transparent !important;
   box-shadow: inset 0 0 0 4px var(--theme-color),
-    0 0 0 2px rgb(99 19 188 / 45%) !important;
+    0 0 0 2px rgba(var(--theme-color-rgb, 99, 19, 188), 0.45) !important;
 }
 
 /* The existing web app grid and carousel breakpoints already work at 1280px.
@@ -73,6 +73,10 @@ body.webosTV [class*='mediaListWrapper'] {
 
 body.webosTV .layoutItem {
   min-width: 0;
+}
+
+body.webosTV [data-webos-grid-page] {
+  scroll-margin-top: calc(var(--header-height) + var(--space-16));
 }
 
 body.webosTV .layoutImage,
@@ -166,7 +170,7 @@ body.webosTV .desktopOnly[class*='trackSeeker'] *:focus-visible {
 body.webosTV .trackRow.focused {
   outline: 2px solid var(--theme-color) !important;
   outline-offset: -2px;
-  background-color: rgb(99 19 188 / 28%) !important;
+  background-color: rgba(var(--theme-color-rgb, 99, 19, 188), 0.28) !important;
   transform: scale(1.003);
   transform-origin: left center;
   transition: transform 0.12s ease, background-color 0.15s ease;
