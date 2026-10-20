@@ -95,4 +95,16 @@ export const SIDEBAR_DESKTOP_NAVIGATION: SidebarNavigation[] = [
     ],
     title: 'Your library',
   },
+  {
+    items: [
+      {
+        icon: ICONS.setting,
+        title: 'Settings',
+        to: {
+          name: ROUTE_NAMES.settings,
+        },
+      },
+    ],
+    title: 'Application',
+  },
 ];
