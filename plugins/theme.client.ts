@@ -31,4 +31,5 @@ export default defineNuxtPlugin(() => {
   // Also update the Nuxt state so useTheme stays in sync
   const themeState = useState(STATE_NAMES.theme, () => isDark);
   themeState.value = isDark;
+  useWebOSTVSettings().restoreSettings();
 });
