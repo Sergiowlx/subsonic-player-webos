@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import {
-  WEBOS_ACCENT_COLOURS,
-} from '@/composables/useWebOSTVSettings';
+import SelectableBadge from '@/components/settings/SelectableBadge.vue';
+import SelectableOption from '@/components/settings/SelectableOption.vue';
+import SettingsField from '@/components/settings/SettingsField.vue';
+import SettingsGroup from '@/components/settings/SettingsGroup.vue';
+import SettingsSection from '@/components/settings/SettingsSection.vue';
+import ToggleSwitch from '@/components/settings/ToggleSwitch.vue';
 
-const { isDarkTheme, toggleTheme } = useTheme();
+import { WEBOS_ACCENT_COLOURS } from '@/composables/useWebOSTVSettings';
+
+type ThemePreference = 'dark' | 'light' | 'auto';
+
+const { isDarkTheme } = useTheme();
 const { setViewLayout, viewLayout } = useViewLayout();
 const {
   resetSettings: resetWebOSSettings,
@@ -15,26 +22,85 @@ const {
   toggleShowRadioStations,
 } = useWebOSTVSettings();
 
-const bitrateOptions = [
-  { label: 'Original', value: 0 },
-  { label: '320 kbps', value: 320 },
-  { label: '256 kbps', value: 256 },
-  { label: '192 kbps', value: 192 },
-  { label: '128 kbps', value: 128 },
-];
+const themePreference = useState<ThemePreference>(
+  'webos-theme-preference',
+  () => {
+    const savedTheme = getLocalStorage(STATE_NAMES.theme);
+    if (typeof savedTheme === 'boolean') {
+      return savedTheme ? 'dark' : 'light';
+    }
+    return 'auto';
+  },
+);
 
-function setTheme(dark: boolean) {
-  if (isDarkTheme.value !== dark) {
-    toggleTheme();
+const themeOptions = [
+  { label: 'Dark', value: 'dark' },
+  { label: 'Light', value: 'light' },
+  { label: 'Auto', value: 'auto' },
+] as const;
+
+const layoutOptions = [
+  {
+    description: 'Compact grid of items',
+    title: 'Grid',
+    value: 'gridLayout',
+  },
+  {
+    description: 'Detailed list view',
+    title: 'List',
+    value: 'listLayout',
+  },
+] as const;
+
+const bitrateOptions = [
+  {
+    description: 'Direct playback of the original audio source without modifications',
+    title: 'Source',
+    value: 0,
+  },
+  {
+    badge: '320 kbps',
+    description: 'Superior sound quality, perfect for immersive listening with moderate data usage',
+    title: 'High',
+    value: 320,
+  },
+  {
+    badge: '256 kbps',
+    description: 'Crisp audio with a balanced blend of quality and data efficiency',
+    title: 'Medium',
+    value: 256,
+  },
+  {
+    badge: '192 kbps',
+    description: 'Solid quality tailored for streaming with reduced bandwidth',
+    title: 'Low',
+    value: 192,
+  },
+  {
+    badge: '128 kbps',
+    description: 'Essential audio quality optimized for the lowest data consumption',
+    title: 'Minimal',
+    value: 128,
+  },
+] as const;
+
+function setThemeMode(mode: ThemePreference) {
+  themePreference.value = mode;
+
+  if (mode === 'auto') {
+    deleteLocalStorage(STATE_NAMES.theme);
+    isDarkTheme.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return;
   }
+
+  isDarkTheme.value = mode === 'dark';
+  setLocalStorage(STATE_NAMES.theme, isDarkTheme.value);
 }
 
 function resetPreferences() {
   resetWebOSSettings();
   setViewLayout('gridLayout');
-  if (isDarkTheme.value) {
-    toggleTheme();
-  }
+  setThemeMode('auto');
 }
 
 useHead({
@@ -46,161 +112,131 @@ useHead({
   <div :class="['column', $style.settings]">
     <h1 :class="$style.title">Settings</h1>
 
-    <section :class="['column', $style.section]">
-      <h2>Appearance</h2>
+    <SettingsSection title="Appearance">
+      <SettingsGroup
+        description="Switch between dark, light, or system-preferred appearance"
+        title="Theme"
+        variant="badge"
+      >
+        <SelectableBadge
+          v-for="option in themeOptions"
+          :key="option.value"
+          :label="option.label"
+          name="theme"
+          :selected="themePreference === option.value"
+          @click="setThemeMode(option.value)"
+        />
+      </SettingsGroup>
 
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Theme</h3>
-          <p>Choose the light or dark appearance.</p>
-        </div>
-        <div :class="$style.choices">
-          <button
-            :aria-pressed="!isDarkTheme"
-            :class="$style.choice"
-            @click="setTheme(false)"
-          >
-            Light
-          </button>
-          <button
-            :aria-pressed="isDarkTheme"
-            :class="$style.choice"
-            @click="setTheme(true)"
-          >
-            Dark
-          </button>
-        </div>
-      </div>
+      <SettingsGroup
+        description="Choose between a compact grid or a detailed list"
+        title="Layout"
+        variant="list"
+      >
+        <SelectableOption
+          v-for="option in layoutOptions"
+          :key="option.value"
+          :description="option.description"
+          name="layout"
+          :selected="viewLayout === option.value"
+          :title="option.title"
+          @click="setViewLayout(option.value)"
+        />
+      </SettingsGroup>
 
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Layout</h3>
-          <p>Choose a compact grid or a detailed list.</p>
-        </div>
-        <div :class="$style.choices">
-          <button
-            :aria-pressed="viewLayout === 'gridLayout'"
-            :class="$style.choice"
-            @click="setViewLayout('gridLayout')"
-          >
-            Grid
-          </button>
-          <button
-            :aria-pressed="viewLayout === 'listLayout'"
-            :class="$style.choice"
-            @click="setViewLayout('listLayout')"
-          >
-            List
-          </button>
-        </div>
-      </div>
+      <SettingsGroup
+        description="Choose the colour used for focus and selection across the TV app"
+        title="Accent colour"
+        variant="list"
+      >
+        <SettingsField title="Accent colour">
+          <div :class="$style.accentPalette" role="group" aria-label="Accent colour">
+            <button
+              v-for="colour in WEBOS_ACCENT_COLOURS"
+              :key="colour.value"
+              :aria-label="colour.label + ' accent colour'"
+              :aria-pressed="settings.accentColor === colour.value"
+              :class="$style.accentButton"
+              :title="colour.label"
+              type="button"
+              @click="setAccentColor(colour.value)"
+            >
+              <span
+                :class="$style.accentSwatch"
+                :style="{ backgroundColor: colour.value }"
+              />
+            </button>
+          </div>
+        </SettingsField>
+      </SettingsGroup>
+    </SettingsSection>
 
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Accent colour</h3>
-          <p>Change the focus and selection colour across the TV app.</p>
-        </div>
-        <div :class="$style.palette">
-          <button
-            v-for="colour in WEBOS_ACCENT_COLOURS"
-            :key="colour.value"
-            :aria-label="colour.label + ' accent colour'"
-            :aria-pressed="settings.accentColor === colour.value"
-            :class="$style.swatchButton"
-            @click="setAccentColor(colour.value)"
-          >
-            <span
-              :class="$style.swatch"
-              :style="{ backgroundColor: colour.value }"
-            />
-          </button>
-        </div>
-      </div>
-    </section>
+    <SettingsSection title="Audio Quality">
+      <SettingsGroup
+        description="Adjusting audio quality enables server-side transcoding, converting to a compatible format with a lower bitrate for smoother streaming"
+        title="Streaming"
+        variant="list"
+      >
+        <SelectableOption
+          v-for="option in bitrateOptions"
+          :key="option.value"
+          :badge="'badge' in option ? option.badge : undefined"
+          :description="option.description"
+          name="streamBitrate"
+          :selected="settings.streamBitrate === option.value"
+          :title="option.title"
+          @click="setStreamBitrate(option.value)"
+        />
+      </SettingsGroup>
+    </SettingsSection>
 
-    <section :class="['column', $style.section]">
-      <h2>Audio quality</h2>
-
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Streaming bitrate</h3>
-          <p>
-            Lower bitrates ask the server to transcode audio and may help on
-            slower connections. Changes apply to the next track.
-          </p>
-        </div>
-        <div :class="$style.choices">
-          <button
-            v-for="option in bitrateOptions"
-            :key="option.value"
-            :aria-pressed="settings.streamBitrate === option.value"
-            :class="$style.choice"
-            @click="setStreamBitrate(option.value)"
-          >
-            {{ option.label }}
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section :class="['column', $style.section]">
-      <h2>Navigation and playback</h2>
-
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Show podcasts</h3>
-          <p>Display podcasts in the sidebar.</p>
-        </div>
-        <button
-          :aria-pressed="settings.showPodcasts"
-          :class="$style.toggle"
+    <SettingsSection title="Navigation">
+      <SettingsField
+        description="Display podcasts in the navigation menu"
+        title="Show podcasts"
+      >
+        <ToggleSwitch
+          label="Show podcasts"
+          :pressed="settings.showPodcasts"
           @click="toggleShowPodcasts"
-        >
-          {{ settings.showPodcasts ? 'On' : 'Off' }}
-        </button>
-      </div>
+        />
+      </SettingsField>
 
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Show radio stations</h3>
-          <p>Display radio stations in the sidebar.</p>
-        </div>
-        <button
-          :aria-pressed="settings.showRadioStations"
-          :class="$style.toggle"
+      <SettingsField
+        description="Display radio stations in the navigation menu"
+        title="Show radio stations"
+      >
+        <ToggleSwitch
+          label="Show radio stations"
+          :pressed="settings.showRadioStations"
           @click="toggleShowRadioStations"
-        >
-          {{ settings.showRadioStations ? 'On' : 'Off' }}
-        </button>
-      </div>
+        />
+      </SettingsField>
+    </SettingsSection>
 
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Scrobbling</h3>
-          <p>Report completed listens to your Subsonic server.</p>
-        </div>
-        <button
-          :aria-pressed="settings.scrobbleEnabled"
-          :class="$style.toggle"
+    <SettingsSection title="Playback">
+      <SettingsField
+        description="Report plays to your Subsonic server"
+        title="Scrobble"
+      >
+        <ToggleSwitch
+          label="Scrobble"
+          :pressed="settings.scrobbleEnabled"
           @click="toggleScrobble"
-        >
-          {{ settings.scrobbleEnabled ? 'On' : 'Off' }}
-        </button>
-      </div>
-    </section>
+        />
+      </SettingsField>
+    </SettingsSection>
 
-    <section :class="['column', $style.section]">
-      <h2>Maintenance</h2>
-      <div :class="$style.row">
-        <div :class="$style.copy">
-          <h3>Reset preferences</h3>
-          <p>Restore the TV app’s appearance and playback preferences.</p>
-        </div>
-        <button :class="$style.choice" @click="resetPreferences">
+    <SettingsSection title="Maintenance">
+      <SettingsField
+        description="Restore all settings to their factory defaults"
+        title="Reset settings"
+      >
+        <button class="actionButton" type="button" @click="resetPreferences">
           Reset
         </button>
-      </div>
-    </section>
+      </SettingsField>
+    </SettingsSection>
   </div>
 </template>
 
@@ -214,95 +250,52 @@ useHead({
   font-size: var(--h2-font-size);
 }
 
-.section {
-  gap: var(--space-16);
-}
-
-.section h2 {
-  font-size: var(--h3-font-size);
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-24);
-  padding: var(--space-16) var(--space-20);
-  background: var(--hover-selected-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-medium);
-}
-
-.copy {
-  flex: 1;
-  min-width: 0;
-}
-
-.copy h3 {
-  margin-bottom: var(--space-4);
-  font-size: var(--body-font-size);
-}
-
-.copy p {
-  color: var(--secondary-font-color);
-}
-
-.choices,
-.palette {
+.accentPalette {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-8);
-  justify-content: flex-end;
+  align-items: center;
+  align-self: flex-start;
+  overflow: hidden;
+  background-color: var(--secondary-background-color);
+  border-radius: var(--border-radius-large);
 }
 
-.choice,
-.toggle,
-.swatchButton {
-  min-height: 48px;
-  padding: var(--space-8) var(--space-16);
-  color: var(--body-font-color);
-  background: var(--background-color);
-  border: 2px solid var(--border-color);
-  border-radius: var(--border-radius-medium);
-  cursor: pointer;
-}
-
-.choice[aria-pressed='true'],
-.toggle[aria-pressed='true'] {
-  border-color: var(--theme-color);
-  box-shadow: 0 0 0 2px rgba(var(--theme-color-rgb, 99, 19, 188), 0.28);
-}
-
-.swatchButton {
+.accentButton {
+  position: relative;
   display: flex;
-  width: 52px;
-  min-height: 52px;
+  width: 58px;
+  height: 56px;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  padding: var(--space-8);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--border-color);
 }
 
-.swatchButton[aria-pressed='true'] {
-  border-color: var(--theme-color);
-  box-shadow: 0 0 0 2px rgba(var(--theme-color-rgb, 99, 19, 188), 0.35);
+.accentButton:last-child {
+  border-right: 0;
 }
 
-.swatch {
+.accentButton:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: -2px;
+}
+
+.accentSwatch {
   display: block;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-round);
+  transition: border-color var(--transition), transform var(--transition);
 }
 
-@media (--mobile-only) {
-  .row {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .choices,
-  .palette {
-    justify-content: flex-start;
-  }
+.accentButton[aria-pressed='true'] .accentSwatch {
+  border-color: var(--background-color);
+  box-shadow: 0 0 0 2px var(--theme-color);
+  transform: scale(1.08);
 }
 </style>
