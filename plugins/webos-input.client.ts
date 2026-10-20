@@ -115,79 +115,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     window.scrollBy(0, delta);
   });
 
-  // Setup search input toggle behavior for TV (with retry logic)
-  const setupSearchToggle = () => {
-    let searchExpanded = false;
-    let isProcessing = false; // Prevent double-click
-
-    // Find search input first, then traverse to form (avoid :has() selector)
-    const searchInput = document.getElementById(
-      'search-input',
-    ) as HTMLInputElement;
-    const searchForm = searchInput?.closest('form') as HTMLFormElement;
-    const searchWrapper = searchInput?.parentElement as HTMLElement;
-    const searchButton = searchForm?.querySelector(
-      'button[type="submit"]',
-    ) as HTMLButtonElement;
-
-    if (!searchForm || !searchInput || !searchButton || !searchWrapper) {
-      // Retry after DOM is ready
-      setTimeout(setupSearchToggle, 500);
-      return;
-    }
-
-    // Add a custom class to the wrapper for targeting with CSS
-    searchWrapper.classList.add('webos-search-wrapper');
-
-    // Handle search button click with debounce
-    searchButton.addEventListener('click', (evt) => {
-      // Prevent double-firing from TV remote
-      if (isProcessing) {
-        evt.preventDefault();
-        return;
-      }
-
-      if (!searchExpanded) {
-        // Expand search input
-        evt.preventDefault();
-        isProcessing = true;
-        searchExpanded = true;
-        searchForm.classList.add('searchExpanded');
-
-        // Small delay before allowing next action and focusing
-        setTimeout(() => {
-          searchInput.focus();
-          searchInput.select();
-          isProcessing = false;
-        }, 100);
-      } else {
-        // If expanded, let the form submit normally (search)
-        // Don't prevent default - let form submit
-      }
-    });
-
-    // Handle focus loss to collapse search
-    searchInput.addEventListener('blur', () => {
-      if (searchExpanded) {
-        searchExpanded = false;
-        searchForm.classList.remove('searchExpanded');
-      }
-    });
-
-    // Keep search button from triggering blur when clicking it
-    searchButton.addEventListener('mousedown', (evt) => {
-      if (searchExpanded) {
-        evt.preventDefault(); // Prevent blur
-      }
-    });
-  };
-
-  setupSearchToggle();
-
-  // Force desktop responsive design by setting viewport to desktop width.
-  // 1280px triggers both --tablet-up (≥769px) and the desktop grid breakpoint
-  // (≥1100px), giving 5 grid columns instead of 3 at tablet width=1024.
-  // At 1920px physical / 1280px CSS = 1.5 DPR → ~300px physical per card.
+  // Keep the shared desktop sidebar, player, and five-column grid on TV.
+  // TV-specific sizing and remote focus are handled by webos-tv.css.
   const viewport = document.querySelector('meta[name="viewport"]');
   if (viewport) {
     viewport.setAttribute('content', 'width=1280, initial-scale=1');
@@ -250,32 +179,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       return 'player';
     }
 
-    // 2. Check if inside the sidebar navigation by DOM structure
-    // Sidebar elements are inside nav > ul with mobileNavigation class
-    const sidebarNav = element.closest('nav ul, [class*="mobileNavigation"]');
-    if (sidebarNav) {
-      // Check if this is the actual sidebar (not the page tabs navigation)
-      const nav = element.closest('nav');
-      if (nav) {
-        // On TV, the mobileNavigation class is used for the sidebar
-        if (element.closest('[class*="mobileNavigation"]')) {
-          return 'sidebar';
-        }
-
-        // The sidebar has links like Browse, Albums, Artists, Playlists, Queue
-        const text = element.textContent?.trim().toLowerCase() || '';
-        if (
-          text === 'browse' ||
-          text === 'albums' ||
-          text === 'artists' ||
-          text === 'playlists' ||
-          text === 'queue' ||
-          text === 'your library' ||
-          element.closest('[class*="sidebarNavigation"]')
-        ) {
-          return 'sidebar';
-        }
-      }
+    // 2. Keep the desktop sidebar in its own navigation zone and retain the
+    // mobile selector for small browser windows.
+    if (
+      element.closest(
+        '[class*="sidebarNavigation"], [class*="mobileNavigation"]',
+      )
+    ) {
+      return 'sidebar';
     }
 
     // 3. Position-based header check
@@ -806,8 +717,23 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     }
 
-    // Try to find a good initial element to focus
-    // Priority: 1) buttons with specific classes, 2) first input, 3) first focusable
+    // Start in the shared desktop sidebar so the TV opens on the current page,
+    // rather than leaving focus on the search submit button in the header.
+    const activeSidebarLink = document.querySelector(
+      'aside [class*="sidebarCurrentLink"]',
+    ) as HTMLElement | null;
+    const firstSidebarLink = document.querySelector(
+      'aside [class*="sidebarNavigation"] a[href]',
+    ) as HTMLElement | null;
+    const sidebarLink = activeSidebarLink ?? firstSidebarLink;
+
+    if (sidebarLink && isVisible(sidebarLink)) {
+      sidebarLink.focus();
+      return;
+    }
+
+    // Try to find a good initial element to focus on layouts without a sidebar.
+    // Priority: 1) submit button, 2) first input, 3) first link, 4) first button.
     const prioritySelectors = [
       'button[type="submit"]',
       'input:not([type="hidden"])',
@@ -920,3 +846,4 @@ export default defineNuxtPlugin((nuxtApp) => {
     subtree: true,
   });
 });
+
