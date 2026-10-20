@@ -1,5 +1,6 @@
 export function useAudioPlayer() {
   const { getImageUrl, getStreamUrl } = useAPI();
+  const { settings } = useWebOSTVSettings();
   const { resetQueue } = useQueue();
   const { addErrorSnack } = useSnack();
   const { scrobble } = useMediaLibrary();
@@ -184,6 +185,7 @@ export function useAudioPlayer() {
 
     if (
       isTrack.value &&
+      settings.value.scrobbleEnabled &&
       !trackHasScrobbled.value &&
       currentTime.value / currentTrack.value.duration > 0.8
     ) {
@@ -369,7 +371,10 @@ export function useAudioPlayer() {
   }
 
   function loadTrack(track: MixedTrack) {
-    const url = getStreamUrl(track.streamUrlId!);
+    const url = getStreamUrl(
+      track.streamUrlId!,
+      settings.value.streamBitrate || undefined,
+    );
     audioPlayer.value?.load(url);
     setMediaMetadata();
   }

@@ -7,12 +7,26 @@ defineProps<{
 }>();
 
 const { drop } = useDragAndDrop();
+const { settings } = useWebOSTVSettings();
+
+const visibleNavigation = computed(() =>
+  SIDEBAR_DESKTOP_NAVIGATION.map((section) => ({
+    ...section,
+    items: section.items.filter((item) => {
+      if (item.title === 'Podcasts') return settings.value.showPodcasts;
+      if (item.title === 'Radio Stations') {
+        return settings.value.showRadioStations;
+      }
+      return true;
+    }),
+  })).filter((section) => section.items.length),
+);
 </script>
 
 <template>
   <ul class="mBM">
     <NavigationItem
-      v-for="items in SIDEBAR_DESKTOP_NAVIGATION"
+      v-for="items in visibleNavigation"
       :key="`navigation-${items.title}`"
       class="mBM"
       :collapsed

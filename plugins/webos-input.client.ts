@@ -100,94 +100,47 @@ export default defineNuxtPlugin((nuxtApp) => {
   document.addEventListener('focusin', onFocusIn);
   document.addEventListener('focusout', onFocusOut);
 
-  // Translate magic remote scroll wheel (wheel events) into window scroll.
-  // Chrome 53 on webOS does not automatically scroll the page on wheel events
-  // when the focused element is inside an overflow:hidden container.
-  document.addEventListener('wheel', (e) => {
-    let delta = e.deltaY;
-    if (e.deltaMode === 1) {
-      // DOM_DELTA_LINE: multiply by approximate line height
-      delta = delta * 40;
-    } else if (e.deltaMode === 2) {
-      // DOM_DELTA_PAGE
-      delta = delta * window.innerHeight;
-    }
-    window.scrollBy(0, delta);
-  });
+  // Scroll TV media grids in two-row blocks instead of animating one card at a time.
+  let lastGridWheelAt = 0;
+  document.addEventListener(
+    'wheel',
+    (event) => {
+      let delta = event.deltaY;
+      if (event.deltaMode === 1) {
+        delta *= 40;
+      } else if (event.deltaMode === 2) {
+        delta *= window.innerHeight;
+      }
+      if (!delta) return;
 
-  // Setup search input toggle behavior for TV (with retry logic)
-  const setupSearchToggle = () => {
-    let searchExpanded = false;
-    let isProcessing = false; // Prevent double-click
+      const eventTarget = event.target as HTMLElement | null;
+      const activeTarget = document.activeElement as HTMLElement | null;
+      const gridPage =
+        eventTarget?.closest('[data-webos-grid-page]') ??
+        activeTarget?.closest('[data-webos-grid-page]');
 
-    // Find search input first, then traverse to form (avoid :has() selector)
-    const searchInput = document.getElementById(
-      'search-input',
-    ) as HTMLInputElement;
-    const searchForm = searchInput?.closest('form') as HTMLFormElement;
-    const searchWrapper = searchInput?.parentElement as HTMLElement;
-    const searchButton = searchForm?.querySelector(
-      'button[type="submit"]',
-    ) as HTMLButtonElement;
+      if (gridPage) {
+        event.preventDefault();
+        const now = Date.now();
+        if (now - lastGridWheelAt < 240) return;
+        lastGridWheelAt = now;
 
-    if (!searchForm || !searchInput || !searchButton || !searchWrapper) {
-      // Retry after DOM is ready
-      setTimeout(setupSearchToggle, 500);
-      return;
-    }
-
-    // Add a custom class to the wrapper for targeting with CSS
-    searchWrapper.classList.add('webos-search-wrapper');
-
-    // Handle search button click with debounce
-    searchButton.addEventListener('click', (evt) => {
-      // Prevent double-firing from TV remote
-      if (isProcessing) {
-        evt.preventDefault();
+        const pages = Array.from(
+          document.querySelectorAll<HTMLElement>('[data-webos-grid-page]'),
+        );
+        const currentIndex = pages.indexOf(gridPage as HTMLElement);
+        const nextPage = pages[currentIndex + (delta > 0 ? 1 : -1)];
+        nextPage?.scrollIntoView({ behavior: 'auto', block: 'start' });
         return;
       }
 
-      if (!searchExpanded) {
-        // Expand search input
-        evt.preventDefault();
-        isProcessing = true;
-        searchExpanded = true;
-        searchForm.classList.add('searchExpanded');
+      window.scrollBy(0, Math.sign(delta) * window.innerHeight * 0.72);
+    },
+    { passive: false },
+  );
 
-        // Small delay before allowing next action and focusing
-        setTimeout(() => {
-          searchInput.focus();
-          searchInput.select();
-          isProcessing = false;
-        }, 100);
-      } else {
-        // If expanded, let the form submit normally (search)
-        // Don't prevent default - let form submit
-      }
-    });
-
-    // Handle focus loss to collapse search
-    searchInput.addEventListener('blur', () => {
-      if (searchExpanded) {
-        searchExpanded = false;
-        searchForm.classList.remove('searchExpanded');
-      }
-    });
-
-    // Keep search button from triggering blur when clicking it
-    searchButton.addEventListener('mousedown', (evt) => {
-      if (searchExpanded) {
-        evt.preventDefault(); // Prevent blur
-      }
-    });
-  };
-
-  setupSearchToggle();
-
-  // Force desktop responsive design by setting viewport to desktop width.
-  // 1280px triggers both --tablet-up (≥769px) and the desktop grid breakpoint
-  // (≥1100px), giving 5 grid columns instead of 3 at tablet width=1024.
-  // At 1920px physical / 1280px CSS = 1.5 DPR → ~300px physical per card.
+  // Keep the shared desktop sidebar, player, and five-column grid on TV.
+  // TV-specific sizing and remote focus are handled by webos-tv.css.
   const viewport = document.querySelector('meta[name="viewport"]');
   if (viewport) {
     viewport.setAttribute('content', 'width=1280, initial-scale=1');
@@ -250,32 +203,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       return 'player';
     }
 
-    // 2. Check if inside the sidebar navigation by DOM structure
-    // Sidebar elements are inside nav > ul with mobileNavigation class
-    const sidebarNav = element.closest('nav ul, [class*="mobileNavigation"]');
-    if (sidebarNav) {
-      // Check if this is the actual sidebar (not the page tabs navigation)
-      const nav = element.closest('nav');
-      if (nav) {
-        // On TV, the mobileNavigation class is used for the sidebar
-        if (element.closest('[class*="mobileNavigation"]')) {
-          return 'sidebar';
-        }
-
-        // The sidebar has links like Browse, Albums, Artists, Playlists, Queue
-        const text = element.textContent?.trim().toLowerCase() || '';
-        if (
-          text === 'browse' ||
-          text === 'albums' ||
-          text === 'artists' ||
-          text === 'playlists' ||
-          text === 'queue' ||
-          text === 'your library' ||
-          element.closest('[class*="sidebarNavigation"]')
-        ) {
-          return 'sidebar';
-        }
-      }
+    // 2. Keep the desktop sidebar in its own navigation zone and retain the
+    // mobile selector for small browser windows.
+    if (
+      element.closest(
+        '[class*="sidebarNavigation"], [class*="mobileNavigation"]',
+      )
+    ) {
+      return 'sidebar';
     }
 
     // 3. Position-based header check
@@ -431,6 +366,34 @@ export default defineNuxtPlugin((nuxtApp) => {
     tolerance: number = 0,
   ): boolean {
     return aStart - tolerance < bEnd && aEnd + tolerance > bStart;
+  }
+
+  /**
+   * Keep a focused media tile within its two-row page. Move the viewport only
+   * when focus crosses into another page; all TV scrolls are immediate.
+   */
+  function scrollToFocusedElement(
+    currentElement: HTMLElement,
+    targetElement: HTMLElement,
+  ): void {
+    const currentPage = currentElement.closest('[data-webos-grid-page]');
+    const targetPage = targetElement.closest('[data-webos-grid-page]');
+
+    if (targetPage) {
+      if (currentPage !== targetPage) {
+        (targetPage as HTMLElement).scrollIntoView({
+          behavior: 'auto',
+          block: 'start',
+        });
+      }
+      return;
+    }
+
+    targetElement.scrollIntoView({
+      behavior: 'auto',
+      block: 'nearest',
+      inline: 'nearest',
+    });
   }
 
   /**
@@ -609,18 +572,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
 
     if (bestElement) {
-      bestElement.focus();
-
-      // Don't call scrollIntoView for swiper elements - it triggers swiper's
-      // group-based scroll-snap and causes the view to jump entire pages.
-      // Just focus the element; browsers naturally ensure focused elements are visible.
       const isInSwiper = bestElement.closest('swiper-slide');
+      bestElement.focus();
       if (!isInSwiper) {
-        bestElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
+        scrollToFocusedElement(currentElement, bestElement);
       }
       return true;
     }
@@ -655,18 +610,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (newIndex >= allElements.length) newIndex = 0;
 
     if (allElements[newIndex]) {
-      allElements[newIndex].focus();
-
-      // Don't call scrollIntoView for swiper elements - it triggers swiper's
-      // group-based scroll-snap and causes the view to jump entire pages.
-      // Just focus the element; browsers naturally ensure focused elements are visible.
-      const isInSwiper = allElements[newIndex].closest('swiper-slide');
-      if (!isInSwiper) {
-        allElements[newIndex].scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
+      const targetElement = allElements[newIndex];
+      const isInSwiper = targetElement.closest('swiper-slide');
+      targetElement.focus();
+      if (!isInSwiper && currentElement instanceof HTMLElement) {
+        scrollToFocusedElement(currentElement, targetElement);
       }
     }
   }
@@ -709,7 +657,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         // Focus the first player element
         playerElements[0].focus();
         playerElements[0].scrollIntoView({
-          behavior: 'smooth',
+          behavior: 'auto',
           block: 'center',
         });
       } else {
@@ -806,8 +754,23 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     }
 
-    // Try to find a good initial element to focus
-    // Priority: 1) buttons with specific classes, 2) first input, 3) first focusable
+    // Start in the shared desktop sidebar so the TV opens on the current page,
+    // rather than leaving focus on the search submit button in the header.
+    const activeSidebarLink = document.querySelector(
+      'aside [class*="sidebarCurrentLink"]',
+    ) as HTMLElement | null;
+    const firstSidebarLink = document.querySelector(
+      'aside [class*="sidebarNavigation"] a[href]',
+    ) as HTMLElement | null;
+    const sidebarLink = activeSidebarLink ?? firstSidebarLink;
+
+    if (sidebarLink && isVisible(sidebarLink)) {
+      sidebarLink.focus();
+      return;
+    }
+
+    // Try to find a good initial element to focus on layouts without a sidebar.
+    // Priority: 1) submit button, 2) first input, 3) first link, 4) first button.
     const prioritySelectors = [
       'button[type="submit"]',
       'input:not([type="hidden"])',
@@ -920,3 +883,4 @@ export default defineNuxtPlugin((nuxtApp) => {
     subtree: true,
   });
 });
+

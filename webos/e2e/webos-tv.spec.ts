@@ -35,30 +35,33 @@ test.describe('webOS TV Layout', () => {
     expect(bodyClass).toBe(true);
   });
 
-  test('viewport forced to 1024px width', async ({ page }) => {
+  test('viewport forced to desktop width for TV', async ({ page }) => {
     const viewportContent = await page.evaluate(() =>
       document.querySelector('meta[name="viewport"]')?.getAttribute('content'),
     );
-    expect(viewportContent).toContain('width=1024');
+    expect(viewportContent).toContain('width=1280');
   });
 
   test.describe('Visual Layout', () => {
-    test('sidebar navigation on left side', async ({ page }) => {
-      const nav = page.locator('nav ul[class*="mobileNavigation"]');
-      await expect(nav).toBeVisible();
+    test('desktop sidebar is shown and mobile navigation is hidden', async ({
+      page,
+    }) => {
+      const sidebar = page.locator('aside [class*="sidebarNavigation"]');
+      await expect(sidebar).toBeVisible();
+      await expect(
+        page.locator('aside [class*="mobileNavigation"]'),
+      ).toBeHidden();
 
-      const position = await nav.evaluate((el) => {
+      const position = await sidebar.evaluate((el) => {
         const style = window.getComputedStyle(el);
         return {
-          flexDirection: style.flexDirection,
           position: style.position,
           width: el.getBoundingClientRect().width,
         };
       });
 
-      expect(position.flexDirection).toBe('column');
       expect(position.position).toBe('fixed');
-      expect(position.width).toBeCloseTo(100, 10);
+      expect(position.width).toBeGreaterThan(200);
     });
 
     test('main content has left margin for sidebar', async ({ page }) => {
@@ -66,11 +69,11 @@ test.describe('webOS TV Layout', () => {
       const marginLeft = await main.evaluate((el) =>
         window.getComputedStyle(el).getPropertyValue('margin-left'),
       );
-      expect(marginLeft).toBe('100px');
+      expect(Number.parseFloat(marginLeft)).toBeGreaterThan(200);
     });
 
     test('hover actions hidden (no mouse on TV)', async ({ page }) => {
-      const actions = page.locator('[class*="actions"]').first();
+      const actions = page.locator('.layoutItem [class*="actions"]').first();
       const isVisible = await actions.evaluate((el) => {
         const style = window.getComputedStyle(el);
         return style.display !== 'none' && style.visibility !== 'hidden';
@@ -91,10 +94,10 @@ test.describe('webOS TV Layout', () => {
       const navLink = page.locator('nav a').first();
       await navLink.focus();
 
-      const boxShadow = await navLink.evaluate((el) =>
-        window.getComputedStyle(el).getPropertyValue('box-shadow'),
+      const outlineWidth = await navLink.evaluate((el) =>
+        window.getComputedStyle(el).getPropertyValue('outline-width'),
       );
-      expect(boxShadow).toContain('4px');
+      expect(outlineWidth).toBe('3px');
     });
 
     test('album images are focusable', async ({ page }) => {
@@ -231,12 +234,7 @@ test.describe('webOS TV Layout', () => {
       }
     });
 
-    test('Search toggle: click expands input', async ({ page }) => {
-      const searchButton = page.locator('form button[type="submit"]');
-      await searchButton.focus();
-      await page.keyboard.press('Enter');
-      await page.waitForTimeout(300);
-
+    test('Search input stays visible and focusable', async ({ page }) => {
       const searchInput = page.locator('#search-input');
       const width = await searchInput.evaluate(
         (el) => el.getBoundingClientRect().width,
@@ -249,11 +247,7 @@ test.describe('webOS TV Layout', () => {
       expect(isFocused).toBe(true);
     });
 
-    test('Search toggle: blur collapses input', async ({ page }) => {
-      const searchButton = page.locator('form button[type="submit"]');
-      await searchButton.click();
-      await page.waitForTimeout(300);
-
+    test('Search input remains visible after blur', async ({ page }) => {
       const searchInput = page.locator('#search-input');
       await searchInput.focus();
       await page.keyboard.press('Tab');
@@ -262,7 +256,7 @@ test.describe('webOS TV Layout', () => {
       const width = await searchInput.evaluate(
         (el) => el.getBoundingClientRect().width,
       );
-      expect(width).toBeLessThan(50);
+      expect(width).toBeGreaterThan(100);
     });
   });
 
@@ -297,3 +291,4 @@ test.describe('webOS TV Layout', () => {
     });
   });
 });
+

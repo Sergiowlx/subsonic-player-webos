@@ -222,13 +222,14 @@ document.body.classList.add('webosTV');
 
 Enables all TV-specific CSS in `webos-tv.css`.
 
-**3. Viewport Forcing (`plugins/webos-input.client.ts:38-44`)**
+**3. Viewport Forcing (`plugins/webos-input.client.ts`)**
 
 ```typescript
-viewport.setAttribute('content', 'width=1024, initial-scale=1');
+viewport.setAttribute('content', 'width=1280, initial-scale=1');
 ```
 
-Forces tablet layout (CSS media queries) while disabling hover effects.
+Keeps the shared desktop sidebar, header, player, and five-column grid active.
+TV-specific CSS scales controls and focus states for the remote.
 
 **4. Spatial Navigation Algorithm**
 
@@ -250,14 +251,15 @@ The plugin implements a custom spatial navigation system:
 **6. Focus Initialization** (`lines 382-439`):
 
 - Detail pages (album/artist): Focus "Play All" button
-- List pages: Focus first focusable element
+- Other pages: Focus the active desktop sidebar link, then fall back to the first focusable element
 - Runs on page load and route changes
 
 ### Navigation Behavior Differences
 
 **On List/Discovery Pages (albums, artists, genres):**
 
-- Only album/artist images are focusable
+- Use the desktop sidebar and horizontal desktop carousels
+- Only album/artist images are focusable in media grids
 - Title links and artist names are skipped (CSS: `pointer-events: none`)
 - Action buttons (hover overlays) are hidden
 
@@ -269,19 +271,20 @@ The plugin implements a custom spatial navigation system:
 
 ### Styling System (`assets/css/global/webos-tv.css`)
 
-**Focus States (lines 31-44):**
+**Focus States:**
 
 - Uses theme color: `var(--theme-color, #6313bc)`
 - 3-4px outline with offset
 - Compatible with light/dark themes
 
-**Disabled Features (lines 54-76):**
+**TV-specific behavior:**
 
 - Hover effects hidden
 - Mouse cursor hidden
 - Title/artist links non-interactive
+- Search remains visible in the desktop header
 
-**Track Row Enhancement (lines 80-106):**
+**Track Row Enhancement:**
 
 - Entire row highlights on focus
 - Play button scales up (1.15x)
@@ -361,7 +364,7 @@ Therefore: `ssr: false` + `nitro.preset: 'static'`
 
 ### Responsive Breakpoints
 
-The app uses media queries, but webOS forces tablet viewport:
+The app uses media queries, and webOS forces a 1280px viewport:
 
 ```css
 /* From assets/css/breakpoints.css */
@@ -370,7 +373,7 @@ The app uses media queries, but webOS forces tablet viewport:
 @custom-media --desktop-up (width >= 1281px);
 ```
 
-webOS simulates 1024px viewport → triggers `--tablet-up` styles.
+webOS uses 1280px → triggers `--tablet-up` and the five-column grid breakpoint.
 
 ## 🧪 Testing Guidelines
 
@@ -638,4 +641,5 @@ ares-log -f com.subsonic.player -d NAME  # View logs
 8. **No SSR, no fetch()** - static SPA only, `file://` protocol limitations
 9. **Focus is king** - all UI must work with keyboard/remote only
 10. **Document everything** - future you (or AI) will thank you
+
 

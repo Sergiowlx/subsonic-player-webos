@@ -37,7 +37,7 @@ export function useAPI() {
     });
   }
 
-  function getStreamUrl(streamUrlId: string) {
+  function getStreamUrl(streamUrlId: string, maxBitRate?: number) {
     // If radio station.
     if (isUrl(streamUrlId)) {
       return streamUrlId;
@@ -45,6 +45,7 @@ export function useAPI() {
 
     return getUrl('stream', {
       id: streamUrlId,
+      ...(maxBitRate ? { maxBitRate } : {}),
     });
   }
 

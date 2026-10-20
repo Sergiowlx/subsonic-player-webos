@@ -3,12 +3,30 @@ import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
 import VirtualList from '@/components/Molecules/VirtualList.vue';
 import MixedTracksListItem from '@/components/Organisms/TrackLists/MixedTracksListItem.vue';
 
-const TRACK_ROW_HEIGHT = 55;
+interface MixedTrackPage {
+  items: MixedTrack[];
+  startIndex: number;
+}
 
-defineProps<{
+const props = defineProps<{
   hideRemoveOption?: boolean;
   tracks: MixedTrack[];
 }>();
+
+const TRACK_ROW_HEIGHT =
+  import.meta.client && document.body.classList.contains('webosTV') ? 70 : 55;
+const TRACK_PAGE_HEIGHT = TRACK_ROW_HEIGHT * 2;
+
+const trackPages = computed<MixedTrackPage[]>(() => {
+  const pages: MixedTrackPage[] = [];
+  for (let i = 0; i < props.tracks.length; i += 2) {
+    pages.push({
+      items: props.tracks.slice(i, i + 2),
+      startIndex: i,
+    });
+  }
+  return pages;
+});
 
 defineEmits<{
   addToPlaylist: [trackId: string, index: number];
@@ -47,37 +65,46 @@ const hasDragStartEvent = computed(
       </div>
       <div class="trackCell trackOptions" />
       <div
-        v-if="!hideRemoveOption"
+        v-if="hideRemoveOption !== true"
         ref="trackRemoveHeader"
         class="trackCell trackOptions"
       />
     </div>
 
     <VirtualList
-      v-slot="{ index, item: track }"
-      :itemHeight="TRACK_ROW_HEIGHT"
-      :items="tracks"
+      v-slot="{ item: page }"
+      :buffer="3"
+      :getKey="(page) => page.startIndex"
+      :itemHeight="TRACK_PAGE_HEIGHT"
+      :items="trackPages"
+      :minItemsToVirtualize="25"
     >
-      <MixedTracksListItem
-        :key="track.id"
-        :hasAddToQueueEvent
-        :hasDragStartEvent
-        :hideRemoveOption
-        :index
-        :style="
-          index % 2 === 1
-            ? { backgroundColor: 'var(--hover-selected-color)' }
-            : undefined
-        "
-        :track
-        @addToPlaylist="$emit('addToPlaylist', track.id, index)"
-        @addToQueue="$emit('addToQueue', track)"
-        @downloadMedia="$emit('downloadMedia', track)"
-        @dragStart="(event) => $emit('dragStart', track, event)"
-        @mediaInformation="$emit('mediaInformation', track)"
-        @playTrack="$emit('playTrack', index)"
-        @remove="$emit('remove', { id: track.id, index })"
-      />
+      <div
+        data-webos-grid-page
+        :style="{ height: TRACK_PAGE_HEIGHT + 'px' }"
+      >
+        <MixedTracksListItem
+          v-for="(track, rowIndex) in page.items"
+          :key="track.id"
+          :hasAddToQueueEvent
+          :hasDragStartEvent
+          :hideRemoveOption
+          :index="page.startIndex + rowIndex"
+          :style="
+            (page.startIndex + rowIndex) % 2 === 1
+              ? { backgroundColor: 'var(--hover-selected-color)' }
+              : undefined
+          "
+          :track
+          @addToPlaylist="$emit('addToPlaylist', track.id, page.startIndex + rowIndex)"
+          @addToQueue="$emit('addToQueue', track)"
+          @downloadMedia="$emit('downloadMedia', track)"
+          @dragStart="(event) => $emit('dragStart', track, event)"
+          @mediaInformation="$emit('mediaInformation', track)"
+          @playTrack="$emit('playTrack', page.startIndex + rowIndex)"
+          @remove="$emit('remove', { id: track.id, index: page.startIndex + rowIndex })"
+        />
+      </div>
     </VirtualList>
   </div>
 
