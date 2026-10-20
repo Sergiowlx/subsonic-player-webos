@@ -247,7 +247,7 @@ body.webosTV .pageLink.focused {
   font-weight: var(--font-weight-bold) !important;
   outline: 3px solid var(--theme-color) !important;
   outline-offset: 2px;
-  background-color: rgb(99 19 188 / 40%) !important;
+  background-color: rgba(var(--theme-color-rgb, 99, 19, 188), 0.4) !important;
 }
 
 
