@@ -63,20 +63,3 @@ function isRandomPlaylist(playlistId: string) {
     </NavigationItem>
   </ul>
 </template>
-    </NavigationItem>
-
-    <li>
-      <ButtonLink
-        ref="addPlaylist"
-        class="sidebarLink"
-        fullWidth
-        :icon="ICONS.playlistAdd"
-        :showText="!collapsed"
-        title="Add playlist"
-        @click="$emit('addPlaylist')"
-      >
-        Add playlist
-      </ButtonLink>
-    </li>
-  </ul>
-</template>
