@@ -14,7 +14,9 @@ const visibleNavigation = computed(() =>
     ...section,
     items: section.items.filter((item) => {
       if (item.title === 'Podcasts') return settings.value.showPodcasts;
-      if (item.title === 'Radio Stations') return settings.value.showRadioStations;
+      if (item.title === 'Radio Stations') {
+        return settings.value.showRadioStations;
+      }
       return true;
     }),
   })).filter((section) => section.items.length),
