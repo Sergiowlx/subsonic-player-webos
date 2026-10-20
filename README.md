@@ -1,3 +1,13 @@
+## Precompiled IPK for LG webOS
+
+This repository provides a ready-to-install build of Subsonic Player based on rlellep's legacy webOS compatibility improvements.
+
+**[Download the latest IPK](../../releases/latest)**
+
+Tested and working on LG OLED C1 (webOS 6). Older webOS 4.x/5.x compatibility improvements are included but not independently verified.
+
+Credits for the original application and compatibility modifications belong to pando85 and rlellep, respectively.
+
 # 🎵 Subsonic Player WebOS
 
 ![GitHub Actions Workflow Status][action-workflow]
