@@ -88,12 +88,12 @@ onUnmounted(clearDebounce);
         :class="$style.inputField"
         hideLabel
         :label="form.fields.query.label"
-        placeholder="Enter query"
+        placeholder="Search music"
         :required="form.fields.query.required"
       />
 
       <ButtonLink :class="$style.buttonLink" :icon="ICONS.search" type="submit">
-        Login
+        Search
       </ButtonLink>
     </div>
   </form>

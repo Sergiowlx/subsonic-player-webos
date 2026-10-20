@@ -31,6 +31,7 @@ export const ICONS = {
   pause: 'PhPause',
   play: 'PhPlay',
   playlist: 'PhPlaylist',
+  profile: 'PhUserCircle',
   playlistAdd: 'PhListPlus',
   podcast: 'PhApplePodcastsLogo',
   podcastEpisode: 'PhApplePodcastsLogo',

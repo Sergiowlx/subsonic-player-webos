@@ -115,6 +115,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       const eventTarget = event.target as HTMLElement | null;
       const activeTarget = document.activeElement as HTMLElement | null;
+      const sidebar =
+        eventTarget?.closest('[class*="sidebarNavigation"]') ??
+        activeTarget?.closest('[class*="sidebarNavigation"]');
+      const sidebarNav = sidebar?.querySelector('nav');
+
+      if (sidebarNav) {
+        event.preventDefault();
+        sidebarNav.scrollTop += delta;
+        return;
+      }
+
       const gridPage =
         eventTarget?.closest('[data-webos-grid-page]') ??
         activeTarget?.closest('[data-webos-grid-page]');

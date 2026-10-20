@@ -1,14 +1,13 @@
 <script setup lang="ts">
+import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import HotkeyMappings from '@/components/Atoms/HotkeyMappings.vue';
 import DropdownDivider from '@/components/Molecules/Dropdown/DropdownDivider.vue';
 import DropdownItem from '@/components/Molecules/Dropdown/DropdownItem.vue';
 import DropdownMenu from '@/components/Molecules/Dropdown/DropdownMenu.vue';
-import LayoutButton from '@/components/Molecules/LayoutButton.vue';
 import MobileNavigation from '@/components/Molecules/MobileNavigation.vue';
 import MusicLogo from '@/components/Molecules/MusicLogo.vue';
 import PageNavigation from '@/components/Molecules/PageNavigation.vue';
 import SearchForm from '@/components/Molecules/SearchForm.vue';
-import ThemeSwitcher from '@/components/Molecules/ThemeSwitcher.vue';
 import MusicPlayerAndQueue from '@/components/Organisms/MusicPlayerAndQueue/MusicPlayerAndQueue.vue';
 import SidebarNavigation from '@/components/Organisms/SidebarNavigation/SidebarNavigation.vue';
 
@@ -48,16 +47,21 @@ const showPageNavigation = computed(() =>
           :class="['centerItems', $style.secondary]"
         >
           <div :class="$style.secondaryItem">
-            <LayoutButton />
-          </div>
-
-          <div :class="$style.secondaryItem">
-            <ThemeSwitcher />
+            <ButtonLink
+              is="nuxt-link"
+              :to="{ name: ROUTE_NAMES.settings }"
+              :icon="ICONS.setting"
+              :showText="false"
+              title="Settings"
+            >
+              Settings
+            </ButtonLink>
           </div>
 
           <div :class="$style.secondaryItem">
             <DropdownMenu
-              showText
+              :icon="ICONS.profile"
+              :showText="false"
               :text="user.username!"
               title="View account details"
             >
@@ -155,7 +159,7 @@ const showPageNavigation = computed(() =>
   width: var(--search-width);
 
   @media (--tablet-up) {
-    --search-width: 50%;
+    --search-width: 45%;
   }
 }
 
