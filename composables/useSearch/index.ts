@@ -10,8 +10,11 @@ export function useSearch() {
     const { mediaType, offset, query } = params;
 
     // If some libraries are disabled, search in each enabled library and merge.
-    if (musicFolders.value.length > 0 && enabledMusicFolderIds.value.length < musicFolders.value.length) {
-      const fetchPromises = enabledMusicFolderIds.value.map(folderId => 
+    if (
+      musicFolders.value.length > 0 &&
+      enabledMusicFolderIds.value.length < musicFolders.value.length
+    ) {
+      const fetchPromises = enabledMusicFolderIds.value.map((folderId) =>
         fetchData('/search3', {
           query: {
             albumCount: LOAD_SIZE,
@@ -24,21 +27,21 @@ export function useSearch() {
             songOffset: offset || 0,
           },
           transform: /* istanbul ignore next -- @preserve */ (response) => {
-             const results = formatAllMedia(response.searchResult3);
-             // Ensure everything is tagged with the folder ID
-             results.albums.forEach(a => a.musicFolderId = folderId);
-             results.artists.forEach(a => a.musicFolderId = folderId);
-             results.tracks.forEach(t => t.musicFolderId = folderId);
-             return results;
-          }
-        })
+            const results = formatAllMedia(response.searchResult3);
+            // Ensure everything is tagged with the folder ID
+            results.albums.forEach((a) => (a.musicFolderId = folderId));
+            results.artists.forEach((a) => (a.musicFolderId = folderId));
+            results.tracks.forEach((t) => (t.musicFolderId = folderId));
+            return results;
+          },
+        }),
       );
 
       const results = await Promise.all(fetchPromises);
-      const allAlbums = results.flatMap(r => r.data?.albums || []);
-      const allArtists = results.flatMap(r => r.data?.artists || []);
-      const allTracks = results.flatMap(r => r.data?.tracks || []);
-      
+      const allAlbums = results.flatMap((r) => r.data?.albums || []);
+      const allArtists = results.flatMap((r) => r.data?.artists || []);
+      const allTracks = results.flatMap((r) => r.data?.tracks || []);
+
       const merged = {
         albums: deduplicate(allAlbums),
         artists: deduplicate(allArtists),
@@ -84,7 +87,7 @@ export function useSearch() {
 
   function deduplicate<T extends { id: string }>(items: T[]): T[] {
     const map = new Map<string, T>();
-    items.forEach(item => map.set(item.id, item));
+    items.forEach((item) => map.set(item.id, item));
     return Array.from(map.values());
   }
 

@@ -75,9 +75,17 @@ const { isMusicFolderDisabled, toggleMusicFolder } = useMediaLibrary();
           >
             <ButtonLink
               :class="$style.toggleButton"
-              :icon="isMusicFolderDisabled(folder.id) ? ICONS.visibilityOff : ICONS.visibility"
+              :icon="
+                isMusicFolderDisabled(folder.id)
+                  ? ICONS.visibilityOff
+                  : ICONS.visibility
+              "
               showText
-              :title="isMusicFolderDisabled(folder.id) ? 'Enable library' : 'Disable library'"
+              :title="
+                isMusicFolderDisabled(folder.id)
+                  ? 'Enable library'
+                  : 'Disable library'
+              "
               @click.stop="toggleMusicFolder(folder.id)"
             >
               {{ isMusicFolderDisabled(folder.id) ? 'Disabled' : 'Enabled' }}

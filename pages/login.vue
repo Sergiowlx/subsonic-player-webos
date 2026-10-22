@@ -51,7 +51,7 @@ useHead({
 
 <template>
   <section aria-labelledby="login-title" :class="$style.login">
-    <header data-login-header :class="$style.header">
+    <header :class="$style.header" data-login-header>
       <div :class="$style.brand">
         <span :class="$style.brandMark">
           <component
