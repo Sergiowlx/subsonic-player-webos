@@ -7,9 +7,14 @@
  * visible focus feedback.
  */
 
-body.webosTV,
-body.webosTV * {
+body.webosTVDevice,
+body.webosTVDevice * {
   cursor: none !important;
+}
+
+body.webosTVPreview,
+body.webosTVPreview * {
+  cursor: auto !important;
 }
 
 body.webosTV input,
@@ -20,6 +25,103 @@ body.webosTV select {
 
 body.webosTV {
   scroll-behavior: auto;
+}
+
+/* TV navigation uses a light top bar instead of the animated side rail. */
+body.webosTV [class*='sidebarNavigation'] {
+  display: none !important;
+}
+
+body.webosTV aside {
+  display: none !important;
+}
+
+body.webosTV header[class*='header'] {
+  z-index: 30 !important;
+  margin-left: 0 !important;
+  background: rgb(0 0 0 / 68%) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(14px);
+  transition: background-color 140ms ease-out;
+}
+
+body.webosTV header[class*='header'].nowPlayingHeader {
+  background: transparent !important;
+  backdrop-filter: none;
+}
+
+body.webosTV header[data-login-header][class*='header'] {
+  background: transparent !important;
+  backdrop-filter: none;
+}
+
+body.webosTV .tvPlayer {
+  z-index: 20 !important;
+}
+
+body.webosTV main[class*='mainContent'] {
+  width: 100%;
+  margin-left: 0 !important;
+}
+
+body.webosTV main[class*='mainContent'] [class*='mainContentInner'] {
+  --main-width: 100vw;
+}
+
+body.webosTV [data-header-search] {
+  display: none !important;
+}
+
+body.webosTV [class*='tvLogo'] {
+  display: flex !important;
+  flex: 0 0 auto;
+  margin-right: var(--space-24);
+}
+
+body.webosTV [class*='tvLogo'].focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.webosTV .tvPrimaryNavigation {
+  display: flex;
+  flex: 1 1 auto;
+  gap: clamp(16px, 2.5vw, 36px);
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+body.webosTV header > div {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-height);
+}
+
+body.webosTV .tvPrimaryLink {
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 1.08rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--secondary-font-color);
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+body.webosTV .tvPrimaryLinkActive {
+  color: var(--font-color);
+}
+
+body.webosTV .tvPrimaryLink.focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background: rgb(var(--theme-color-rgb), 0.14) !important;
 }
 
 /* Ten-foot sizing: keep the desktop composition, with text and controls that
@@ -35,6 +137,22 @@ html.webosTV {
   --small-font-size: 1rem;
   --track-width-height-default: 56px;
   --track-table-header-row-height: 62px;
+  --webos-track-row-height: 76px;
+  --webos-track-row-gap: 8px;
+}
+
+/* Spotify-inspired TV palette: charcoal surfaces with a vivid green focus
+   accent. Keep this scoped to webOS so the regular web client is unchanged. */
+html.webosTV.dark {
+  --body-background-color: #121212;
+  --background-color: #181818;
+  --secondary-background-color: #242424;
+  --hover-selected-color: #292929;
+  --track-background-color: #181818;
+  --track-hover-background-color: #292929;
+  --modal-background-color: #181818;
+  --secondary-font-color: #b3b3b3;
+  --border-color: rgb(255 255 255 / 9%);
 }
 
 /* The shared responsive classes select desktopOnly/mobileOnly from the
@@ -44,24 +162,204 @@ body.webosTV form {
 }
 
 body.webosTV input[id='search-input'] {
-  min-height: 48px;
+  min-height: 56px;
+  padding-left: var(--space-24);
+  font-size: 1.25rem;
+  border-radius: 8px !important;
 }
 
-/* Strong focus indication for the remote. */
-body.webosTV .focused {
-  outline: 3px solid var(--theme-color) !important;
-  outline-offset: 3px;
-  background-color: rgba(var(--theme-color-rgb, 99, 19, 188), 0.25) !important;
-  box-shadow: 0 0 0 5px rgba(var(--theme-color-rgb, 99, 19, 188), 0.3),
-    0 8px 24px rgba(var(--theme-color-rgb, 99, 19, 188), 0.22) !important;
-  transition: background-color 0.15s ease;
+/* Replace Chromium's square TV focus frame with the animated accent fill used
+   by the library tabs and genre cards. */
+body.webosTV .focused,
+body.webosTV :focus-visible {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  border-radius: 8px;
+  box-shadow: none !important;
+  transition:
+    background-color 130ms ease-out,
+    color 130ms ease-out,
+    transform 130ms ease-out;
+}
+
+/* Keep section toggles and header actions clear without a large focus box. */
+body.webosTV [class*='sectionToggle'].focused {
+  padding-inline: 10px;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+}
+
+body.webosTV header [class*='secondaryItem'] .focused,
+body.webosTV header [class*='secondaryItem'].focused {
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.14) !important;
+  border-radius: var(--border-radius-large);
+}
+
+body.webosTV label[class*='selectableOption']:focus-within {
+  outline: none !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  transition: background-color 130ms ease-out;
+}
+
+body.webosTV label[class*='selectableBadge']:focus-within {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  border-radius: 999px;
+  transition:
+    background-color 130ms ease-out,
+    color 130ms ease-out;
+}
+
+body.webosTV [class*='accentButton']:focus-visible {
+  outline: none !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  border-radius: 8px;
+  transform: scale(1.06);
+  transition:
+    background-color 130ms ease-out,
+    transform 130ms ease-out;
+}
+
+body.webosTV input[type='checkbox']:focus-visible ~ [class*='track'],
+body.webosTV input[type='checkbox']:focus ~ [class*='track'] {
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.55) !important;
+  box-shadow: none !important;
+  transform: scale(1.08);
+  transition:
+    background-color 130ms ease-out,
+    transform 130ms ease-out;
+}
+
+body.webosTV .webosQueueButton.focused {
+  color: var(--theme-color) !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  border-radius: 50%;
+  transform: scale(1.04);
+}
+
+/* Now Playing uses one compact row of equally sized circular remote controls. */
+body.webosTV .tvNowPlayingControls button {
+  display: inline-flex !important;
+  flex: 0 0 56px;
+  align-items: center;
+  justify-content: center;
+  width: 56px !important;
+  height: 56px !important;
+  padding: 0 !important;
+  color: var(--font-color);
+  background: rgb(255 255 255 / 8%);
+  border: 0;
+  border-radius: 50%;
+  transition:
+    color 130ms ease-out,
+    background-color 130ms ease-out,
+    transform 130ms ease-out;
+}
+
+body.webosTV
+  .tvNowPlayingControls
+  > [class*='tvTransportControls'] {
+  display: contents !important;
+}
+
+body.webosTV .tvNowPlayingControls button.focused {
+  color: var(--theme-color) !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+  border-radius: 50%;
+  transform: scale(1.08);
+}
+
+body.webosTV .tvNowPlayingControls button.webosQueueButton {
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: 100px;
+  padding: 0 18px !important;
+  border-radius: 999px;
+}
+
+body.webosTV .tvNowPlayingControls button.webosQueueButton.focused {
+  border-radius: 999px !important;
+}
+
+body.webosTV .tvNowPlayingControls [class*='playPauseButton'] {
+  flex-basis: 64px;
+  width: 64px !important;
+  height: 64px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: var(--body-background-color);
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.8);
+  border-radius: 50%;
+  transform: none !important;
+}
+
+body.webosTV .tvNowPlayingControls [class*='playPauseButton'].focused {
+  color: var(--body-background-color) !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.9) !important;
+  filter: brightness(1.08);
+  transform: scale(1.08) !important;
+}
+
+body.webosTV .tvNowPlayingControls button svg {
+  width: 24px;
+  height: 24px;
+}
+
+body.webosTV .tvNowPlayingControls [class*='playPauseButton'] svg {
+  width: 28px;
+  height: 28px;
+}
+
+body.webosTV .tvPlayer [class*='tvTrackFavourite'].focused {
+  color: var(--theme-color) !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+  border-radius: 50%;
+  transform: scale(1.08);
+}
+
+/* Larger, rounded seek track with clear buffered and played sections. */
+body.webosTV .webosNowPlayingSeeker {
+  padding: 12px 0;
+}
+
+body.webosTV .webosNowPlayingSeeker [class*='slider'] {
+  height: 8px !important;
+  overflow: visible;
+  background: rgb(255 255 255 / 20%);
+  border-radius: 999px;
+}
+
+body.webosTV .webosNowPlayingSeeker [class*='progressWrapper'] {
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+body.webosTV .webosNowPlayingSeeker [class*='process'] {
+  background: var(--theme-color) !important;
+  border-radius: inherit;
+}
+
+body.webosTV .webosNowPlayingSeeker [class*='buffer'] {
+  background: rgb(255 255 255 / 62%) !important;
+  opacity: 0.35;
+}
+
+body.webosTV .webosNowPlayingSeeker [class*='thumb'] {
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--body-background-color);
+  box-shadow: 0 0 0 2px var(--theme-color), 0 2px 8px rgb(0 0 0 / 40%);
 }
 
 body.webosTV .layoutImage a.focused {
-  outline: none !important;
   background-color: transparent !important;
-  box-shadow: inset 0 0 0 4px var(--theme-color),
-    0 0 0 2px rgba(var(--theme-color-rgb, 99, 19, 188), 0.45) !important;
+  filter: brightness(1.08);
+  transform: scale(1.035);
+  transition: transform 130ms ease-out, filter 130ms ease-out;
 }
 
 /* The existing web app grid and carousel breakpoints already work at 1280px.
@@ -73,6 +371,11 @@ body.webosTV [class*='mediaListWrapper'] {
 
 body.webosTV .layoutItem {
   min-width: 0;
+  padding: 10px;
+  border-radius: 8px;
+  transition:
+    transform 110ms ease-out,
+    background-color 110ms ease-out;
 }
 
 body.webosTV [data-webos-grid-page] {
@@ -103,10 +406,7 @@ body.webosTV .layoutImage [class*='preloadImage']::before {
 
 body.webosTV .layoutImage [class*='preloadImage'] > * {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
@@ -115,8 +415,7 @@ body.webosTV .layoutImage [class*='preloadImage'] img {
   object-fit: cover;
 }
 
-/* Keep carousel rows horizontal like the desktop interface. Their arrow
-   controls stay visible because a TV remote has no hover state. */
+/* Keep carousel rows horizontal and let the remote move between covers. */
 body.webosTV [class*='carouselSwiper'] {
   padding: 6px;
   margin: -6px;
@@ -124,8 +423,7 @@ body.webosTV [class*='carouselSwiper'] {
 
 body.webosTV [class*='carouselSwiper'] button[class*='previous'],
 body.webosTV [class*='carouselSwiper'] button[class*='next'] {
-  display: flex !important;
-  opacity: 0.9 !important;
+  display: none !important;
 }
 
 /* Do not expose mouse-only artwork overlays. Their actions remain available
@@ -150,6 +448,106 @@ body.webosTV .trackHeader {
   min-height: calc(var(--track-table-header-row-height) + 8px) !important;
 }
 
+body.webosTV .webosTrackTable [data-webos-grid-page] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--webos-track-row-gap);
+}
+
+body.webosTV .webosAlbumTrackTable > [data-webos-grid-page] {
+  margin-bottom: var(--space-8);
+}
+
+body.webosTV .webosTrackTable .trackHeader {
+  min-height: 54px !important;
+  color: var(--secondary-font-color);
+  border-bottom-color: rgb(255 255 255 / 8%);
+}
+
+body.webosTV .webosTrackTable .trackHeader .trackCell {
+  min-height: 54px !important;
+  font-size: 0.9rem;
+}
+
+body.webosTV .webosTrackTable .trackRow,
+body.webosTV .webosTrackTable .trackRow:nth-child(2n + 1) {
+  box-sizing: border-box;
+  flex: 0 0 var(--webos-track-row-height);
+  height: var(--webos-track-row-height) !important;
+  min-height: var(--webos-track-row-height) !important;
+  max-height: var(--webos-track-row-height) !important;
+  background: rgb(255 255 255 / 3%) !important;
+  border: 1px solid rgb(255 255 255 / 4%);
+  border-radius: 12px;
+  transition:
+    background-color 130ms ease-out,
+    border-color 130ms ease-out,
+    transform 130ms ease-out;
+}
+
+body.webosTV .webosTrackTable .trackCell {
+  box-sizing: border-box;
+  align-items: center;
+  height: var(--webos-track-row-height) !important;
+  min-height: var(--webos-track-row-height) !important;
+  max-height: var(--webos-track-row-height) !important;
+}
+
+body.webosTV .webosTrackTable .trackRow:hover,
+body.webosTV .webosTrackTable .trackRow:focus-within {
+  background: rgb(255 255 255 / 8%) !important;
+}
+
+body.webosTV .webosTrackTable .trackRow.focused {
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.16) !important;
+  border-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.22);
+  border-radius: 12px;
+  transform: scale(1.003);
+}
+
+body.webosTV .webosTrackTable .trackOptions {
+  --track-cell-width: 68px;
+  --track-cell-padding: 0 18px 0 0;
+
+  justify-content: center;
+}
+
+body.webosTV .webosTrackTable .trackOptions [class*='dropdownMenu'] {
+  justify-content: center;
+}
+
+body.webosTV .webosTrackTable .trackOptions [class*='buttonLink'] {
+  visibility: hidden;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+  transition:
+    opacity 120ms ease-out,
+    background-color 120ms ease-out,
+    transform 120ms ease-out;
+}
+
+body.webosTV .webosTrackTable .trackRow:hover .trackOptions [class*='buttonLink'],
+body.webosTV .webosTrackTable .trackRow.focused .trackOptions [class*='buttonLink'],
+body.webosTV .webosTrackTable .trackRow:focus-within .trackOptions [class*='buttonLink'],
+body.webosTV .webosTrackTable .trackOptions [class*='buttonLink'].focused {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+body.webosTV .webosTrackTable .trackOptions [class*='buttonLink'].focused {
+  color: var(--theme-color) !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+  transform: scale(1.06);
+}
+
 body.webosTV .trackCell {
   padding: var(--space-12) calc(var(--default-space) * 2) !important;
 }
@@ -168,12 +566,11 @@ body.webosTV .desktopOnly[class*='trackSeeker'] *:focus-visible {
 }
 
 body.webosTV .trackRow.focused {
-  outline: 2px solid var(--theme-color) !important;
-  outline-offset: -2px;
-  background-color: rgba(var(--theme-color-rgb, 99, 19, 188), 0.28) !important;
-  transform: scale(1.003);
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+  border-radius: 8px;
+  transform: scale(1.008);
   transform-origin: left center;
-  transition: transform 0.12s ease, background-color 0.15s ease;
+  transition: transform 130ms ease-out, background-color 130ms ease-out;
 }
 
 body.webosTV .trackRow a.focused,
@@ -223,18 +620,32 @@ body.webosTV [data-test-id='playlist'] [class*='preloadImage'] {
 }
 
 body.webosTV [data-test-id='playlist'] h4 {
-  font-size: 1.25rem !important;
   margin-bottom: var(--space-8) !important;
+  font-size: 1.25rem !important;
 }
 
 body.webosTV [data-test-id='playlist'] .bulletList {
   font-size: 1.1rem !important;
 }
 
-/* The player sits beside the desktop sidebar, including when the sidebar is
-   collapsed by the user. */
+/* Float the TV player above the screen edge with a compact card treatment. */
 body.webosTV [class*='musicPlayer'] {
-  left: var(--sidebar-width) !important;
+  right: clamp(24px, 2.5vw, 48px) !important;
+  bottom: clamp(18px, 2.2vh, 30px) !important;
+  left: clamp(24px, 2.5vw, 48px) !important;
+  box-sizing: border-box;
+  width: auto !important;
+  height: 104px !important;
+  max-height: 104px !important;
+  padding: 10px 18px 8px;
+  overflow: hidden;
+  background-color: rgb(36 40 43 / 80%) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgb(0 0 0 / 42%);
+  backdrop-filter: blur(14px);
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms ease-out;
 }
 
 body.webosTV [class*='musicPlayer'] [class*='preloadImage'] {
@@ -242,12 +653,516 @@ body.webosTV [class*='musicPlayer'] [class*='preloadImage'] {
   height: var(--media-player-height) !important;
 }
 
+body.webosTV [class*='musicPlayer'] > .desktopOnly[class*='trackSeeker'] {
+  inset: auto 1px 0;
+  width: auto;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 0 0 15px 15px;
+  transform: none;
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  > .desktopOnly[class*='trackSeeker']
+  [class*='inputRange'] {
+  padding: 0;
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  > .desktopOnly[class*='trackSeeker']
+  [class*='slider'] {
+  --input-slider-height: 4px;
+
+  height: 4px;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2);
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  > .desktopOnly[class*='trackSeeker']
+  [class*='process'] {
+  background-color: var(--theme-color) !important;
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  > .desktopOnly[class*='trackSeeker']
+  [class*='buffer'] {
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.48) !important;
+}
+
 /* Keep page navigation buttons clear when they receive remote focus. */
 body.webosTV .pageLink.focused {
   font-weight: var(--font-weight-bold) !important;
-  outline: 3px solid var(--theme-color) !important;
-  outline-offset: 2px;
-  background-color: rgba(var(--theme-color-rgb, 99, 19, 188), 0.4) !important;
+  color: var(--theme-color) !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  border-radius: 8px;
 }
 
 
+
+
+body.webosTV [class*='musicPlayer'][class*='slide-up-down-enter-active'],
+body.webosTV [class*='musicPlayer'][class*='slide-up-down-leave-active'] {
+  transition:
+    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms ease-out !important;
+}
+
+body.webosTV [class*='musicPlayer'][class*='slide-up-down-enter-from'],
+body.webosTV [class*='musicPlayer'][class*='slide-up-down-leave-to'] {
+  opacity: 0;
+  transform: translateY(32px);
+}
+
+/* ImageLink is a figure root on artist cards and a child figure on album
+   cards. Give both anchors an explicit box so Chromium 79 can size the image. */
+body.webosTV .layoutImage > a,
+body.webosTV .layoutImage > figure > a {
+  display: block !important;
+  width: 100% !important;
+}
+
+body.webosTV .layoutItem:focus-within {
+  z-index: 2;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.1);
+  transform: scale(1.015);
+}
+
+body.webosTV .layoutItem:focus-within .layoutImage a.focused {
+  box-shadow: none !important;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='trackDetails'] {
+  min-width: 0;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='transportControls'] {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='playerControls'] {
+  gap: 20px;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='playerControls'] > div {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='trackDetails'] a {
+  color: var(--secondary-font-color);
+  text-decoration: none;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='trackDetails'] a.focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='imageNowPlaying'] {
+  display: block;
+  flex: 0 0 var(--media-player-height);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='imageNowPlaying'].focused {
+  background: transparent !important;
+  filter: brightness(1.08);
+  transform: scale(1.04);
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  [class*='imageNowPlaying']
+  [class*='preloadImage'] {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+/* Modern remote-friendly player controls; the main play action uses the
+   selected accent color, while secondary actions stay visually quiet. */
+body.webosTV [class*='musicPlayer'] [class*='playerControls'] button,
+body.webosTV [class*='musicPlayer'] [class*='playerOptions'] button {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  padding: 0;
+  color: var(--font-color);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transition:
+    color 120ms ease-out,
+    background-color 120ms ease-out,
+    transform 120ms ease-out;
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  [class*='playerControls']
+  button:not([class*='playPauseButton']) {
+  background-color: rgb(255 255 255 / 8%);
+}
+
+body.webosTV [class*='musicPlayer'] [class*='playerControls'] button.focused,
+body.webosTV [class*='musicPlayer'] [class*='playerOptions'] button.focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.18) !important;
+  box-shadow: none !important;
+  transform: scale(1.08);
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  [class*='playerControls']
+  [class*='playPauseButton'] {
+  flex-basis: 42px;
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  color: var(--body-background-color);
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.8);
+  border-radius: 50%;
+  transform: none;
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  [class*='playerControls']
+  [class*='playPauseButton'].focused {
+  color: var(--body-background-color) !important;
+  background-color: rgb(var(--theme-color-rgb, 99, 19, 188), 0.9) !important;
+  filter: brightness(1.1);
+  transform: scale(1.1);
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  [class*='playerControls']
+  [class*='playPauseButton']
+  svg,
+body.webosTV [class*='musicPlayer'] [class*='playerOptions'] button svg {
+  width: 24px;
+  height: 24px;
+}
+
+body.webosTV
+  [class*='musicPlayer']
+  [class*='playerControls']
+  [class*='playPauseButton']
+  svg {
+  width: 20px;
+  height: 20px;
+}
+
+body.webosTV [class*='musicPlayer'] [class*='playerOptions'] {
+  gap: var(--space-8);
+  padding-right: 0;
+}
+
+/* Your Library categories and album filters use the compact pill treatment. */
+.webosLibraryNavigation {
+  display: none;
+}
+
+body.webosTV .webosLibraryNavigation {
+  display: block;
+  margin-bottom: var(--space-24);
+}
+
+body.webosTV .webosLibraryTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+body.webosTV .webosLibraryTab,
+body.webosTV .webosAlbumSortNavigation .pageLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--font-color);
+  text-decoration: none;
+  background: #292929;
+  border: 0;
+  border-radius: 999px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+body.webosTV .webosLibraryTabActive,
+body.webosTV .webosAlbumSortNavigation .pageCurrentLink {
+  color: #121212;
+  background: #f3f3f3;
+  border-bottom: 0 !important;
+}
+
+body.webosTV .webosAlbumSortNavigation .pageCurrentLink::before {
+  display: none;
+  content: none;
+}
+
+body.webosTV .webosLibraryTab.focused,
+body.webosTV .webosAlbumSortNavigation .pageLink.focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+}
+
+body.webosTV .webosAlbumSortNavigation {
+  margin-bottom: var(--space-24);
+}
+
+body.webosTV .webosAlbumSortNavigation ul {
+  gap: var(--space-8);
+}
+
+body.webosTV .webosAlbumSortNavigation .pageLink {
+  min-height: 42px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+}
+
+/* Genre tiles read as remote-friendly rectangular buttons on the TV. */
+body.webosTV .webosGenreLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 68px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--font-color);
+  text-align: center;
+  text-decoration: none;
+  background: #292929;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+body.webosTV .webosGenreLink.focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+/* Genre detail filters match the rounded rectangular genre buttons. */
+body.webosTV .webosGenreNavigation {
+  margin-bottom: var(--space-24);
+}
+
+body.webosTV .webosGenreNavigation ul {
+  gap: var(--space-8);
+}
+
+body.webosTV .webosGenreNavigation .pageLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--font-color);
+  text-decoration: none;
+  background: #292929;
+  border: 0;
+  border-radius: 12px;
+}
+
+body.webosTV .webosGenreNavigation .pageCurrentLink {
+  color: #121212;
+  background: #f3f3f3;
+}
+
+body.webosTV .webosGenreNavigation .pageCurrentLink::before {
+  display: none;
+  content: none;
+}
+
+body.webosTV .webosGenreNavigation .pageLink.focused {
+  color: var(--theme-color) !important;
+  outline: none !important;
+  background: rgb(var(--theme-color-rgb, 99, 19, 188), 0.2) !important;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+/* Keep album and artist collections in cover grids even if the saved web
+   layout is set to list. */
+body.webosTV .listLayout .webosAlbumItem,
+body.webosTV .listLayout .webosArtistItem {
+  display: block !important;
+  padding: 8px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.webosTV .listLayout .webosAlbumItem .layoutImage,
+body.webosTV .listLayout .webosArtistItem .layoutImage {
+  flex: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 1;
+  padding: 0 !important;
+  margin-bottom: var(--space-8) !important;
+  border-radius: 8px !important;
+}
+
+body.webosTV .listLayout .webosAlbumItem .layoutImage a {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+body.webosTV .webosArtistItem {
+  text-align: center;
+}
+
+body.webosTV .webosArtistItem .webosArtistImage,
+body.webosTV .webosArtistItem .webosArtistImage a,
+body.webosTV .webosArtistItem .webosArtistImage [class*='preloadImage'] {
+  overflow: hidden;
+  border-radius: 50% !important;
+}
+
+body.webosTV .webosArtistItem .webosArtistImage {
+  aspect-ratio: 1;
+}
+
+body.webosTV .webosArtistItem .layoutContent {
+  padding: 0 var(--space-4);
+  text-align: center;
+}
+
+body.webosTV .webosArtistItem .layoutContent p {
+  font-size: 1rem;
+}
+
+body.webosTV .webosArtistAlbumsSection {
+  margin-bottom: -32px;
+}
+
+body.webosTV .webosArtistAlbumsSection [data-virtual-grid-row] {
+  padding-bottom: 0 !important;
+}
+
+/* Square artwork cards match the collection grids; track covers are fetched
+   only as a card approaches the viewport. */
+body.webosTV .webosPlaylistCard {
+  display: block;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+body.webosTV .webosPlaylistCard:focus-within {
+  background: var(--secondary-background-color);
+  transform: scale(1.015);
+}
+
+body.webosTV .webosPlaylistArtworkWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: var(--space-8);
+}
+
+body.webosTV .webosPlaylistArtwork {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  color: #fff;
+  background: var(--secondary-background-color);
+  border-radius: 4px;
+  box-shadow: var(--box-shadow-medium);
+}
+
+body.webosTV .webosFavouritesArtwork {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #5a23d7 0%, #254bc7 55%, #169fe8 100%);
+}
+
+body.webosTV .webosPlaylistTitle {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+body.webosTV .webosPlaylistSubTitle {
+  margin: var(--space-4) 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
+  color: var(--secondary-font-color);
+  white-space: nowrap;
+}
+
+body.webosTV .webosPlaylistActions {
+  position: absolute;
+  inset: 8px 8px auto auto;
+  z-index: 2;
+  padding: 4px;
+  color: #fff;
+  pointer-events: none;
+  background: rgb(0 0 0 / 68%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 100ms ease;
+}
+
+body.webosTV .webosPlaylistCard:focus-within .webosPlaylistActions,
+body.webosTV .webosPlaylistCard:hover .webosPlaylistActions {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+body.webosTV .webosPlaylistActions button {
+  justify-content: center;
+  min-width: 42px;
+  min-height: 42px;
+  padding: 8px;
+}
+
+body.webosTV .webosPlaylistActions button span {
+  display: none;
+}

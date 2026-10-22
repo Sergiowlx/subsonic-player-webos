@@ -4,9 +4,9 @@ import { expect, test } from '@nuxt/test-utils/playwright';
 
 const WEBOS_QUERY = '?webos=true';
 const LOGIN_DETAILS = {
-  password: 'demodemo',
-  server: 'https://demo.ampache.dev',
-  username: 'demo',
+  password: process.env.WEBOS_TEST_PASSWORD || '',
+  server: process.env.WEBOS_TEST_SERVER || '',
+  username: process.env.WEBOS_TEST_USERNAME || '',
 };
 
 async function getFocusedElement(page: Page) {
@@ -25,6 +25,13 @@ async function loginWebOS(page: Page) {
 
 test.describe('webOS TV Layout', () => {
   test.beforeEach(async ({ page }) => {
+    test.skip(
+      !LOGIN_DETAILS.server ||
+        !LOGIN_DETAILS.username ||
+        !LOGIN_DETAILS.password,
+      'Set WEBOS_TEST_SERVER, WEBOS_TEST_USERNAME, and WEBOS_TEST_PASSWORD to run webOS UI tests',
+    );
+
     await loginWebOS(page);
   });
 
@@ -291,4 +298,3 @@ test.describe('webOS TV Layout', () => {
     });
   });
 });
-

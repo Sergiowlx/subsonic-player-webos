@@ -4,13 +4,14 @@ import RepeatButton from '@/components/Organisms/MusicPlayerAndQueue/Controls/Re
 import ShuffleButton from '@/components/Organisms/MusicPlayerAndQueue/Controls/ShuffleButton.vue';
 
 const { isRadioStation } = useAudioPlayer();
+const isTV = isWebOSTV();
 </script>
 
 <template>
   <div :class="['centerItems', $style.playerControls]">
     <ShuffleButton v-if="!isRadioStation" />
 
-    <MainPlayerControls />
+    <MainPlayerControls :showSeekControls="!isTV" />
 
     <RepeatButton v-if="!isRadioStation" />
   </div>

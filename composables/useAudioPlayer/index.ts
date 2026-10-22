@@ -217,7 +217,9 @@ export function useAudioPlayer() {
   function setMediaSessionPositionState() {
     if (
       !(
-        'mediaSession' in navigator && navigator.mediaSession && typeof navigator.mediaSession.setPositionState === 'function' &&
+        'mediaSession' in navigator &&
+        navigator.mediaSession &&
+        typeof navigator.mediaSession.setPositionState === 'function' &&
         hasCurrentTrack.value &&
         !isRadioStation.value
       )
@@ -526,9 +528,10 @@ export function useAudioPlayer() {
 
   // Volume actions.
   function setVolume(newVolume: number) {
+    const appliedVolume = isWebOSTV() ? 1 : newVolume;
     previousVolume.value = volume.value;
-    audioPlayer.value?.setVolume(newVolume);
-    volume.value = newVolume;
+    audioPlayer.value?.setVolume(appliedVolume);
+    volume.value = appliedVolume;
     saveState();
   }
 

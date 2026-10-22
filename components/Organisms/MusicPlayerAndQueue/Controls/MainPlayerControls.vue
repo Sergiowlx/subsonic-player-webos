@@ -2,6 +2,15 @@
 import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import PlayPauseButton from '@/components/Molecules/PlayPauseButton.vue';
 
+const props = withDefaults(
+  defineProps<{
+    showSeekControls?: boolean;
+  }>(),
+  {
+    showSeekControls: true,
+  },
+);
+
 const {
   fastForwardTrack,
   hasNextTrack,
@@ -12,9 +21,7 @@ const {
   rewindTrack,
 } = useAudioPlayer();
 
-// Detect if running on webOS TV
-const isWebOS =
-  typeof window !== 'undefined' && window.location.protocol === 'file:';
+const isTV = isWebOSTV();
 </script>
 
 <template>
@@ -31,7 +38,7 @@ const isWebOS =
     </ButtonLink>
 
     <ButtonLink
-      v-if="isPodcastEpisode || isWebOS"
+      v-if="props.showSeekControls && (isPodcastEpisode || isTV)"
       ref="rewind"
       :icon="ICONS.rewind"
       :title="REWIND_FAST_FORWARD_TITLES.rewind"
@@ -43,7 +50,7 @@ const isWebOS =
     <PlayPauseButton :class="$style.playPauseButton" />
 
     <ButtonLink
-      v-if="isPodcastEpisode || isWebOS"
+      v-if="props.showSeekControls && (isPodcastEpisode || isTV)"
       ref="fastForward"
       :icon="ICONS.fastForward"
       :title="REWIND_FAST_FORWARD_TITLES.fastForward"

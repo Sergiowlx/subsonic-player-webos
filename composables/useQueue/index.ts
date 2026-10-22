@@ -20,6 +20,13 @@ export function useQueue() {
     toggleLockScroll();
   }
 
+  function closeQueuePlayer() {
+    if (!isQueuePlayerOpened.value) return;
+
+    isQueuePlayerOpened.value = false;
+    toggleLockScroll();
+  }
+
   function toggleQueueList() {
     isQueueListOpened.value = !isQueueListOpened.value;
     toggleLockScroll();
@@ -33,6 +40,7 @@ export function useQueue() {
   }
 
   return {
+    closeQueuePlayer,
     isQueueListOpened,
     isQueuePlayerOpened,
     resetQueue,

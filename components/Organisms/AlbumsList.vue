@@ -3,6 +3,7 @@ import GridWrapper from '@/components/Atoms/GridWrapper.vue';
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
 import VirtualGrid from '@/components/Molecules/VirtualGrid.vue';
 import AlbumItem from '@/components/Organisms/AlbumItem.vue';
+import { isWebOSTV } from '@/utils/webos';
 
 defineProps<{
   albums: Album[];
@@ -17,21 +18,25 @@ const emit = defineEmits<{
 }>();
 
 const { viewLayout } = useViewLayout();
+const isTV = isWebOSTV();
+const isGridLayout = computed(() => isTV || viewLayout.value === 'gridLayout');
+const virtualGridColumns = isTV
+  ? { desktop: 7, mobile: 3, tablet: 6 }
+  : undefined;
 
 function onDragStart(album: Album, event: DragEvent) {
   emit('dragStart', album, event);
 }
 
-const gridWrapperProps = computed(() =>
-  viewLayout.value === 'gridLayout' ? undefined : '0',
-);
+const gridWrapperProps = computed(() => (isGridLayout.value ? undefined : '0'));
 </script>
 
 <template>
   <template v-if="albums.length">
     <VirtualGrid
-      v-if="viewLayout === 'gridLayout'"
+      v-if="isGridLayout"
       v-slot="{ item: album }"
+      :columns="virtualGridColumns"
       :getKey="(album) => album.name"
       :items="albums"
     >

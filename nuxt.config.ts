@@ -205,9 +205,6 @@ export default defineNuxtConfig({
     dirs: IMPORT_DIRECTORIES,
   },
   modules: ['@nuxt/eslint', '@vite-pwa/nuxt', 'nuxt-swiper'],
-  plugins: IS_WEBOS_BUILD
-    ? [{ mode: 'client', src: '~/webos/polyfills.client.ts' }]
-    : [],
   nitro: {
     imports: {
       dirs: IMPORT_DIRECTORIES,
@@ -217,6 +214,9 @@ export default defineNuxtConfig({
     },
     preset: 'static',
   },
+  plugins: IS_WEBOS_BUILD
+    ? [{ mode: 'client', src: '~/webos/polyfills.client.ts' }]
+    : [],
   postcss: {
     plugins: {
       '@csstools/postcss-global-data': {
@@ -257,7 +257,6 @@ export default defineNuxtConfig({
     build: {
       assetsDir: '_nuxt',
       ...(IS_WEBOS_BUILD && {
-        target: ['chrome53'],
         rollupOptions: {
           output: {
             entryFileNames: '_nuxt/entry.js',
@@ -265,6 +264,7 @@ export default defineNuxtConfig({
             inlineDynamicImports: true,
           },
         },
+        target: ['chrome53'],
       }),
     },
     ...(IS_WEBOS_BUILD && {

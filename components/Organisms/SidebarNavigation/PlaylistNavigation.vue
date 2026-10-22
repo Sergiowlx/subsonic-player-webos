@@ -46,20 +46,20 @@ function isRandomPlaylist(playlistId: string) {
           @drop="drop(playlist.id, $event)"
         />
       </template>
-    </NavigationItem>
 
-    <li>
-      <ButtonLink
-        ref="addPlaylist"
-        class="sidebarLink"
-        fullWidth
-        :icon="ICONS.playlistAdd"
-        :showText="!collapsed"
-        title="Add playlist"
-        @click="$emit('addPlaylist')"
-      >
-        Add playlist
-      </ButtonLink>
-    </li>
+      <li>
+        <ButtonLink
+          ref="addPlaylist"
+          class="sidebarLink"
+          fullWidth
+          :icon="ICONS.playlistAdd"
+          :showText="!collapsed"
+          title="Add playlist"
+          @click="$emit('addPlaylist')"
+        >
+          Add playlist
+        </ButtonLink>
+      </li>
+    </NavigationItem>
   </ul>
 </template>

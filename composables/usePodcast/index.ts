@@ -97,6 +97,7 @@ export function usePodcast() {
         transform: /* istanbul ignore next -- @preserve */ (response) =>
           (response.newestPodcasts.episode || []).map(formatPodcastEpisode),
       },
+      { notifyOnError: false },
     );
 
     newestPodcastEpisodes.value = newestPodcastEpisodesData || [];
@@ -121,6 +122,7 @@ export function usePodcast() {
   async function getPodcasts() {
     const { data: podcastsData } = await getPodcastsData();
     podcasts.value = podcastsData || [];
+    return podcasts.value;
   }
 
   function getPodcastsAndNewestPodcastEpisodes() {
@@ -132,17 +134,21 @@ export function usePodcast() {
       includeEpisodes: false,
     };
 
-    return fetchData('/getPodcasts', {
-      query: finalParams,
-      transform: /* istanbul ignore next -- @preserve */ (response) =>
-        (response.podcasts.channel || [])
-          .map(formatPodcast)
-          .sort((podcastA, podcastB) =>
-            podcastA.name
-              .toLowerCase()
-              .localeCompare(podcastB.name.toLowerCase()),
-          ),
-    });
+    return fetchData(
+      '/getPodcasts',
+      {
+        query: finalParams,
+        transform: /* istanbul ignore next -- @preserve */ (response) =>
+          (response.podcasts.channel || [])
+            .map(formatPodcast)
+            .sort((podcastA, podcastB) =>
+              podcastA.name
+                .toLowerCase()
+                .localeCompare(podcastB.name.toLowerCase()),
+            ),
+      },
+      { notifyOnError: false },
+    );
   }
 
   /* istanbul ignore next -- @preserve */
@@ -163,6 +169,7 @@ export function usePodcast() {
     deletePodcastEpisode,
     downloadPodcastEpisode,
     getPodcast,
+    getPodcasts,
     getPodcastsAndNewestPodcastEpisodes,
     newestPodcastEpisodes,
     podcast,

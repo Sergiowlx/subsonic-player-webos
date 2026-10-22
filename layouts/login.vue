@@ -6,17 +6,29 @@
 
 <style module>
 .login {
+  position: relative;
+  z-index: 0;
+  display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
+  padding: clamp(24px, 5vw, 72px);
+  overflow: hidden;
+  background-color: var(--body-background-color);
+}
 
-  &::before {
-    position: fixed;
-    inset: 0 auto auto 0;
-    width: 50%;
-    height: 100vh;
-    content: '';
-    background-color: var(--theme-color);
-    opacity: 0.1;
-  }
+.login::before {
+  position: absolute;
+  top: -45vw;
+  left: -35vw;
+  width: 75vw;
+  height: 75vw;
+  pointer-events: none;
+  content: '';
+  background-color: var(--theme-color);
+  border-radius: 50%;
+  opacity: 0.12;
+  filter: blur(120px);
 }
 </style>

@@ -25,28 +25,37 @@ export function useAlbum() {
     // we fetch from each enabled library individually and merge the results.
     // This is the only way to reliably hide disabled libraries when the server
     // doesn't provide library IDs in the global list response.
-    if (!params.musicFolderId && musicFolders.value.length > 0 && enabledMusicFolderIds.value.length < musicFolders.value.length) {
-       // Multi-folder fetch strategy
-       const fetchPromises = enabledMusicFolderIds.value.map(folderId => 
-         fetchData('/getAlbumList2', {
-           query: {
-             ...params,
-             musicFolderId: folderId,
-             offset: 0, // Fetch first page from each
-             size: (params.offset || 0) + (params.size || Number(LOAD_SIZE)),
-             type: getSortType(params.type) || params.type || 'random',
-           },
-           transform: /* istanbul ignore next -- @preserve */ (response) =>
-             (response.albumList2.album || []).map(album => formatAlbum({ ...album, musicFolderId: folderId })),
-         })
-       );
+    if (
+      !params.musicFolderId &&
+      musicFolders.value.length > 0 &&
+      enabledMusicFolderIds.value.length < musicFolders.value.length
+    ) {
+      // Multi-folder fetch strategy
+      const fetchPromises = enabledMusicFolderIds.value.map((folderId) =>
+        fetchData('/getAlbumList2', {
+          query: {
+            ...params,
+            musicFolderId: folderId,
+            offset: 0, // Fetch first page from each
+            size: (params.offset || 0) + (params.size || Number(LOAD_SIZE)),
+            type: getSortType(params.type) || params.type || 'random',
+          },
+          transform: /* istanbul ignore next -- @preserve */ (response) =>
+            (response.albumList2.album || []).map((album) =>
+              formatAlbum({ ...album, musicFolderId: folderId }),
+            ),
+        }),
+      );
 
-       const results = await Promise.all(fetchPromises);
-       const allAlbums = results.flatMap(r => r.data || []);
-       
-       // Sort and slice the merged results to emulate server-side pagination
-       const sortedAlbums = sortAlbums(allAlbums, params.type);
-       return sortedAlbums.slice(params.offset || 0, (params.offset || 0) + (params.size || Number(LOAD_SIZE)));
+      const results = await Promise.all(fetchPromises);
+      const allAlbums = results.flatMap((r) => r.data || []);
+
+      // Sort and slice the merged results to emulate server-side pagination
+      const sortedAlbums = sortAlbums(allAlbums, params.type);
+      return sortedAlbums.slice(
+        params.offset || 0,
+        (params.offset || 0) + (params.size || Number(LOAD_SIZE)),
+      );
     }
 
     const { data: albumsData } = await fetchData('/getAlbumList2', {
@@ -70,14 +79,22 @@ export function useAlbum() {
   function sortAlbums(albums: Album[], type: AlbumSortBy): Album[] {
     const out = [...albums];
     switch (type) {
-      case 'newest':
-        return out.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      case 'alphabeticalByArtist':
+        return out.sort((a, b) =>
+          (a.artists[0]?.name || '').localeCompare(b.artists[0]?.name || ''),
+        );
       case 'alphabeticalByName':
         return out.sort((a, b) => a.name.localeCompare(b.name));
-      case 'alphabeticalByArtist':
-        return out.sort((a, b) => (a.artists[0]?.name || '').localeCompare(b.artists[0]?.name || ''));
       case 'frequent':
-        return out.sort((a, b) => (b.information?.playCount || 0) - (a.information?.playCount || 0));
+        return out.sort(
+          (a, b) =>
+            (b.information?.playCount || 0) - (a.information?.playCount || 0),
+        );
+      case 'newest':
+        return out.sort(
+          (a, b) =>
+            new Date(b.created).getTime() - new Date(a.created).getTime(),
+        );
       case 'random':
         return out.sort(() => Math.random() - 0.5);
       default:

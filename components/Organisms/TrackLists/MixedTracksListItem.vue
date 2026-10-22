@@ -65,14 +65,6 @@ function openDropdownMenu(event: MouseEvent | TouchEvent) {
           />
 
           <TrackMeta class="trackMeta" :track />
-
-          <FavouriteButton
-            v-if="'favourite' in track"
-            :id="track.id"
-            class="desktopOnly"
-            :favourite="track.favourite"
-            :type="track.type"
-          />
         </div>
       </div>
 

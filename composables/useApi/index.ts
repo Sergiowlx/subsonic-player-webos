@@ -6,6 +6,10 @@ export function useAPI() {
 
   const { addErrorSnack } = useSnack();
 
+  type FetchDataErrorOptions = {
+    notifyOnError?: boolean;
+  };
+
   function getAuthToken() {
     return isWebOS()
       ? getAuthFromLocalStorage()
@@ -25,15 +29,22 @@ export function useAPI() {
     return url.toString();
   }
 
-  function getImageUrl(image: string, size = IMAGE_SIZE) {
+  function getImageUrl(image: string, size?: string) {
     // If radio station.
     if (isUrl(image)) {
       return image;
     }
 
+    // TV cards are rendered at about 200px in the 1280px webOS viewport.
+    // Requesting the 500px desktop default wastes bandwidth and decode time on
+    // Chromium 79, so use a TV-sized cover unless a caller asked for a size.
+    const isWebOSTV =
+      isWebOS() ||
+      (import.meta.client && window.location.search.includes('webos=true'));
+
     return getUrl('getCoverArt', {
       id: image,
-      size,
+      size: size ?? (isWebOSTV ? '300' : IMAGE_SIZE),
     });
   }
 
@@ -58,6 +69,7 @@ export function useAPI() {
   async function fetchData<DataT = SubsonicResponse>(
     url: string,
     options: UseFetchOptions<SubsonicResponse, DataT> = {},
+    { notifyOnError = true }: FetchDataErrorOptions = {},
   ) {
     try {
       const { $api } = useNuxtApp();
@@ -92,7 +104,9 @@ export function useAPI() {
       const errorMessage =
         error instanceof Error ? error : new Error(error as string);
 
-      addErrorSnack(errorMessage.message);
+      if (notifyOnError) {
+        addErrorSnack(errorMessage.message);
+      }
 
       return {
         data: null,

@@ -5,6 +5,7 @@ export const DEFAULT_ERROR_MESSAGE =
 
 export const PREVIEW_TRACK_COUNT = 8;
 export const PREVIEW_PLAYLIST_COUNT = 8;
+export const PREVIEW_PODCAST_COUNT = 8;
 export const PREVIEW_ALBUM_COUNT = 15;
 export const PREVIEW_ARTIST_COUNT = 15;
 export const PREVIEW_GENRES_COUNT = 10;

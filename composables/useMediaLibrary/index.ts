@@ -43,11 +43,14 @@ export function useMediaLibrary() {
     { deep: true },
   );
 
-  function toggleMusicFolder(id: string | number) {
+  function toggleMusicFolder(id: number | string) {
     const stringId = String(id);
     const index = disabledMusicFolderIds.value.indexOf(stringId);
     if (index === -1) {
-      disabledMusicFolderIds.value = [...disabledMusicFolderIds.value, stringId];
+      disabledMusicFolderIds.value = [
+        ...disabledMusicFolderIds.value,
+        stringId,
+      ];
     } else {
       disabledMusicFolderIds.value = disabledMusicFolderIds.value.filter(
         (folderId) => folderId !== stringId,
@@ -56,7 +59,7 @@ export function useMediaLibrary() {
   }
 
   function isMusicFolderDisabled(
-    id: string | number | undefined,
+    id: number | string | undefined,
     path?: string,
   ) {
     if (id !== undefined && disabledMusicFolderIds.value.includes(String(id))) {
@@ -155,8 +158,8 @@ export function useMediaLibrary() {
         folders: (response.indexes.index || [])
           .flatMap((index) => index.artist!)
           .map((artist) => formatArtist({ ...artist, musicFolderId })),
-        tracks: (response.indexes.child || []).map((track) =>
-          formatTrack({ ...track, musicFolderId }),
+        tracks: (response.indexes.child || []).map((track, index) =>
+          formatTrack({ ...track, musicFolderId }, index),
         ),
       }),
     });

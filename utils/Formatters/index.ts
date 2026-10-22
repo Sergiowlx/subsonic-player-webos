@@ -13,7 +13,7 @@ export function formatAlbum(album: AlbumID3 & AlbumWithSongsID3): Album {
     songCount: trackCount,
     starred,
     year = DEFAULT_VALUE,
-  } = album as any;
+  } = album;
 
   const tracks = song.map(formatTrack);
   const tracksByDiscNumber = groupTracksByDiscNumber(tracks);
@@ -79,12 +79,12 @@ export function formatArtist(
     similarSongs = [],
     starred,
     topSongs = [],
-  } = artistData as any;
+  } = artistData;
 
   const resolvedMusicFolderId = musicFolderId || folderId || folder || parent;
 
   return {
-    albums: album.map((a: any) =>
+    albums: album.map((a) =>
       formatAlbum({ ...a, musicFolderId: resolvedMusicFolderId }),
     ),
     biography,
@@ -98,8 +98,10 @@ export function formatArtist(
       : undefined,
     musicFolderId: resolvedMusicFolderId,
     name,
-    path: artistData.album?.[0]?.song?.[0]?.path || (artistData as any).path,
-    similarArtist: similarArtist.map((s: any) =>
+    path:
+      (artistData.album?.[0] as AlbumWithSongsID3 | undefined)?.song?.[0]
+        ?.path || artistData.path,
+    similarArtist: similarArtist.map((s) =>
       formatSimilarArtist({ ...s, musicFolderId: resolvedMusicFolderId }),
     ),
     similarTracks: similarSongs.map(formatTrack),
@@ -135,6 +137,7 @@ export function formatPlaylist(playlist: PlaylistWithSongs): Playlist {
   const {
     changed,
     comment,
+    coverArt,
     created,
     duration,
     entry = [],
@@ -155,7 +158,7 @@ export function formatPlaylist(playlist: PlaylistWithSongs): Playlist {
     duration,
     formattedDuration: secondsToTimeFormat(duration),
     id,
-    images: getUniqueImages(tracks),
+    images: coverArt ? [coverArt] : getUniqueImages(tracks),
     information: {
       changed: formatDate(changed),
       comment,
@@ -289,7 +292,7 @@ export function formatTrack(track: Base, index: number): Track {
     transcodedContentType = DEFAULT_VALUE,
     transcodedSuffix = DEFAULT_VALUE,
     year = DEFAULT_VALUE,
-  } = track as any;
+  } = track;
 
   return {
     album,
@@ -315,7 +318,7 @@ export function formatTrack(track: Base, index: number): Track {
     },
     musicFolderId: musicFolderId || folderId || folder,
     name,
-    path: (track as any).path,
+    path,
     size: bytesToMB(size),
     streamUrlId: id,
     trackNumber,
@@ -330,7 +333,7 @@ function formatSimilarArtist(similarArtist: ArtistID3): SimilarArtist {
     id,
     musicFolderId,
     name,
-  } = similarArtist as any;
+  } = similarArtist;
 
   return {
     id,

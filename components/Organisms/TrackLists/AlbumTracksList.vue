@@ -35,7 +35,11 @@ const trackHeaderNames = TRACK_HEADER_NAMES.albumTracks;
 </script>
 
 <template>
-  <div v-if="tracks.length" ref="tracksWrapper" class="trackTable">
+  <div
+    v-if="tracks.length"
+    ref="tracksWrapper"
+    class="trackTable webosAlbumTrackTable webosTrackTable"
+  >
     <div class="trackHeader">
       <div class="trackCell">{{ trackHeaderNames[0] }}</div>
       <div class="trackCell trackSecondary">{{ trackHeaderNames[1] }}</div>
@@ -43,11 +47,7 @@ const trackHeaderNames = TRACK_HEADER_NAMES.albumTracks;
       <div class="trackCell trackOptions" />
     </div>
 
-    <div
-      v-for="page in trackPages"
-      :key="page.startIndex"
-      data-webos-grid-page
-    >
+    <div v-for="page in trackPages" :key="page.startIndex" data-webos-grid-page>
       <AlbumTracksListItem
         v-for="track in page.items"
         :key="track.id"

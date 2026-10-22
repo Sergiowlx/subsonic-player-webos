@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import ArtistsList from '@/components/Organisms/ArtistsList.vue';
 
@@ -30,6 +31,8 @@ useHead({
 </script>
 
 <template>
+  <LibraryNavigation />
+
   <h1>Artists</h1>
 
   <LoadingData :class="viewLayout" :status>

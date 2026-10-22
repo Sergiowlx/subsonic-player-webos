@@ -14,9 +14,13 @@ export function useTheme() {
       return;
     }
 
-    const userPrefersDarkTheme = globalThis.matchMedia(
-      '(prefers-color-scheme: dark)',
-    )?.matches;
+    const isWebOSTV =
+      typeof window !== 'undefined' &&
+      (window.location.protocol === 'file:' ||
+        window.location.search.includes('webos=true'));
+    const userPrefersDarkTheme =
+      isWebOSTV ||
+      globalThis.matchMedia('(prefers-color-scheme: dark)')?.matches;
 
     if (userPrefersDarkTheme) {
       isDarkTheme.value = userPrefersDarkTheme;

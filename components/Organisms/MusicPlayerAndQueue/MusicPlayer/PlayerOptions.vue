@@ -7,12 +7,13 @@ import VolumeControl from '@/components/Organisms/MusicPlayerAndQueue/Controls/V
 
 const { currentTime, currentTrack, isPodcastEpisode, isRadioStation } =
   useAudioPlayer();
+const isTV = isWebOSTV();
 </script>
 
 <template>
   <div :class="['centerAll', $style.playerOptions]">
     <p
-      v-if="!isRadioStation"
+      v-if="!isRadioStation && !isTV"
       ref="timeProgress"
       :class="['smallFont', $style.time]"
     >
@@ -20,11 +21,11 @@ const { currentTime, currentTrack, isPodcastEpisode, isRadioStation } =
       {{ currentTrack.formattedDuration }}
     </p>
 
-    <VolumeControl />
+    <VolumeControl v-if="!isTV" />
 
     <PlaybackRateButton v-if="isPodcastEpisode" />
 
-    <MediaInformation v-if="!isRadioStation" />
+    <MediaInformation v-if="!isRadioStation && !isTV" />
 
     <FavouriteButton
       v-if="'favourite' in currentTrack"
@@ -33,7 +34,7 @@ const { currentTime, currentTrack, isPodcastEpisode, isRadioStation } =
       :type="currentTrack.type"
     />
 
-    <QueueButton />
+    <QueueButton v-if="!isTV" />
   </div>
 </template>
 

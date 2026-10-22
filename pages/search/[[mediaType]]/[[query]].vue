@@ -2,6 +2,7 @@
 import InfiniteScroller from '@/components/Molecules/InfiniteScroller.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import PageNavigation from '@/components/Molecules/PageNavigation.vue';
+import SearchForm from '@/components/Molecules/SearchForm.vue';
 import AlbumsList from '@/components/Organisms/AlbumsList.vue';
 import ArtistsList from '@/components/Organisms/ArtistsList.vue';
 import TracksList from '@/components/Organisms/TrackLists/TracksList.vue';
@@ -24,9 +25,19 @@ const { fetchMoreData, hasMore } = useInfinityLoading<SearchResultByType>(
   `search-${route.params[ROUTE_PARAM_KEYS.search.mediaType]}-${route.params[ROUTE_PARAM_KEYS.search.query]}`,
 );
 
-const query = replaceCharactersWithSpace(
-  sanitiseString(route.params[ROUTE_PARAM_KEYS.search.query] as string),
+const mediaType = computed(
+  () =>
+    route.params[ROUTE_PARAM_KEYS.search.mediaType] as
+      | MediaTypeParam
+      | undefined,
 );
+const rawQuery = computed(
+  () => route.params[ROUTE_PARAM_KEYS.search.query] as string | undefined,
+);
+const query = computed(() =>
+  replaceCharactersWithSpace(sanitiseString(rawQuery.value ?? '')),
+);
+const isSearchLanding = computed(() => !mediaType.value && !rawQuery.value);
 
 /* istanbul ignore next -- @preserve */
 function fetchData(mediaType: MediaTypeParam) {
@@ -34,9 +45,19 @@ function fetchData(mediaType: MediaTypeParam) {
     search({
       mediaType,
       offset,
-      query,
+      query: query.value,
     }),
   );
+}
+
+async function onSearchSubmit(term: string) {
+  await navigateTo({
+    name: ROUTE_NAMES.search,
+    params: {
+      [ROUTE_PARAM_KEYS.search.mediaType]: ROUTE_MEDIA_TYPE_PARAMS.Albums,
+      [ROUTE_PARAM_KEYS.search.query]: term,
+    },
+  });
 }
 
 /* istanbul ignore next -- @preserve */
@@ -47,8 +68,11 @@ const {
 } = useAsyncData(
   route.fullPath,
   async () => {
-    const mediaType = route.params[ROUTE_PARAM_KEYS.search.mediaType];
-    const searchResults = await fetchData(mediaType as MediaTypeParam);
+    if (!mediaType.value || !rawQuery.value) {
+      return { searchResults: [] };
+    }
+
+    const searchResults = await fetchData(mediaType.value);
 
     return {
       searchResults,
@@ -98,56 +122,70 @@ const tracks = computed(() => searchResultsData.value.searchResults as Track[]);
 
 useHead({
   title: () =>
-    [query, route.params[ROUTE_PARAM_KEYS.search.mediaType], 'Search']
-      .filter(Boolean)
-      .join(' - '),
+    [query.value, mediaType.value, 'Search'].filter(Boolean).join(' - '),
 });
 </script>
 
 <template>
-  <h1 ref="title">Search results for: {{ convertToTitleCase(query) }}</h1>
+  <section v-if="isSearchLanding" :class="$style.searchPage">
+    <h1>Search</h1>
+    <SearchForm @submit="onSearchSubmit" />
+  </section>
 
-  <PageNavigation :navigation="SEARCH_NAVIGATION" />
+  <template v-else>
+    <h1 ref="title">Search results for: {{ convertToTitleCase(query) }}</h1>
 
-  <LoadingData :class="viewLayout" :status="loadingStatus">
-    <AlbumsList
-      v-if="
-        route.params[ROUTE_PARAM_KEYS.search.mediaType] ===
-        ROUTE_MEDIA_TYPE_PARAMS.Albums
-      "
-      :albums
-      @addToQueue="addAlbumToQueue"
-      @dragStart="dragStart"
-      @mediaInformation="openAlbumInformationModal"
-      @playAlbum="onPlayAlbum"
-    />
+    <PageNavigation :navigation="SEARCH_NAVIGATION" />
 
-    <ArtistsList
-      v-if="
-        route.params[ROUTE_PARAM_KEYS.search.mediaType] ===
-        ROUTE_MEDIA_TYPE_PARAMS.Artists
-      "
-      :artists
-    />
+    <LoadingData :class="viewLayout" :status="loadingStatus">
+      <AlbumsList
+        v-if="
+          route.params[ROUTE_PARAM_KEYS.search.mediaType] ===
+          ROUTE_MEDIA_TYPE_PARAMS.Albums
+        "
+        :albums
+        @addToQueue="addAlbumToQueue"
+        @dragStart="dragStart"
+        @mediaInformation="openAlbumInformationModal"
+        @playAlbum="onPlayAlbum"
+      />
 
-    <TracksList
-      v-if="
-        route.params[ROUTE_PARAM_KEYS.search.mediaType] ===
-        ROUTE_MEDIA_TYPE_PARAMS.Tracks
-      "
-      :tracks
-      @addToPlaylist="addToPlaylistModal"
-      @addToQueue="addTrackToQueue"
-      @downloadMedia="downloadMedia"
-      @dragStart="dragStart"
-      @mediaInformation="openTrackInformationModal"
-      @playTrack="onPlayTrack"
-    />
+      <ArtistsList
+        v-if="
+          route.params[ROUTE_PARAM_KEYS.search.mediaType] ===
+          ROUTE_MEDIA_TYPE_PARAMS.Artists
+        "
+        :artists
+      />
 
-    <InfiniteScroller
-      :hasMore
-      :loading="status === 'pending'"
-      @loadMore="refresh"
-    />
-  </LoadingData>
+      <TracksList
+        v-if="
+          route.params[ROUTE_PARAM_KEYS.search.mediaType] ===
+          ROUTE_MEDIA_TYPE_PARAMS.Tracks
+        "
+        :tracks
+        @addToPlaylist="addToPlaylistModal"
+        @addToQueue="addTrackToQueue"
+        @downloadMedia="downloadMedia"
+        @dragStart="dragStart"
+        @mediaInformation="openTrackInformationModal"
+        @playTrack="onPlayTrack"
+      />
+
+      <InfiniteScroller
+        :hasMore
+        :loading="status === 'pending'"
+        @loadMore="refresh"
+      />
+    </LoadingData>
+  </template>
 </template>
+
+<style module>
+.searchPage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  max-width: 820px;
+}
+</style>

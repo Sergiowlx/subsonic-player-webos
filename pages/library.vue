@@ -3,34 +3,44 @@ import GenreLink from '@/components/Atoms/GenreLink.vue';
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
 import CarouselSwiper from '@/components/Molecules/CarouselSwiper.vue';
 import HeaderSeeAllLink from '@/components/Molecules/HeaderSeeAllLink.vue';
+import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import AlbumItem from '@/components/Organisms/AlbumItem.vue';
 import ArtistItem from '@/components/Organisms/ArtistItem.vue';
 import PlaylistsList from '@/components/Organisms/PlaylistsList.vue';
+import PodcastItem from '@/components/Organisms/PodcastItem.vue';
+import WebOSTVPlaylistsGrid from '@/components/Organisms/WebOSTVPlaylistsGrid.vue';
+import { isWebOSTV } from '@/utils/webos';
+
+const isTV = isWebOSTV();
 
 const { getRandomAlbums } = useAlbum();
 const { getArtists } = useArtist();
 const { getGenres } = useGenre();
 const { dragStart } = useDragAndDrop();
 const { getPlaylists, playlists } = usePlaylist();
+const { getPodcasts } = usePodcast();
 const { addTracksToQueue, playTracks } = useAudioPlayer();
-const { openAlbumInformationModal } = useMediaInformation();
+const { openAlbumInformationModal, openPodcastInformationModal } =
+  useMediaInformation();
 const { getMediaTracks } = useMediaTracks();
 
 /* istanbul ignore next -- @preserve */
 const { data: libraryData, status } = useAsyncData(
   ASYNC_DATA_NAMES.library,
   async () => {
-    const [randomAlbums, artists, genres] = await Promise.all([
+    const [randomAlbums, artists, genres, , podcastList] = await Promise.all([
       getRandomAlbums(),
       getArtists(),
       getGenres(),
       getPlaylists(),
+      getPodcasts(),
     ]);
 
     return {
       artists,
       genres,
+      podcasts: podcastList,
       randomAlbums,
     };
   },
@@ -38,6 +48,7 @@ const { data: libraryData, status } = useAsyncData(
     default: () => ({
       artists: [],
       genres: [],
+      podcasts: [],
       randomAlbums: [],
     }),
     getCachedData: (key, nuxtApp) =>
@@ -49,6 +60,7 @@ const hasData = computed(
   () =>
     libraryData.value.artists.length ||
     libraryData.value.genres.length ||
+    libraryData.value.podcasts?.length ||
     libraryData.value.randomAlbums.length ||
     playlists.value.length,
 );
@@ -61,11 +73,27 @@ async function addAlbumToQueue(album: Album) {
   }
 }
 
+async function onAddPodcastToQueue(podcast: Podcast) {
+  const episodes = await getMediaTracks(podcast);
+
+  if (episodes) {
+    await addTracksToQueue(episodes);
+  }
+}
+
 async function onPlayAlbum(album: Album) {
   const tracks = await getMediaTracks(album);
 
   if (tracks) {
     await playTracks(tracks);
+  }
+}
+
+async function onPlayPodcast(podcast: Podcast) {
+  const episodes = await getMediaTracks(podcast);
+
+  if (episodes) {
+    await playTracks(episodes);
   }
 }
 
@@ -75,6 +103,8 @@ useHead({
 </script>
 
 <template>
+  <LibraryNavigation />
+
   <LoadingData :status>
     <template v-if="hasData">
       <template v-if="libraryData.randomAlbums.length">
@@ -156,9 +186,43 @@ useHead({
           Playlist
         </HeaderSeeAllLink>
 
-        <PlaylistsList
+        <WebOSTVPlaylistsGrid
+          v-if="isTV"
           :playlists="playlists.slice(0, PREVIEW_PLAYLIST_COUNT)"
         />
+        <PlaylistsList
+          v-else
+          :playlists="playlists.slice(0, PREVIEW_PLAYLIST_COUNT)"
+        />
+      </template>
+
+      <template v-if="libraryData.podcasts?.length">
+        <HeaderSeeAllLink
+          :to="{
+            name: ROUTE_NAMES.podcasts,
+          }"
+        >
+          Podcasts
+        </HeaderSeeAllLink>
+
+        <CarouselSwiper ref="podcastCarouselSwiper" :gridRows="2">
+          <swiper-slide
+            v-for="podcast in libraryData.podcasts?.slice(
+              0,
+              PREVIEW_PODCAST_COUNT,
+            ) || []"
+            :key="podcast.id"
+            data-test-id="random-podcast-item"
+          >
+            <PodcastItem
+              :podcast
+              @addPodcastToQueue="onAddPodcastToQueue"
+              @dragStart="dragStart"
+              @mediaInformation="openPodcastInformationModal"
+              @playPodcast="onPlayPodcast"
+            />
+          </swiper-slide>
+        </CarouselSwiper>
       </template>
     </template>
 
