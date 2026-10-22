@@ -1,1 +1,140 @@
-<script setup lang="ts">\nimport ButtonLink from '@/components/Atoms/ButtonLink.vue';\nimport LazyLoadContent from '@/components/Atoms/LazyLoadContent.vue';\nimport MarqueeScroll from '@/components/Atoms/MarqueeScroll.vue';\nimport PreloadImage from '@/components/Molecules/PreloadImage.vue';\nimport FileListItem from '@/components/Organisms/FileListItem.vue';\n\ndefineProps<{\n  folders: MusicFolder[];\n  tracks: Track[];\n}>();\n\ndefineEmits<{\n  addToPlaylist: [trackId: string];\n  addToQueue: [track: Track];\n  downloadMedia: [track: Track];\n  mediaInformation: [track: Track];\n  playTrack: [index: number];\n}>();\n\nconst { isMusicFolderDisabled, toggleMusicFolder } = useMediaLibrary();\n</script>\n\n<template>\n  <div class="trackTable">\n    <div\n      v-if="$route.params[ROUTE_PARAM_KEYS.files.id]"\n      ref="goBack"\n      class="trackRow"\n    >\n      <div class="trackCell">\n        <NuxtLink\n          draggable="false"\n          :to="$route.fullPath.split('/').slice(0, -1).join('/')"\n        >\n          <PreloadImage\n            alt="Go back"\n            :class="$style.trackImage"\n            :image="IMAGE_DEFAULT_BY_TYPE.folderBack"\n          />\n\n          <MarqueeScroll inert> Go back </MarqueeScroll>\n\n          <p class="visuallyHidden">Go back</p>\n        </NuxtLink>\n      </div>\n    </div>\n\n    <template v-if="folders.length || tracks.length">\n      <template v-if="folders.length">\n        <LazyLoadContent\n          v-for="folder in folders"\n          :key="folder.id"\n          class="trackRow"\n          data-test-id="folder"\n        >\n          <div class="trackCell">\n            <NuxtLink draggable="false" :to="`${$route.fullPath}/${folder.id}`">\n              <PreloadImage\n                :alt="folder.name"\n                :class="$style.trackImage"\n                :image="folder.image"\n                size="100"\n              />\n\n              <MarqueeScroll class="mBXS" inert>\n                {{ folder.name }}\n              </MarqueeScroll>\n            </NuxtLink>\n          </div>\n\n          <div\n            v-if="!$route.params[ROUTE_PARAM_KEYS.files.id]"\n            :class="['trackCell', $style.libraryToggleCell]"\n          >\n            <ButtonLink\n              :class="$style.toggleButton"\n              :icon="isMusicFolderDisabled(folder.id) ? ICONS.visibilityOff : ICONS.visibility"\n              showText\n              :title="isMusicFolderDisabled(folder.id) ? 'Enable library' : 'Disable library'"\n              @click.stop="toggleMusicFolder(folder.id)"\n            >\n              {{ isMusicFolderDisabled(folder.id) ? 'Disabled' : 'Enabled' }}\n            </ButtonLink>\n          </div>\n        </LazyLoadContent>\n      </template>\n\n      <template v-if="tracks.length">\n        <FileListItem\n          v-for="(track, index) in tracks"\n          :key="track.id"\n          :track\n          @addToPlaylist="$emit('addToPlaylist', track.id)"\n          @addToQueue="$emit('addToQueue', track)"\n          @downloadMedia="$emit('downloadMedia', track)"\n          @mediaInformation="$emit('mediaInformation', track)"\n          @playTrack="$emit('playTrack', index)"\n        />\n      </template>\n    </template>\n\n    <div v-else class="trackRow">\n      <div ref="noFoldersFiles" class="trackCell">\n        <div>\n          <PreloadImage\n            alt="Go back"\n            :class="$style.trackImage"\n            :image="IMAGE_DEFAULT_BY_TYPE.noFolder"\n          />\n\n          <p>No folders/files found.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n</template>\n\n<style module>\n.trackImage {\n  width: var(--track-width-height-default);\n  height: var(--track-width-height-default);\n  overflow: hidden;\n  border-radius: var(--border-radius-medium);\n}\n\n.libraryToggleCell {\n  flex: 0 0 160px;\n  justify-content: flex-end;\n  padding-right: var(--default-space);\n}\n\n.toggleButton {\n  padding: var(--space-8) var(--space-16);\n  font-weight: var(--font-weight-bold);\n  background-color: var(--background-color-secondary);\n  border: 2px solid var(--theme-color);\n  border-radius: var(--border-radius-medium);\n}\n</style>\n
+<script setup lang="ts">
+import ButtonLink from '@/components/Atoms/ButtonLink.vue';
+import LazyLoadContent from '@/components/Atoms/LazyLoadContent.vue';
+import MarqueeScroll from '@/components/Atoms/MarqueeScroll.vue';
+import PreloadImage from '@/components/Molecules/PreloadImage.vue';
+import FileListItem from '@/components/Organisms/FileListItem.vue';
+
+defineProps<{
+  folders: MusicFolder[];
+  tracks: Track[];
+}>();
+
+defineEmits<{
+  addToPlaylist: [trackId: string];
+  addToQueue: [track: Track];
+  downloadMedia: [track: Track];
+  mediaInformation: [track: Track];
+  playTrack: [index: number];
+}>();
+
+const { isMusicFolderDisabled, toggleMusicFolder } = useMediaLibrary();
+</script>
+
+<template>
+  <div class="trackTable">
+    <div
+      v-if="$route.params[ROUTE_PARAM_KEYS.files.id]"
+      ref="goBack"
+      class="trackRow"
+    >
+      <div class="trackCell">
+        <NuxtLink
+          draggable="false"
+          :to="$route.fullPath.split('/').slice(0, -1).join('/')"
+        >
+          <PreloadImage
+            alt="Go back"
+            :class="$style.trackImage"
+            :image="IMAGE_DEFAULT_BY_TYPE.folderBack"
+          />
+
+          <MarqueeScroll inert> Go back </MarqueeScroll>
+
+          <p class="visuallyHidden">Go back</p>
+        </NuxtLink>
+      </div>
+    </div>
+
+    <template v-if="folders.length || tracks.length">
+      <template v-if="folders.length">
+        <LazyLoadContent
+          v-for="folder in folders"
+          :key="folder.id"
+          class="trackRow"
+          data-test-id="folder"
+        >
+          <div class="trackCell">
+            <NuxtLink draggable="false" :to="`${$route.fullPath}/${folder.id}`">
+              <PreloadImage
+                :alt="folder.name"
+                :class="$style.trackImage"
+                :image="folder.image"
+                size="100"
+              />
+
+              <MarqueeScroll class="mBXS" inert>
+                {{ folder.name }}
+              </MarqueeScroll>
+            </NuxtLink>
+          </div>
+
+          <div
+            v-if="!$route.params[ROUTE_PARAM_KEYS.files.id]"
+            :class="['trackCell', $style.libraryToggleCell]"
+          >
+            <ButtonLink
+              :class="$style.toggleButton"
+              :icon="isMusicFolderDisabled(folder.id) ? ICONS.visibilityOff : ICONS.visibility"
+              showText
+              :title="isMusicFolderDisabled(folder.id) ? 'Enable library' : 'Disable library'"
+              @click.stop="toggleMusicFolder(folder.id)"
+            >
+              {{ isMusicFolderDisabled(folder.id) ? 'Disabled' : 'Enabled' }}
+            </ButtonLink>
+          </div>
+        </LazyLoadContent>
+      </template>
+
+      <template v-if="tracks.length">
+        <FileListItem
+          v-for="(track, index) in tracks"
+          :key="track.id"
+          :track
+          @addToPlaylist="$emit('addToPlaylist', track.id)"
+          @addToQueue="$emit('addToQueue', track)"
+          @downloadMedia="$emit('downloadMedia', track)"
+          @mediaInformation="$emit('mediaInformation', track)"
+          @playTrack="$emit('playTrack', index)"
+        />
+      </template>
+    </template>
+
+    <div v-else class="trackRow">
+      <div ref="noFoldersFiles" class="trackCell">
+        <div>
+          <PreloadImage
+            alt="Go back"
+            :class="$style.trackImage"
+            :image="IMAGE_DEFAULT_BY_TYPE.noFolder"
+          />
+
+          <p>No folders/files found.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style module>
+.trackImage {
+  width: var(--track-width-height-default);
+  height: var(--track-width-height-default);
+  overflow: hidden;
+  border-radius: var(--border-radius-medium);
+}
+
+.libraryToggleCell {
+  flex: 0 0 160px;
+  justify-content: flex-end;
+  padding-right: var(--default-space);
+}
+
+.toggleButton {
+  padding: var(--space-8) var(--space-16);
+  font-weight: var(--font-weight-bold);
+  background-color: var(--background-color-secondary);
+  border: 2px solid var(--theme-color);
+  border-radius: var(--border-radius-medium);
+}
+</style>
