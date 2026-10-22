@@ -5,16 +5,23 @@ export async function fetchAndMergeArtistData(
   fetchFn: <DataT = SubsonicResponse>(
     url: string,
     options: UseFetchOptions<SubsonicResponse, DataT>,
+    requestOptions?: { notifyOnError?: boolean },
   ) => Promise<{
     data: DataT | null;
     error?: Error | null;
   }>,
 ) {
-  const { data: artistInfo } = await fetchFn('/getArtistInfo2', {
-    query: {
-      id,
+  // Artist info is optional metadata. Navidrome may not have Last.fm data for
+  // every artist, so it must not hide an otherwise valid artist record.
+  const { data: artistInfo } = await fetchFn(
+    '/getArtistInfo2',
+    {
+      query: {
+        id,
+      },
     },
-  });
+    { notifyOnError: false },
+  );
 
   const { data: artistData } = await fetchFn('/getArtist', {
     query: {
@@ -22,7 +29,7 @@ export async function fetchAndMergeArtistData(
     },
   });
 
-  if (!artistInfo || !artistData) {
+  if (!artistData?.artist) {
     return null;
   }
 
@@ -41,7 +48,7 @@ export async function fetchAndMergeArtistData(
   });
 
   const mergedArtists = {
-    ...artistInfo.artistInfo2,
+    ...artistInfo?.artistInfo2,
     ...artistData.artist,
     similarSongs: similarSongs?.similarSongs2?.song,
     topSongs: topSongs?.topSongs?.song,

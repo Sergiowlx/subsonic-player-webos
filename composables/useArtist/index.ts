@@ -46,8 +46,10 @@ export function useArtist() {
   function getArtist(id: string) {
     const route = useRoute();
     const config = useRuntimeConfig();
+    const shouldFetchFromClient =
+      config.public.SPA_MODE || (import.meta.client && isWebOSTV());
 
-    if (config.public.SPA_MODE) {
+    if (shouldFetchFromClient) {
       return useAsyncData(
         route.fullPath,
         () => fetchAndMergeArtistData(id, fetchData),

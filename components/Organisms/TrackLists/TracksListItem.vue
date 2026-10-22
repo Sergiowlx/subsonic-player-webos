@@ -59,12 +59,6 @@ function openDropdownMenu(event: MouseEvent | TouchEvent) {
 
           <TrackMeta class="trackMeta" :track />
 
-          <FavouriteButton
-            :id="track.id"
-            class="desktopOnly"
-            :favourite="track.favourite"
-            :type="track.type"
-          />
         </div>
       </div>
 

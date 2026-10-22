@@ -5,11 +5,17 @@ import SnackBar from '@/components/Molecules/SnackBar.vue';
 
 const { hook } = useNuxtApp();
 const { isDarkTheme } = useTheme();
-const { accentColor, accentColorRgb } = useWebOSTVSettings();
+const {
+  accentColor,
+  accentColorRgb,
+  restoreSettings: restoreWebOSTVSettings,
+} = useWebOSTVSettings();
 const { width } = useSidebar();
 const { showMediaPlayer } = useAudioPlayer();
 
 const loading = ref(true);
+
+onMounted(restoreWebOSTVSettings);
 
 hook('page:finish', () => {
   loading.value = false;

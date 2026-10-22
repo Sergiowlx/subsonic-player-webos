@@ -2,25 +2,21 @@
 import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 
 const { toggleQueuePlayer } = useQueue();
-const router = useRouter();
 
-// Detect if running on webOS TV
+// On TV this control opens the expanded Now Playing view. Desktop keeps the
+// existing queue panel behavior.
 const isWebOS =
-  typeof window !== 'undefined' && window.location.protocol === 'file:';
+  typeof window !== 'undefined' &&
+  (window.location.protocol === 'file:' ||
+    window.location.search.includes('webos=true') ||
+    document.body.classList.contains('webosTV'));
 
-function handleQueueClick() {
-  if (isWebOS) {
-    // On webOS, navigate to queue page
-    router.push({ name: ROUTE_NAMES.queue });
-  } else {
-    // On web, toggle queue modal
-    toggleQueuePlayer();
-  }
-}
+const buttonTitle = isWebOS ? 'Open now playing' : 'Open queue';
+const buttonIcon = isWebOS ? ICONS.genre : ICONS.queue;
 </script>
 
 <template>
-  <ButtonLink :icon="ICONS.queue" title="Open queue" @click="handleQueueClick">
-    Open queue
+  <ButtonLink :icon="buttonIcon" :title="buttonTitle" @click="toggleQueuePlayer">
+    {{ buttonTitle }}
   </ButtonLink>
 </template>

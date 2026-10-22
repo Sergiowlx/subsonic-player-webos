@@ -53,7 +53,7 @@ function openDropdownMenu(event: MouseEvent | TouchEvent) {
 <template>
   <InteractionWrapper
     is="article"
-    :class="['layoutItem', $style.albumItem]"
+    :class="['layoutItem', 'webosAlbumItem', $style.albumItem]"
     @click="goToAlbum"
     @contextMenu="openDropdownMenu"
     @dragStart="onDragStart"

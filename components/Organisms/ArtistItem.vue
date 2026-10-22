@@ -17,9 +17,9 @@ const artistProps = computed(() => ({
 </script>
 
 <template>
-  <article class="layoutItem">
+  <article class="layoutItem webosArtistItem">
     <ImageLink
-      class="layoutImage"
+      class="layoutImage webosArtistImage"
       :image="artist.image"
       :title="artistProps.title"
       :to="artistProps.toLink"

@@ -2,6 +2,7 @@
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
 import VirtualList from '@/components/Molecules/VirtualList.vue';
 import TracksListItem from '@/components/Organisms/TrackLists/TracksListItem.vue';
+import { isWebOSTV } from '@/utils/webos';
 
 interface TrackPage {
   items: Track[];
@@ -12,9 +13,26 @@ const props = defineProps<{
   tracks: Track[];
 }>();
 
-const TRACK_ROW_HEIGHT =
-  import.meta.client && document.body.classList.contains('webosTV') ? 70 : 55;
-const TRACK_PAGE_HEIGHT = TRACK_ROW_HEIGHT * 2;
+function getTrackPageHeight() {
+  if (!import.meta.client || !isWebOSTV()) {
+    return 55 * 2;
+  }
+
+  const rootStyle = getComputedStyle(document.documentElement);
+  const rootFontSize = Number.parseFloat(rootStyle.fontSize) || 16;
+  const rowHeightRem =
+    Number.parseFloat(rootStyle.getPropertyValue('--webos-track-row-height')) ||
+    4.75;
+  const rowGapRem =
+    Number.parseFloat(rootStyle.getPropertyValue('--webos-track-row-gap')) ||
+    0.5;
+
+  // The TV stylesheet converts these dimensions to rem; VirtualList's spacer
+  // uses inline px, so calculate its stride from the rendered root font size.
+  return Math.round((rowHeightRem + rowGapRem) * rootFontSize * 2);
+}
+
+const TRACK_PAGE_HEIGHT = getTrackPageHeight();
 
 const trackPages = computed<TrackPage[]>(() => {
   const pages: TrackPage[] = [];
@@ -40,7 +58,11 @@ const trackHeaderNames = TRACK_HEADER_NAMES.tracks;
 </script>
 
 <template>
-  <div v-if="tracks.length" ref="tracksWrapper" class="trackTable withPreview">
+  <div
+    v-if="tracks.length"
+    ref="tracksWrapper"
+    class="trackTable withPreview webosTrackTable"
+  >
     <div class="trackHeader">
       <div class="trackCell">{{ trackHeaderNames[0] }}</div>
       <div class="trackCell trackSecondary">{{ trackHeaderNames[1] }}</div>
@@ -64,11 +86,6 @@ const trackHeaderNames = TRACK_HEADER_NAMES.tracks;
         <TracksListItem
           v-for="(track, rowIndex) in page.items"
           :key="track.id"
-          :style="
-            (page.startIndex + rowIndex) % 2 === 1
-              ? { backgroundColor: 'var(--hover-selected-color)' }
-              : undefined
-          "
           :track
           @addToPlaylist="$emit('addToPlaylist', track.id)"
           @addToQueue="$emit('addToQueue', track)"

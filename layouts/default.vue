@@ -13,6 +13,7 @@ import SidebarNavigation from '@/components/Organisms/SidebarNavigation/SidebarN
 
 const route = useRoute();
 const user = useUser();
+const { closeQueuePlayer, isQueuePlayerOpened } = useQueue();
 const { logoutAndRedirect } = useAuth();
 const { startScan } = useMediaLibrary();
 
@@ -33,11 +34,58 @@ const showPageNavigation = computed(() =>
 
 <template>
   <div :class="$style.mainLayout">
-    <header :class="['centerItems', $style.header]">
+    <header
+      :class="[
+        'centerItems',
+        $style.header,
+        { nowPlayingHeader: isQueuePlayerOpened },
+      ]"
+      @click.capture="closeQueuePlayer"
+    >
       <div class="spaceBetween inner centerItems">
         <MusicLogo class="mobileOnly" />
 
-        <div :class="$style.search">
+        <MusicLogo :class="$style.tvLogo" />
+
+        <nav
+          :class="[$style.tvPrimaryNavigation, 'tvPrimaryNavigation']"
+          aria-label="Primary navigation"
+        >
+          <ButtonLink
+            is="nuxt-link"
+            class="tvPrimaryLink"
+            exactActiveClass="tvPrimaryLinkActive"
+            showText
+            :icon="ICONS.home"
+            :to="{ name: ROUTE_NAMES.index }"
+          >
+            Home
+          </ButtonLink>
+
+          <ButtonLink
+            is="nuxt-link"
+            class="tvPrimaryLink"
+            exactActiveClass="tvPrimaryLinkActive"
+            showText
+            :icon="ICONS.search"
+            to="/search"
+          >
+            Search
+          </ButtonLink>
+
+          <ButtonLink
+            is="nuxt-link"
+            class="tvPrimaryLink"
+            exactActiveClass="tvPrimaryLinkActive"
+            showText
+            :icon="ICONS.library"
+            :to="{ name: ROUTE_NAMES.library }"
+          >
+            Your library
+          </ButtonLink>
+        </nav>
+
+        <div data-header-search :class="$style.search">
           <SearchForm @submit="onSubmit" />
         </div>
 
@@ -142,11 +190,11 @@ const showPageNavigation = computed(() =>
 .header {
   position: fixed;
   inset: 0 0 auto;
-  z-index: 10;
+  z-index: 30;
   min-height: var(--header-height);
   background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--box-shadow-medium);
+  border-bottom: 0;
+  box-shadow: none;
 
   @media (--tablet-up) {
     margin-left: var(--sidebar-width);
@@ -161,6 +209,11 @@ const showPageNavigation = computed(() =>
   @media (--tablet-up) {
     --search-width: 45%;
   }
+}
+
+.tvLogo,
+.tvPrimaryNavigation {
+  display: none;
 }
 
 .secondary {

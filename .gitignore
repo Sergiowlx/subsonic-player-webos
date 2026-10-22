@@ -50,7 +50,7 @@ coverage
 
 # webOS build artifacts
 *.ipk
-com.subsonic.player.v1.manifest.json
+com.subsonic.player.v*.manifest.json
 webos/*
 # Keep only source files
 !webos/appinfo.json

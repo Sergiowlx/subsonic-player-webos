@@ -6,7 +6,6 @@ import MarqueeScroll from '@/components/Atoms/MarqueeScroll.vue';
 import FavouriteButton from '@/components/Molecules/FavouriteButton.vue';
 import PreloadImage from '@/components/Molecules/PreloadImage.vue';
 import MainPlayerControls from '@/components/Organisms/MusicPlayerAndQueue/Controls/MainPlayerControls.vue';
-import MediaInformation from '@/components/Organisms/MusicPlayerAndQueue/Controls/MediaInformation.vue';
 import PlaybackRateButton from '@/components/Organisms/MusicPlayerAndQueue/Controls/PlaybackRateButton.vue';
 import RepeatButton from '@/components/Organisms/MusicPlayerAndQueue/Controls/RepeatButton.vue';
 import ShuffleButton from '@/components/Organisms/MusicPlayerAndQueue/Controls/ShuffleButton.vue';
@@ -21,12 +20,38 @@ const {
   isTrack,
   rewindTrack,
 } = useAudioPlayer();
+const { getImageUrl } = useAPI();
 const { toggleQueueList, toggleQueuePlayer } = useQueue();
+const isTV =
+  typeof window !== 'undefined' &&
+  (window.location.protocol === 'file:' ||
+    window.location.search.includes('webos=true') ||
+    document.body.classList.contains('webosTV'));
+const artworkBackground = computed(() => {
+  if (
+    Object.values(IMAGE_DEFAULT_BY_TYPE).includes(
+      currentTrack.value.image as Icon,
+    )
+  ) {
+    return undefined;
+  }
+
+  return `url("${getImageUrl(currentTrack.value.image, '600')}")`;
+});
 </script>
 
 <template>
-  <div class="queueWrapper column">
+  <div
+    class="queueWrapper column"
+    :class="{ [$style.tvPlayer]: isTV, tvPlayer: isTV }"
+    :style="
+      isTV && artworkBackground
+        ? { '--tv-artwork-background': artworkBackground }
+        : undefined
+    "
+  >
     <ButtonLink
+      v-if="!isTV"
       ref="closeQueueMenu"
       class="queueAction"
       fullWidth
@@ -45,6 +70,7 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
             <div :class="$style.imageInner">
               <div :class="$style.preloadImageWrapper">
                 <button
+                  v-if="!isTV"
                   ref="rewindButton"
                   :class="[$style.rewindFastForwardButton, $style.rewindButton]"
                   @click="doubleClick(rewindTrack)"
@@ -54,6 +80,7 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
                   </span>
                 </button>
                 <button
+                  v-if="!isTV"
                   ref="fastForwardButton"
                   :class="[
                     $style.rewindFastForwardButton,
@@ -68,6 +95,7 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
                 <PreloadImage
                   :class="$style.preloadImage"
                   :image="currentTrack.image"
+                  size="600"
                 />
               </div>
             </div>
@@ -77,11 +105,24 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
         <div :class="$style.trackDetailsWrapper">
           <div :class="['mBAllL', 'column', $style.trackDetails]">
             <div>
-              <MarqueeScroll inert>
-                <h2 class="strong mBXS">
-                  {{ currentTrack.name }}
-                </h2>
-              </MarqueeScroll>
+              <p v-if="isTV" :class="$style.nowPlayingLabel">
+                NOW PLAYING
+              </p>
+              <div :class="{ [$style.tvTrackHeading]: isTV }">
+                <MarqueeScroll inert :class="{ [$style.tvTrackTitle]: isTV }">
+                  <h2 class="strong mBXS">
+                    {{ currentTrack.name }}
+                  </h2>
+                </MarqueeScroll>
+
+                <FavouriteButton
+                  v-if="isTV && 'favourite' in currentTrack"
+                  :id="currentTrack.id"
+                  :favourite="currentTrack.favourite"
+                  :type="currentTrack.type"
+                  :class="$style.tvTrackFavourite"
+                />
+              </div>
 
               <template v-if="isTrack">
                 <MarqueeScroll
@@ -138,8 +179,10 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
               </template>
             </div>
 
-            <div class="fullWidth">
-              <TrackSeeker class="fullWidth" />
+            <div :class="['fullWidth', { [$style.tvProgress]: isTV }]">
+              <TrackSeeker
+                :class="['fullWidth', { webosNowPlayingSeeker: isTV }]"
+              />
 
               <div
                 v-if="!isRadioStation"
@@ -151,11 +194,43 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
               </div>
             </div>
 
+            <div
+              v-if="isTV"
+              :class="[$style.tvNowPlayingControls, 'tvNowPlayingControls']"
+            >
+              <ShuffleButton v-if="!isRadioStation" />
+
+              <MainPlayerControls
+                :showSeekControls="false"
+                :class="$style.tvTransportControls"
+              />
+
+              <RepeatButton v-if="!isRadioStation" />
+
+              <ButtonLink
+                ref="openQueueList"
+                class="webosQueueButton"
+                :class="$style.tvQueueButton"
+                :icon="ICONS.queue"
+                iconWeight="bold"
+                :showText="isTV"
+                title="Queue"
+                @click="toggleQueueList"
+              >
+                Queue
+              </ButtonLink>
+
+              <PlaybackRateButton v-if="isPodcastEpisode" />
+            </div>
+
             <MainPlayerControls
+              v-else
+              :showSeekControls="true"
               :class="['fullWidth', $style.secondaryOptions]"
             />
 
             <div
+              v-if="!isTV"
               :class="['centerAll', 'spaceBetween', $style.secondaryOptions]"
             >
               <FavouriteButton
@@ -170,8 +245,6 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
               <RepeatButton v-if="!isRadioStation" />
 
               <PlaybackRateButton v-if="isPodcastEpisode" />
-
-              <MediaInformation v-if="!isRadioStation" />
             </div>
           </div>
         </div>
@@ -179,9 +252,10 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
     </div>
 
     <ButtonLink
+      v-if="!isTV"
       ref="openQueueList"
       class="queueAction"
-      fullWidth
+      :fullWidth="true"
       :icon="ICONS.playlist"
       iconWeight="bold"
       title="Open queue list"
@@ -267,5 +341,231 @@ const { toggleQueueList, toggleQueuePlayer } = useQueue();
 .secondaryOptions {
   max-width: 400px;
   margin: 0 auto;
+}
+
+.tvPlayer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 12px clamp(20px, 4vw, 64px);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 26% 48%,
+      rgba(var(--theme-color-rgb), 0.16),
+      transparent 34%
+    ),
+    var(--body-background-color);
+}
+
+.tvPlayer::before,
+.tvPlayer::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+}
+
+.tvPlayer::before {
+  inset: -6%;
+  z-index: 0;
+  background-image: var(--tv-artwork-background);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(36px) brightness(0.6) saturate(1.1);
+  transform: scale(1.08);
+}
+
+.tvPlayer::after {
+  z-index: 1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 10, 14, 0.42) 0%,
+      rgba(8, 10, 14, 0.24) 48%,
+      rgba(8, 10, 14, 0.42) 100%
+    ),
+    rgba(8, 10, 14, 0.05);
+}
+
+.tvAction {
+  position: relative;
+  z-index: 3;
+  align-self: flex-start;
+  padding: 10px 12px;
+  color: var(--secondary-font-color);
+}
+
+.tvPlayer .playerWrapper {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: auto 0;
+}
+
+.tvPlayer .wrapper {
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6vw;
+  width: 100%;
+  height: 100%;
+  padding: 12px 4vw;
+}
+
+.tvPlayer .inner {
+  flex: 0 0 42vh;
+  width: 42vh;
+  max-width: 480px;
+  margin: 0;
+}
+
+.tvPlayer .imageWrapper,
+.tvPlayer .imageInner {
+  width: 100%;
+  height: 42vh;
+  max-height: 480px;
+  max-width: 480px;
+}
+
+.tvPlayer .imageWrapper {
+  aspect-ratio: auto;
+}
+
+.tvPlayer .imageInner {
+  position: relative;
+  aspect-ratio: auto;
+}
+
+.tvPlayer .preloadImageWrapper {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tvPlayer .trackDetailsWrapper {
+  display: flex;
+  flex: 1 1 520px;
+  min-width: 0;
+  max-width: 620px;
+}
+
+.tvPlayer .trackDetails {
+  flex: 0 1 620px;
+  height: auto !important;
+  align-self: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  margin-top: 0;
+
+  > *:not(:last-child) {
+    margin-bottom: 0;
+  }
+}
+
+.tvTrackHeading {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.tvTrackTitle {
+  flex: 1 1 0;
+  width: 0 !important;
+  min-width: 0;
+
+  :global(h2) {
+    margin-bottom: 0 !important;
+    padding-bottom: 0.12em;
+    line-height: 1.25;
+  }
+}
+
+.tvTrackFavourite {
+  display: inline-flex;
+  flex: 0 0 52px;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  color: var(--font-color);
+  background: rgb(255 255 255 / 8%);
+  border-radius: 50%;
+}
+
+.tvProgress {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.tvNowPlayingControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 1.6vw, 24px);
+  width: 100%;
+  max-width: 620px;
+  margin-top: 0;
+}
+
+.tvTransportControls {
+  display: contents;
+}
+
+.tvQueueButton {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  width: auto;
+  height: 56px;
+  padding: 0 18px;
+  color: var(--font-color);
+  background: rgb(255 255 255 / 8%);
+  border: 0;
+  border-radius: 999px;
+  transition: background-color 130ms ease-out, color 130ms ease-out;
+}
+
+.tvPlayer .preloadImage {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 42%);
+}
+
+.nowPlayingLabel {
+  margin-bottom: var(--space-12);
+  color: var(--theme-color);
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.16em;
+}
+
+@media (max-height: 800px) {
+  .tvPlayer .inner {
+    flex-basis: 38vh;
+    width: 38vh;
+  }
+
+  .tvPlayer .imageWrapper,
+  .tvPlayer .imageInner {
+    height: 38vh;
+  }
 }
 </style>

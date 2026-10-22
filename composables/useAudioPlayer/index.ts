@@ -526,9 +526,10 @@ export function useAudioPlayer() {
 
   // Volume actions.
   function setVolume(newVolume: number) {
+    const appliedVolume = isWebOSTV() ? 1 : newVolume;
     previousVolume.value = volume.value;
-    audioPlayer.value?.setVolume(newVolume);
-    volume.value = newVolume;
+    audioPlayer.value?.setVolume(appliedVolume);
+    volume.value = appliedVolume;
     saveState();
   }
 

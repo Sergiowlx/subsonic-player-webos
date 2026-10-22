@@ -35,7 +35,11 @@ const trackHeaderNames = TRACK_HEADER_NAMES.albumTracks;
 </script>
 
 <template>
-  <div v-if="tracks.length" ref="tracksWrapper" class="trackTable">
+  <div
+    v-if="tracks.length"
+    ref="tracksWrapper"
+    class="trackTable webosAlbumTrackTable webosTrackTable"
+  >
     <div class="trackHeader">
       <div class="trackCell">{{ trackHeaderNames[0] }}</div>
       <div class="trackCell trackSecondary">{{ trackHeaderNames[1] }}</div>

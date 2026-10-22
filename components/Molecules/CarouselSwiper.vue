@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import ButtonLink from '@/components/Atoms/ButtonLink.vue';
+import { isWebOSTV } from '@/utils/webos';
+import type { SwiperContainer } from 'swiper/element';
 
 const props = withDefaults(
   defineProps<{
@@ -10,7 +12,8 @@ const props = withDefaults(
   },
 );
 
-const swiperRef = ref(null);
+const swiperRef = ref<null | SwiperContainer>(null);
+const isTV = isWebOSTV();
 
 function breakpointsSettings(slides = 2) {
   return {
@@ -36,11 +39,49 @@ const swiper = useSwiper(swiperRef, {
     /* eslint-enable perfectionist/sort-objects */
   },
 });
+
+function onRemoteKeydown(event: KeyboardEvent) {
+  if (!isTV || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
+    return;
+  }
+
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+
+  const currentSlide = target.closest('swiper-slide');
+  const instance = swiper.instance.value;
+  if (!currentSlide || !instance) return;
+
+  const currentIndex = instance.slides.indexOf(currentSlide as HTMLElement);
+  const nextIndex = currentIndex + (event.key === 'ArrowRight' ? 1 : -1);
+  const nextSlide = instance.slides[nextIndex];
+  if (currentIndex < 0 || !nextSlide) return;
+
+  // Let the remote move one card at a time. Only shift the carousel when the
+  // next card would otherwise be clipped by the viewport.
+  event.preventDefault();
+  event.stopPropagation();
+
+  const viewportRect = swiperRef.value?.getBoundingClientRect();
+  const nextRect = nextSlide.getBoundingClientRect();
+  if (
+    viewportRect &&
+    (nextRect.left < viewportRect.left || nextRect.right > viewportRect.right)
+  ) {
+    swiper.to(nextIndex, 180);
+  }
+
+  nextSlide
+    .querySelector<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    )
+    ?.focus({ preventScroll: true });
+}
 </script>
 
 <template>
   <div :class="['mBL', $style.carouselSwiper]">
-    <swiper-container ref="swiperRef">
+    <swiper-container ref="swiperRef" @keydown="onRemoteKeydown">
       <slot />
     </swiper-container>
 

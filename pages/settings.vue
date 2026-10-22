@@ -89,7 +89,11 @@ function setThemeMode(mode: ThemePreference) {
 
   if (mode === 'auto') {
     deleteLocalStorage(STATE_NAMES.theme);
-    isDarkTheme.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isWebOSTV =
+      window.location.protocol === 'file:' ||
+      window.location.search.includes('webos=true');
+    isDarkTheme.value =
+      isWebOSTV || window.matchMedia('(prefers-color-scheme: dark)').matches;
     return;
   }
 

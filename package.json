@@ -77,7 +77,7 @@
     "build": "nuxt build",
     "build:preview": "yarn build && yarn preview",
     "build:webos": "./webos/package-webos.sh",
-    "manifest": "node webos/tools/gen-manifest.cjs com.subsonic.player.v1.manifest.json",
+    "manifest": "node webos/tools/gen-manifest.cjs",
     "check-types": "vue-tsc --noEmit",
     "dev": "yarn postinstall && nuxt dev --open",
     "generate": "nuxt generate",
@@ -97,5 +97,5 @@
     "test:webos:ui": "playwright test --project=webos --ui"
   },
   "type": "module",
-  "version": "1.0.3"
+  "version": "2.0.0"
 }

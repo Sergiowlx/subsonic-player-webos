@@ -1,6 +1,7 @@
 export const WEBOS_SETTINGS_STORAGE_KEY = 'webos-tv-settings';
 
 export const WEBOS_ACCENT_COLOURS = [
+  { label: 'Lime', value: '#1ed760', rgb: '30, 215, 96' },
   { label: 'Purple', value: '#6313bc', rgb: '99, 19, 188' },
   { label: 'Blue', value: '#1976d2', rgb: '25, 118, 210' },
   { label: 'Teal', value: '#00897b', rgb: '0, 137, 123' },
@@ -19,7 +20,7 @@ export interface WebOSTVSettings {
 }
 
 const DEFAULT_WEBOS_SETTINGS: WebOSTVSettings = {
-  accentColor: '#6313bc',
+  accentColor: '#1ed760',
   scrobbleEnabled: true,
   showPodcasts: true,
   showRadioStations: true,

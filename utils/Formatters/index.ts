@@ -98,7 +98,9 @@ export function formatArtist(
       : undefined,
     musicFolderId: resolvedMusicFolderId,
     name,
-    path: artistData.album?.[0]?.song?.[0]?.path || (artistData as any).path,
+    path:
+      (artistData.album?.[0] as AlbumWithSongsID3 | undefined)?.song?.[0]
+        ?.path || (artistData as any).path,
     similarArtist: similarArtist.map((s: any) =>
       formatSimilarArtist({ ...s, musicFolderId: resolvedMusicFolderId }),
     ),
@@ -136,6 +138,7 @@ export function formatPlaylist(playlist: PlaylistWithSongs): Playlist {
     changed,
     comment,
     created,
+    coverArt,
     duration,
     entry = [],
     id,
@@ -155,7 +158,7 @@ export function formatPlaylist(playlist: PlaylistWithSongs): Playlist {
     duration,
     formattedDuration: secondsToTimeFormat(duration),
     id,
-    images: getUniqueImages(tracks),
+    images: coverArt ? [coverArt] : getUniqueImages(tracks),
     information: {
       changed: formatDate(changed),
       comment,

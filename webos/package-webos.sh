@@ -71,10 +71,13 @@ if command -v ares-package &> /dev/null; then
   # Use --no-minify because Nuxt already minified the code
   ares-package webos --outdir ./ --no-minify
   echo "✅ webOS package created successfully!"
-  echo "📦 Package: com.subsonic.player_1.0.0_all.ipk"
+  APP_ID=$(node -e "process.stdout.write(require('./webos/appinfo.json').id)")
+  APP_VERSION=$(node -e "process.stdout.write(require('./webos/appinfo.json').version)")
+  IPK_FILENAME="${APP_ID}_${APP_VERSION}_all.ipk"
+  echo "📦 Package: ${IPK_FILENAME}"
   echo ""
   echo "To install on your TV:"
-  echo "  ares-install com.subsonic.player_1.0.0_all.ipk -d <TV_NAME>"
+  echo "  ares-install ${IPK_FILENAME} -d <TV_NAME>"
 else
   echo "⚠️  ares-package not found. Install webOS SDK to create .ipk package"
   echo "   See: https://webostv.developer.lge.com/sdk/installation/"

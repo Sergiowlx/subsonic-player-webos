@@ -10,18 +10,18 @@
 
 ### 1. Update Version Numbers
 
-Edit two files with the new version (e.g., `1.1.0`):
+Edit two files with the new version (for this redesign, `2.0.0`):
 
 **package.json** (line 95):
 
 ```json
-"version": "1.1.0"
+"version": "2.0.0"
 ```
 
 **webos/appinfo.json** (line 4):
 
 ```json
-"version": "1.1.0"
+"version": "2.0.0"
 ```
 
 ### 2. Build webOS Package
@@ -30,7 +30,7 @@ Edit two files with the new version (e.g., `1.1.0`):
 yarn build:webos
 ```
 
-This creates: `com.subsonic.player_1.1.0_all.ipk`
+This creates: `com.subsonic.player_2.0.0_all.ipk`
 
 ### 3. Generate Homebrew Manifest
 
@@ -38,34 +38,34 @@ This creates: `com.subsonic.player_1.1.0_all.ipk`
 yarn manifest
 ```
 
-This creates: `com.subsonic.player.v1.manifest.json`
+This creates: `com.subsonic.player.v2.manifest.json`
 
 ### 4. Create GitHub Release
 
-1. Go to: https://github.com/pando85/subsonic-player-webos/releases/new
-2. Click "Choose a tag" → enter `v1.1.0` → "Create new tag"
-3. Title: `v1.1.0`
+1. Go to: https://github.com/Sergiowlx/subsonic-player-webos/releases/new
+2. Click "Choose a tag" → enter `v2.0.0` → "Create new tag"
+3. Title: `v2.0.0 — Complete webOS TV interface redesign`
 4. Description: Summarize changes (see step 5 for how to generate)
 5. Attach both files:
-   - `com.subsonic.player_1.1.0_all.ipk`
-   - `com.subsonic.player.v1.manifest.json`
+   - `com.subsonic.player_2.0.0_all.ipk`
+   - `com.subsonic.player.v2.manifest.json`
 6. Click "Publish release"
 
 ### 5. Generate Release Notes (Optional)
 
 ```bash
-git log v1.0.0..HEAD --oneline --no-merges | grep -v dependabot
+git log v1.0.2-webos-legacy.1..HEAD --oneline --no-merges | grep -v dependabot
 ```
 
-Replace `v1.0.0` with the previous release tag.
+Replace the starting tag with the previous release tag when preparing later releases.
 
 ### 6. Commit and Tag
 
 ```bash
 git add package.json webos/appinfo.json
-git commit -m "release: v1.1.0"
-git tag v1.1.0
-git push origin main v1.1.0
+git commit -m "release: v2.0.0"
+git tag v2.0.0
+git push origin main v2.0.0
 ```
 
 ## Summary Checklist

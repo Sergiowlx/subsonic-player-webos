@@ -11,6 +11,7 @@ export interface AlbumID3 {
   genre?: string;
   genres?: AlbumBaseGenre[];
   id: string;
+  musicFolderId?: string;
   name: string;
   playCount?: number;
   songCount: number;
@@ -43,6 +44,7 @@ export interface ArtistID3 {
   artistImageUrl?: string;
   coverArt?: string;
   id: string;
+  musicFolderId?: string;
   name: string;
   starred?: Date;
 }
@@ -98,6 +100,7 @@ export interface Base {
   id: string;
   isDir: boolean;
   isVideo?: boolean;
+  musicFolderId?: string;
   originalHeight?: number;
   originalWidth?: number;
   parent?: string;
@@ -309,6 +312,7 @@ export interface ResponseGenre {
 export interface ResponseMusicFolder {
   id: number;
   name?: string;
+  path?: string;
 }
 
 export interface ResponsePlaylist {

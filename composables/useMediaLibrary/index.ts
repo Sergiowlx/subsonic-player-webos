@@ -155,8 +155,8 @@ export function useMediaLibrary() {
         folders: (response.indexes.index || [])
           .flatMap((index) => index.artist!)
           .map((artist) => formatArtist({ ...artist, musicFolderId })),
-        tracks: (response.indexes.child || []).map((track) =>
-          formatTrack({ ...track, musicFolderId }),
+        tracks: (response.indexes.child || []).map((track, index) =>
+          formatTrack({ ...track, musicFolderId }, index),
         ),
       }),
     });

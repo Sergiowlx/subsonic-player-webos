@@ -5,6 +5,10 @@ export function usePlaylist() {
 
   const playlist = useState<null | Playlist>(STATE_NAMES.playlist, () => null);
   const playlists = useState<Playlist[]>(STATE_NAMES.playlists, () => []);
+  const playlistArtworkCache = useState<Record<string, string[]>>(
+    'playlist-artwork-cache',
+    () => ({}),
+  );
 
   function resetPlaylists() {
     playlist.value = null;
@@ -57,6 +61,38 @@ export function usePlaylist() {
     });
 
     return playlistData;
+  }
+
+  async function getPlaylistArtwork(id: string) {
+    if (playlistArtworkCache.value[id]) {
+      return playlistArtworkCache.value[id];
+    }
+
+    if (id === RANDOM_PLAYLIST.id) {
+      const randomPlaylist = await getRandomTracks();
+      const images = randomPlaylist?.images || [IMAGE_DEFAULT_BY_TYPE.playlist];
+      playlistArtworkCache.value[id] = images;
+      return images;
+    }
+
+    const { data: images } = await fetchData('/getPlaylist', {
+      query: { id },
+      transform: (response) => {
+        const entries = response.playlist.entry || [];
+        const covers = entries
+          .map((entry) => entry.coverArt)
+          .filter((image): image is string => Boolean(image));
+        const uniqueCovers = [...new Set(covers)].slice(0, 4);
+
+        return uniqueCovers.length
+          ? uniqueCovers
+          : [response.playlist.coverArt || IMAGE_DEFAULT_BY_TYPE.playlist];
+      },
+    });
+
+    const resolvedImages = images || [IMAGE_DEFAULT_BY_TYPE.playlist];
+    playlistArtworkCache.value[id] = resolvedImages;
+    return resolvedImages;
   }
 
   async function getPlaylistTracksById(
@@ -256,6 +292,7 @@ export function usePlaylist() {
     deletePlaylist,
     getPlaylists,
     getPlaylistTracksById,
+    getPlaylistArtwork,
     playlist,
     playlists,
     removeFromPlaylist,

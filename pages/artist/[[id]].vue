@@ -122,16 +122,18 @@ useHead({
         </div>
       </EntryHeader>
 
-      <h2>Albums</h2>
+      <section class="webosArtistAlbumsSection">
+        <h2>Albums</h2>
 
-      <AlbumsList
-        :albums="artistData.albums"
-        hideArtist
-        @addToQueue="addAlbumToQueue"
-        @dragStart="dragStart"
-        @mediaInformation="openAlbumInformationModal"
-        @playAlbum="onPlayAlbum"
-      />
+        <AlbumsList
+          :albums="artistData.albums"
+          hideArtist
+          @addToQueue="addAlbumToQueue"
+          @dragStart="dragStart"
+          @mediaInformation="openAlbumInformationModal"
+          @playAlbum="onPlayAlbum"
+        />
+      </section>
 
       <template v-if="artistData.topTracks.length">
         <h2>Top Tracks</h2>

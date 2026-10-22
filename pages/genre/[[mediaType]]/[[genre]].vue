@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InfiniteScroller from '@/components/Molecules/InfiniteScroller.vue';
+import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import PageNavigation from '@/components/Molecules/PageNavigation.vue';
 import AlbumsList from '@/components/Organisms/AlbumsList.vue';
@@ -94,9 +95,14 @@ useHead({
 </script>
 
 <template>
+  <LibraryNavigation />
+
   <h1 ref="title">{{ genre }}</h1>
 
-  <PageNavigation :navigation="GENRE_NAVIGATION" />
+  <PageNavigation
+    class="webosGenreNavigation"
+    :navigation="GENRE_NAVIGATION"
+  />
 
   <LoadingData :class="viewLayout" :status="loadingStatus">
     <AlbumsList

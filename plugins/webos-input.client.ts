@@ -18,14 +18,23 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   // Check if we're on webOS (file:// protocol) or testing mode (?webos=true)
-  const isWebOS =
-    window.location.protocol === 'file:' ||
-    window.location.search.includes('webos=true');
+  const requestedTVPreview = window.location.search.includes('webos=true');
+  const isTVPreview =
+    window.location.protocol !== 'file:' &&
+    (requestedTVPreview ||
+      window.sessionStorage.getItem('webosTVPreview') === 'true');
+
+  if (requestedTVPreview && window.location.protocol !== 'file:') {
+    window.sessionStorage.setItem('webosTVPreview', 'true');
+  }
+  const isWebOS = window.location.protocol === 'file:' || isTVPreview;
 
   // Only activate for webOS TV environment
   if (!isWebOS) {
     return;
   }
+
+  const { closeQueuePlayer, isQueuePlayerOpened } = useQueue();
 
   // Check if we're on a file system path and need to redirect
   const currentPath = window.location.pathname;
@@ -38,6 +47,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Also add to <html> so root-relative rules (rem scaling, etc.) can target TV.
   document.body.classList.add('webosTV');
   document.documentElement.classList.add('webosTV');
+  if (window.location.protocol === 'file:') {
+    document.body.classList.add('webosTVDevice');
+  } else if (isTVPreview) {
+    document.body.classList.add('webosTVPreview');
+  }
 
   // Track currently focused element for .focused CSS class
   let currentFocusedElement: HTMLElement | null = null;
@@ -696,6 +710,11 @@ export default defineNuxtPlugin((nuxtApp) => {
    * Handle back button
    */
   function handleBack(): void {
+    if (isQueuePlayerOpened.value) {
+      closeQueuePlayer();
+      return;
+    }
+
     // Try to use webOS platform back if available
     if (
       'webOS' in window &&

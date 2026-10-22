@@ -11,11 +11,32 @@ import PlayerControls from './PlayerControls.vue';
 import PlayerOptions from './PlayerOptions.vue';
 
 const { currentTrack } = useAudioPlayer();
+const { toggleQueuePlayer } = useQueue();
+const isTV = isWebOSTV();
+
+function onPlayerBarClick(event: MouseEvent) {
+  if (!isTV) return;
+
+  const target = event.target;
+  if (
+    target instanceof Element &&
+    target.closest(
+      'a, button, input, select, textarea, [role="button"], [class*="trackSeeker"]',
+    )
+  ) {
+    return;
+  }
+
+  toggleQueuePlayer();
+}
 </script>
 
 <template>
-  <div :class="$style.musicPlayer">
-    <TrackSeeker :class="['desktopOnly', $style.trackSeeker]" />
+  <div :class="$style.musicPlayer" @click="onPlayerBarClick">
+    <TrackSeeker
+      :class="['desktopOnly', $style.trackSeeker]"
+      hideThumb
+    />
 
     <div :class="['spaceBetween', 'centerItems', $style.inner]">
       <div :class="['centerItems', $style.trackDetailsWrapper]">
@@ -51,6 +72,16 @@ const { currentTrack } = useAudioPlayer();
           }"
         />
 
+        <button
+          v-else-if="isTV"
+          :class="[$style.image, $style.imageNowPlaying]"
+          aria-label="Open now playing"
+          title="Open now playing"
+          @click.stop="toggleQueuePlayer"
+        >
+          <PreloadImage :image="currentTrack.image" />
+        </button>
+
         <PreloadImage
           v-else
           :class="$style.image"
@@ -58,7 +89,11 @@ const { currentTrack } = useAudioPlayer();
         />
 
         <div :class="$style.trackDetails">
-          <MarqueeScroll>
+          <p v-if="isTV" :class="['strong', 'mBXS', $style.trackTitle]">
+            {{ currentTrack.name }}
+          </p>
+
+          <MarqueeScroll v-else>
             <p class="strong mBXS">
               {{ currentTrack.name }}
             </p>
@@ -82,7 +117,9 @@ const { currentTrack } = useAudioPlayer();
 
       <PlayPauseButton :class="['mobileOnly', $style.playPauseButton]" />
 
-      <PlayerControls class="centerAll desktopOnly" />
+      <div :class="['centerAll', 'desktopOnly', $style.transportControls]">
+        <PlayerControls />
+      </div>
 
       <PlayerOptions :class="['desktopOnly', $style.playerOptions]" />
     </div>
@@ -148,9 +185,22 @@ const { currentTrack } = useAudioPlayer();
   }
 }
 
+.transportControls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
 .trackDetails,
 .trackDetailsWrapper {
   overflow: hidden;
+}
+
+.trackTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .queueControl {

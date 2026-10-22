@@ -33,6 +33,21 @@ export function isWebOS(): boolean {
   }
 }
 
+/** Detect webOS and its browser preview mode for TV-only presentation rules. */
+export function isWebOSTV(): boolean {
+  if (!import.meta.client) return false;
+
+  if (isWebOS() || window.location.search.includes('webos=true')) {
+    return true;
+  }
+
+  try {
+    return window.sessionStorage.getItem('webosTVPreview') === 'true';
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Set auth token in localStorage (for webOS)
  */

@@ -2,6 +2,7 @@
 import GenreLink from '@/components/Atoms/GenreLink.vue';
 import GridWrapper from '@/components/Atoms/GridWrapper.vue';
 import NoMediaMessage from '@/components/Atoms/NoMediaMessage.vue';
+import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 
 const { getGenres } = useGenre();
@@ -31,6 +32,8 @@ useHead({
 </script>
 
 <template>
+  <LibraryNavigation />
+
   <h1>Genres</h1>
 
   <LoadingData :status>

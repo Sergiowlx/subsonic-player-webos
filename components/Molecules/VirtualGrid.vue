@@ -55,7 +55,9 @@ const rowPages = computed<T[][][]>(() => {
   return pages;
 });
 
-const pageHeight = computed(() => rowHeight.value * 2);
+const pageHeight = computed(
+  () => rowHeight.value * Math.min(2, rows.value.length),
+);
 
 const measureRef = useTemplateRef('measureRef');
 
