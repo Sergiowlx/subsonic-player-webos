@@ -8,11 +8,14 @@ const to = {
 </script>
 
 <template>
-  <article class="layoutItem webosPlaylistCard" data-test-id="favourites-playlist">
+  <article
+    class="layoutItem webosPlaylistCard"
+    data-test-id="favourites-playlist"
+  >
     <NuxtLink
       class="webosPlaylistArtwork webosFavouritesArtwork"
-      :to
       title="Go to favourites"
+      :to
     >
       <component :is="ICONS.favourite" :size="64" weight="fill" />
     </NuxtLink>

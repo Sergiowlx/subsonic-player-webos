@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VirtualGrid from '@/components/Molecules/VirtualGrid.vue';
-import WebOSTVPlaylistCard from '@/components/Organisms/WebOSTVPlaylistCard.vue';
 import WebOSTVFavouritesCard from '@/components/Organisms/WebOSTVFavouritesCard.vue';
+import WebOSTVPlaylistCard from '@/components/Organisms/WebOSTVPlaylistCard.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +27,7 @@ const items = computed<PlaylistGridItem[]>(() => [
   ...props.playlists.map((playlist) => ({ id: playlist.id, playlist })),
 ]);
 
-const columns = { desktop: 7, tablet: 6, mobile: 3 };
+const columns = { desktop: 7, mobile: 3, tablet: 6 };
 </script>
 
 <template>

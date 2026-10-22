@@ -25,8 +25,8 @@ const to = computed(() => ({
     <div class="webosPlaylistArtworkWrapper">
       <NuxtLink
         class="webosPlaylistArtwork"
-        :to="to"
         :title="`Go to playlist ${playlist.name}`"
+        :to
       >
         <WebOSTVPlaylistArtwork :playlist />
       </NuxtLink>

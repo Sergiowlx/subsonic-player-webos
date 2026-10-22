@@ -6,9 +6,14 @@ export function useInfinityLoading<T>(id: string) {
   const offset = useState(`${STATE_NAMES.infinityOffset}-${id}`, () => 0);
   const hasMore = useState(`${STATE_NAMES.infinityHasMore}-${id}`, () => true);
   const isLoading = ref(false);
+  const getItemKey = (item: unknown) => {
+    const record = item as { id?: number | string; name?: string };
 
-  async function fetchMoreData<T>(
-    dataToFetch: (offset: number) => Promise<T> | T,
+    return record.id || record.name || JSON.stringify(item) || String(item);
+  };
+
+  async function fetchMoreData<TResponse>(
+    dataToFetch: (offset: number) => Promise<TResponse> | TResponse,
   ) {
     if (isLoading.value || !hasMore.value) {
       return items.value;
@@ -24,12 +29,10 @@ export function useInfinityLoading<T>(id: string) {
       }
 
       if (Array.isArray(values)) {
-        const existingIds = new Set(
-          items.value.map((item: any) => item.id || item.name || JSON.stringify(item)),
-        );
+        const existingIds = new Set(items.value.map(getItemKey));
         const newItems = values.filter(
-          (item: any) => !existingIds.has(item.id || item.name || JSON.stringify(item)),
-        );
+          (item: unknown) => !existingIds.has(getItemKey(item)),
+        ) as unknown as T[];
 
         items.value.push(...newItems);
         offset.value = items.value.length;

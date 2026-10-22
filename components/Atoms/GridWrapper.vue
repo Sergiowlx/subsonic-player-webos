@@ -37,8 +37,8 @@ withDefaults(
   display: flex;
   flex-wrap: wrap;
   width: calc(100% + var(--loop-grid-gap));
-  margin-left: calc(var(--loop-grid-gap) * -0.5);
   margin-right: calc(var(--loop-grid-gap) * -0.5);
+  margin-left: calc(var(--loop-grid-gap) * -0.5);
 
   @media (--tablet-up) {
     --loop-columns: var(--loop-rows-tablet);

@@ -6,8 +6,11 @@ export function useArtist() {
       useMediaLibrary();
 
     // If some libraries are disabled, fetch from each enabled library and merge.
-    if (musicFolders.value.length > 0 && enabledMusicFolderIds.value.length < musicFolders.value.length) {
-      const fetchPromises = enabledMusicFolderIds.value.map(folderId => 
+    if (
+      musicFolders.value.length > 0 &&
+      enabledMusicFolderIds.value.length < musicFolders.value.length
+    ) {
+      const fetchPromises = enabledMusicFolderIds.value.map((folderId) =>
         fetchData('/getIndexes', {
           query: {
             musicFolderId: folderId,
@@ -15,18 +18,22 @@ export function useArtist() {
           transform: /* istanbul ignore next -- @preserve */ (response) =>
             (response.indexes.index || [])
               .flatMap((index) => index.artist!)
-              .map(artist => formatArtist({ ...artist, musicFolderId: folderId })),
-        })
+              .map((artist) =>
+                formatArtist({ ...artist, musicFolderId: folderId }),
+              ),
+        }),
       );
 
       const results = await Promise.all(fetchPromises);
-      const allArtists = results.flatMap(r => r.data || []);
-      
+      const allArtists = results.flatMap((r) => r.data || []);
+
       // Remove potential duplicates between folders (if any) and sort
       const uniqueArtistsMap = new Map<string, Artist>();
-      allArtists.forEach(a => uniqueArtistsMap.set(a.id, a));
-      
-      return Array.from(uniqueArtistsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+      allArtists.forEach((a) => uniqueArtistsMap.set(a.id, a));
+
+      return Array.from(uniqueArtistsMap.values()).sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
     }
 
     const { data: artistsData } = await fetchData('/getArtists', {

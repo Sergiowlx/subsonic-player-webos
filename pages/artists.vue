@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import ArtistsList from '@/components/Organisms/ArtistsList.vue';
-import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 
 const { getArtists } = useArtist();
 const { viewLayout } = useViewLayout();

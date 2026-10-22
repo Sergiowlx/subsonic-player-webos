@@ -101,10 +101,7 @@ const hasDragStartEvent = computed(
       :items="trackPages"
       :minItemsToVirtualize="25"
     >
-      <div
-        data-webos-grid-page
-        :style="{ height: TRACK_PAGE_HEIGHT + 'px' }"
-      >
+      <div data-webos-grid-page :style="{ height: TRACK_PAGE_HEIGHT + 'px' }">
         <MixedTracksListItem
           v-for="(track, rowIndex) in page.items"
           :key="track.id"
@@ -113,13 +110,17 @@ const hasDragStartEvent = computed(
           :hideRemoveOption
           :index="page.startIndex + rowIndex"
           :track
-          @addToPlaylist="$emit('addToPlaylist', track.id, page.startIndex + rowIndex)"
+          @addToPlaylist="
+            $emit('addToPlaylist', track.id, page.startIndex + rowIndex)
+          "
           @addToQueue="$emit('addToQueue', track)"
           @downloadMedia="$emit('downloadMedia', track)"
           @dragStart="(event) => $emit('dragStart', track, event)"
           @mediaInformation="$emit('mediaInformation', track)"
           @playTrack="$emit('playTrack', page.startIndex + rowIndex)"
-          @remove="$emit('remove', { id: track.id, index: page.startIndex + rowIndex })"
+          @remove="
+            $emit('remove', { id: track.id, index: page.startIndex + rowIndex })
+          "
         />
       </div>
     </VirtualList>

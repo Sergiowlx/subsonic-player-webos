@@ -5,10 +5,9 @@ import SettingsField from '@/components/settings/SettingsField.vue';
 import SettingsGroup from '@/components/settings/SettingsGroup.vue';
 import SettingsSection from '@/components/settings/SettingsSection.vue';
 import ToggleSwitch from '@/components/settings/ToggleSwitch.vue';
-
 import { WEBOS_ACCENT_COLOURS } from '@/composables/useWebOSTVSettings';
 
-type ThemePreference = 'dark' | 'light' | 'auto';
+type ThemePreference = 'auto' | 'dark' | 'light';
 
 const { isDarkTheme } = useTheme();
 const { setViewLayout, viewLayout } = useViewLayout();
@@ -54,19 +53,22 @@ const layoutOptions = [
 
 const bitrateOptions = [
   {
-    description: 'Direct playback of the original audio source without modifications',
+    description:
+      'Direct playback of the original audio source without modifications',
     title: 'Source',
     value: 0,
   },
   {
     badge: '320 kbps',
-    description: 'Superior sound quality, perfect for immersive listening with moderate data usage',
+    description:
+      'Superior sound quality, perfect for immersive listening with moderate data usage',
     title: 'High',
     value: 320,
   },
   {
     badge: '256 kbps',
-    description: 'Crisp audio with a balanced blend of quality and data efficiency',
+    description:
+      'Crisp audio with a balanced blend of quality and data efficiency',
     title: 'Medium',
     value: 256,
   },
@@ -78,11 +80,18 @@ const bitrateOptions = [
   },
   {
     badge: '128 kbps',
-    description: 'Essential audio quality optimized for the lowest data consumption',
+    description:
+      'Essential audio quality optimized for the lowest data consumption',
     title: 'Minimal',
     value: 128,
   },
 ] as const;
+
+function resetPreferences() {
+  resetWebOSSettings();
+  setViewLayout('gridLayout');
+  setThemeMode('auto');
+}
 
 function setThemeMode(mode: ThemePreference) {
   themePreference.value = mode;
@@ -99,12 +108,6 @@ function setThemeMode(mode: ThemePreference) {
 
   isDarkTheme.value = mode === 'dark';
   setLocalStorage(STATE_NAMES.theme, isDarkTheme.value);
-}
-
-function resetPreferences() {
-  resetWebOSSettings();
-  setViewLayout('gridLayout');
-  setThemeMode('auto');
 }
 
 useHead({
@@ -154,7 +157,11 @@ useHead({
         variant="list"
       >
         <SettingsField title="Accent colour">
-          <div :class="$style.accentPalette" role="group" aria-label="Accent colour">
+          <div
+            aria-label="Accent colour"
+            :class="$style.accentPalette"
+            role="group"
+          >
             <button
               v-for="colour in WEBOS_ACCENT_COLOURS"
               :key="colour.value"
@@ -267,11 +274,11 @@ useHead({
 .accentButton {
   position: relative;
   display: flex;
-  width: 58px;
-  height: 56px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  width: 58px;
+  height: 56px;
   padding: var(--space-8);
   cursor: pointer;
   background: transparent;
@@ -294,7 +301,9 @@ useHead({
   height: 26px;
   border: 2px solid transparent;
   border-radius: var(--border-radius-round);
-  transition: border-color var(--transition), transform var(--transition);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
 }
 
 .accentButton[aria-pressed='true'] .accentSwatch {

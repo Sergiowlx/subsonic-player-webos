@@ -79,10 +79,7 @@ const trackHeaderNames = TRACK_HEADER_NAMES.tracks;
       :items="trackPages"
       :minItemsToVirtualize="25"
     >
-      <div
-        data-webos-grid-page
-        :style="{ height: TRACK_PAGE_HEIGHT + 'px' }"
-      >
+      <div data-webos-grid-page :style="{ height: TRACK_PAGE_HEIGHT + 'px' }">
         <TracksListItem
           v-for="(track, rowIndex) in page.items"
           :key="track.id"

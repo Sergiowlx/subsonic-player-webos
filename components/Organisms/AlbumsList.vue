@@ -19,20 +19,16 @@ const emit = defineEmits<{
 
 const { viewLayout } = useViewLayout();
 const isTV = isWebOSTV();
-const isGridLayout = computed(
-  () => isTV || viewLayout.value === 'gridLayout',
-);
+const isGridLayout = computed(() => isTV || viewLayout.value === 'gridLayout');
 const virtualGridColumns = isTV
-  ? { desktop: 7, tablet: 6, mobile: 3 }
+  ? { desktop: 7, mobile: 3, tablet: 6 }
   : undefined;
 
 function onDragStart(album: Album, event: DragEvent) {
   emit('dragStart', album, event);
 }
 
-const gridWrapperProps = computed(() =>
-  isGridLayout.value ? undefined : '0',
-);
+const gridWrapperProps = computed(() => (isGridLayout.value ? undefined : '0'));
 </script>
 
 <template>

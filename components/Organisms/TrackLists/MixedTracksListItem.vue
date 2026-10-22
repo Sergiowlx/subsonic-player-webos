@@ -65,7 +65,6 @@ function openDropdownMenu(event: MouseEvent | TouchEvent) {
           />
 
           <TrackMeta class="trackMeta" :track />
-
         </div>
       </div>
 

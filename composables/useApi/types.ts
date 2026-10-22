@@ -8,11 +8,14 @@ export interface AlbumID3 {
   coverArt?: string;
   created: Date;
   duration: number;
+  folder?: string;
+  folderId?: string;
   genre?: string;
   genres?: AlbumBaseGenre[];
   id: string;
   musicFolderId?: string;
   name: string;
+  path?: string;
   playCount?: number;
   songCount: number;
   starred?: Date;
@@ -43,9 +46,13 @@ export interface ArtistID3 {
   albumCount: number;
   artistImageUrl?: string;
   coverArt?: string;
+  folder?: string;
+  folderId?: string;
   id: string;
   musicFolderId?: string;
   name: string;
+  parent?: string;
+  path?: string;
   starred?: Date;
 }
 
@@ -95,6 +102,8 @@ export interface Base {
   created?: Date;
   discNumber?: number;
   duration?: number;
+  folder?: string;
+  folderId?: string;
   genre?: string;
   genres?: AlbumBaseGenre[];
   id: string;

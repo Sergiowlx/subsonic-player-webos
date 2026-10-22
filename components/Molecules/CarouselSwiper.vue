@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { SwiperContainer } from 'swiper/element';
+
 import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import { isWebOSTV } from '@/utils/webos';
-import type { SwiperContainer } from 'swiper/element';
 
 const props = withDefaults(
   defineProps<{

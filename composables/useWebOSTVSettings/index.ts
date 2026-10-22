@@ -1,14 +1,14 @@
 export const WEBOS_SETTINGS_STORAGE_KEY = 'webos-tv-settings';
 
 export const WEBOS_ACCENT_COLOURS = [
-  { label: 'Lime', value: '#1ed760', rgb: '30, 215, 96' },
-  { label: 'Purple', value: '#6313bc', rgb: '99, 19, 188' },
-  { label: 'Blue', value: '#1976d2', rgb: '25, 118, 210' },
-  { label: 'Teal', value: '#00897b', rgb: '0, 137, 123' },
-  { label: 'Green', value: '#388e3c', rgb: '56, 142, 60' },
-  { label: 'Orange', value: '#ef6c00', rgb: '239, 108, 0' },
-  { label: 'Red', value: '#d32f2f', rgb: '211, 47, 47' },
-  { label: 'Pink', value: '#d81b60', rgb: '216, 27, 96' },
+  { label: 'Lime', rgb: '30, 215, 96', value: '#1ed760' },
+  { label: 'Purple', rgb: '99, 19, 188', value: '#6313bc' },
+  { label: 'Blue', rgb: '25, 118, 210', value: '#1976d2' },
+  { label: 'Teal', rgb: '0, 137, 123', value: '#00897b' },
+  { label: 'Green', rgb: '56, 142, 60', value: '#388e3c' },
+  { label: 'Orange', rgb: '239, 108, 0', value: '#ef6c00' },
+  { label: 'Red', rgb: '211, 47, 47', value: '#d32f2f' },
+  { label: 'Pink', rgb: '216, 27, 96', value: '#d81b60' },
 ] as const;
 
 export interface WebOSTVSettings {
@@ -50,9 +50,9 @@ export function useWebOSTVSettings() {
       return;
     }
 
-    const stored = getLocalStorage(
-      WEBOS_SETTINGS_STORAGE_KEY,
-    ) as Partial<WebOSTVSettings> | '';
+    const stored = getLocalStorage(WEBOS_SETTINGS_STORAGE_KEY) as
+      | ''
+      | Partial<WebOSTVSettings>;
 
     if (stored && typeof stored === 'object') {
       const accentColorIsValid = WEBOS_ACCENT_COLOURS.some(

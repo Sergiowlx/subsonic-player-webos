@@ -66,7 +66,6 @@ defineEmits<{
     outline-offset: -2px;
     background-color: var(--hover-selected-color);
   }
-
 }
 
 .input {
@@ -75,9 +74,8 @@ defineEmits<{
   width: 100% !important;
   height: 100% !important;
   margin: 0 !important;
-  clip: auto !important;
-  clip-path: none !important;
   opacity: 0;
+
   &:checked ~ .status {
     visibility: visible;
     opacity: 1;

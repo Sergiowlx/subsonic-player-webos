@@ -914,4 +914,3 @@ export default defineNuxtPlugin((nuxtApp) => {
     subtree: true,
   });
 });
-

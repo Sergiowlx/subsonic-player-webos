@@ -48,15 +48,15 @@ const showPageNavigation = computed(() =>
         <MusicLogo :class="$style.tvLogo" />
 
         <nav
-          :class="[$style.tvPrimaryNavigation, 'tvPrimaryNavigation']"
           aria-label="Primary navigation"
+          :class="[$style.tvPrimaryNavigation, 'tvPrimaryNavigation']"
         >
           <ButtonLink
             is="nuxt-link"
             class="tvPrimaryLink"
             exactActiveClass="tvPrimaryLinkActive"
-            showText
             :icon="ICONS.home"
+            showText
             :to="{ name: ROUTE_NAMES.index }"
           >
             Home
@@ -66,8 +66,8 @@ const showPageNavigation = computed(() =>
             is="nuxt-link"
             class="tvPrimaryLink"
             exactActiveClass="tvPrimaryLinkActive"
-            showText
             :icon="ICONS.search"
+            showText
             to="/search"
           >
             Search
@@ -77,15 +77,15 @@ const showPageNavigation = computed(() =>
             is="nuxt-link"
             class="tvPrimaryLink"
             exactActiveClass="tvPrimaryLinkActive"
-            showText
             :icon="ICONS.library"
+            showText
             :to="{ name: ROUTE_NAMES.library }"
           >
             Your library
           </ButtonLink>
         </nav>
 
-        <div data-header-search :class="$style.search">
+        <div :class="$style.search" data-header-search>
           <SearchForm @submit="onSubmit" />
         </div>
 
@@ -97,10 +97,10 @@ const showPageNavigation = computed(() =>
           <div :class="$style.secondaryItem">
             <ButtonLink
               is="nuxt-link"
-              :to="{ name: ROUTE_NAMES.settings }"
               :icon="ICONS.setting"
               :showText="false"
               title="Settings"
+              :to="{ name: ROUTE_NAMES.settings }"
             >
               Settings
             </ButtonLink>

@@ -105,11 +105,9 @@ const artworkBackground = computed(() => {
         <div :class="$style.trackDetailsWrapper">
           <div :class="['mBAllL', 'column', $style.trackDetails]">
             <div>
-              <p v-if="isTV" :class="$style.nowPlayingLabel">
-                NOW PLAYING
-              </p>
+              <p v-if="isTV" :class="$style.nowPlayingLabel">NOW PLAYING</p>
               <div :class="{ [$style.tvTrackHeading]: isTV }">
-                <MarqueeScroll inert :class="{ [$style.tvTrackTitle]: isTV }">
+                <MarqueeScroll :class="{ [$style.tvTrackTitle]: isTV }" inert>
                   <h2 class="strong mBXS">
                     {{ currentTrack.name }}
                   </h2>
@@ -118,9 +116,9 @@ const artworkBackground = computed(() => {
                 <FavouriteButton
                   v-if="isTV && 'favourite' in currentTrack"
                   :id="currentTrack.id"
+                  :class="$style.tvTrackFavourite"
                   :favourite="currentTrack.favourite"
                   :type="currentTrack.type"
-                  :class="$style.tvTrackFavourite"
                 />
               </div>
 
@@ -201,8 +199,8 @@ const artworkBackground = computed(() => {
               <ShuffleButton v-if="!isRadioStation" />
 
               <MainPlayerControls
-                :showSeekControls="false"
                 :class="$style.tvTransportControls"
+                :showSeekControls="false"
               />
 
               <RepeatButton v-if="!isRadioStation" />
@@ -225,8 +223,8 @@ const artworkBackground = computed(() => {
 
             <MainPlayerControls
               v-else
-              :showSeekControls="true"
               :class="['fullWidth', $style.secondaryOptions]"
+              :showSeekControls="true"
             />
 
             <div
@@ -347,19 +345,19 @@ const artworkBackground = computed(() => {
   position: fixed;
   inset: 0;
   z-index: 20;
-  isolation: isolate;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
   padding: 12px clamp(20px, 4vw, 64px);
   overflow: hidden;
   background:
     radial-gradient(
       circle at 26% 48%,
-      rgba(var(--theme-color-rgb), 0.16),
+      rgb(var(--theme-color-rgb), 0.16),
       transparent 34%
     ),
     var(--body-background-color);
+  isolation: isolate;
 }
 
 .tvPlayer::before,
@@ -386,11 +384,11 @@ const artworkBackground = computed(() => {
   background:
     linear-gradient(
       90deg,
-      rgba(8, 10, 14, 0.42) 0%,
-      rgba(8, 10, 14, 0.24) 48%,
-      rgba(8, 10, 14, 0.42) 100%
+      rgb(8 10 14 / 42%) 0%,
+      rgb(8 10 14 / 24%) 48%,
+      rgb(8 10 14 / 42%) 100%
     ),
-    rgba(8, 10, 14, 0.05);
+    rgb(8 10 14 / 5%);
 }
 
 .tvAction {
@@ -414,9 +412,9 @@ const artworkBackground = computed(() => {
 .tvPlayer .wrapper {
   box-sizing: border-box;
   flex-direction: row;
+  gap: 6vw;
   align-items: center;
   justify-content: center;
-  gap: 6vw;
   width: 100%;
   height: 100%;
   padding: 12px 4vw;
@@ -432,9 +430,9 @@ const artworkBackground = computed(() => {
 .tvPlayer .imageWrapper,
 .tvPlayer .imageInner {
   width: 100%;
+  max-width: 480px;
   height: 42vh;
   max-height: 480px;
-  max-width: 480px;
 }
 
 .tvPlayer .imageWrapper {
@@ -461,10 +459,10 @@ const artworkBackground = computed(() => {
 
 .tvPlayer .trackDetails {
   flex: 0 1 620px;
-  height: auto !important;
   align-self: center;
   justify-content: center;
   width: 100%;
+  height: auto !important;
   min-height: 0;
   margin-top: 0;
 
@@ -475,8 +473,8 @@ const artworkBackground = computed(() => {
 
 .tvTrackHeading {
   display: flex;
-  align-items: center;
   gap: 18px;
+  align-items: center;
   width: 100%;
   margin-bottom: 8px;
 }
@@ -487,8 +485,8 @@ const artworkBackground = computed(() => {
   min-width: 0;
 
   :global(h2) {
-    margin-bottom: 0 !important;
     padding-bottom: 0.12em;
+    margin-bottom: 0 !important;
     line-height: 1.25;
   }
 }
@@ -513,9 +511,9 @@ const artworkBackground = computed(() => {
 
 .tvNowPlayingControls {
   display: flex;
+  gap: clamp(12px, 1.6vw, 24px);
   align-items: center;
   justify-content: center;
-  gap: clamp(12px, 1.6vw, 24px);
   width: 100%;
   max-width: 620px;
   margin-top: 0;
@@ -530,15 +528,17 @@ const artworkBackground = computed(() => {
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  min-width: 100px;
   width: auto;
+  min-width: 100px;
   height: 56px;
   padding: 0 18px;
   color: var(--font-color);
   background: rgb(255 255 255 / 8%);
   border: 0;
   border-radius: 999px;
-  transition: background-color 130ms ease-out, color 130ms ease-out;
+  transition:
+    background-color 130ms ease-out,
+    color 130ms ease-out;
 }
 
 .tvPlayer .preloadImage {
@@ -551,13 +551,13 @@ const artworkBackground = computed(() => {
 
 .nowPlayingLabel {
   margin-bottom: var(--space-12);
-  color: var(--theme-color);
   font-size: 0.85rem;
   font-weight: var(--font-weight-bold);
+  color: var(--theme-color);
   letter-spacing: 0.16em;
 }
 
-@media (max-height: 800px) {
+@media (height <= 800px) {
   .tvPlayer .inner {
     flex-basis: 38vh;
     width: 38vh;

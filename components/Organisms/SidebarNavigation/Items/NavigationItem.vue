@@ -15,28 +15,24 @@ const expanded = ref(true);
       :class="['strong', 'mBM', $style.sectionHeading]"
     >
       <button
-        type="button"
         :aria-expanded="expanded"
         :class="['centerItems', 'spaceBetween', $style.sectionToggle]"
+        type="button"
         @click="expanded = !expanded"
       >
         <span>{{ title }}</span>
         <component
           :is="ICONS.queueClose"
-          :class="$style.chevron"
-          :style="{ transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)' }"
           aria-hidden="true"
+          :class="$style.chevron"
           :size="18"
+          :style="{ transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)' }"
         />
       </button>
     </h4>
     <h4 v-else class="visuallyHidden">{{ title }}</h4>
 
-    <ul
-      v-if="$slots.default"
-      ref="navigation"
-      v-show="collapsed || expanded"
-    >
+    <ul v-if="$slots.default" v-show="collapsed || expanded" ref="navigation">
       <slot />
     </ul>
   </li>
@@ -52,9 +48,9 @@ const expanded = ref(true);
   padding: 0 var(--space-24);
   color: inherit;
   text-align: left;
+  cursor: pointer;
   background: transparent;
   border: 0;
-  cursor: pointer;
 }
 
 .chevron {

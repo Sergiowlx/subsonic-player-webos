@@ -33,10 +33,7 @@ function onPlayerBarClick(event: MouseEvent) {
 
 <template>
   <div :class="$style.musicPlayer" @click="onPlayerBarClick">
-    <TrackSeeker
-      :class="['desktopOnly', $style.trackSeeker]"
-      hideThumb
-    />
+    <TrackSeeker :class="['desktopOnly', $style.trackSeeker]" hideThumb />
 
     <div :class="['spaceBetween', 'centerItems', $style.inner]">
       <div :class="['centerItems', $style.trackDetailsWrapper]">
@@ -74,8 +71,8 @@ function onPlayerBarClick(event: MouseEvent) {
 
         <button
           v-else-if="isTV"
-          :class="[$style.image, $style.imageNowPlaying]"
           aria-label="Open now playing"
+          :class="[$style.image, $style.imageNowPlaying]"
           title="Open now playing"
           @click.stop="toggleQueuePlayer"
         >
@@ -168,8 +165,8 @@ function onPlayerBarClick(event: MouseEvent) {
 .trackDetailsWrapper {
   position: relative;
   display: flex;
-  align-items: center;
   gap: var(--default-space);
+  align-items: center;
 
   @media (--tablet-up) {
     flex: 0 0 25%;

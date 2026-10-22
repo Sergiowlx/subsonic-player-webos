@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import HeaderWithAction from '@/components/Atoms/HeaderWithAction.vue';
 import ThemeSwitcher from '@/components/Molecules/ThemeSwitcher.vue';
 import LoginForm from '@/components/Organisms/LoginForm.vue';
 
@@ -51,27 +50,128 @@ useHead({
 </script>
 
 <template>
-  <div :class="['mBAllM', 'inner', $style.login]">
-    <HeaderWithAction>
-      <h3>Login</h3>
+  <section aria-labelledby="login-title" :class="$style.login">
+    <header :class="$style.header">
+      <div :class="$style.brand">
+        <span :class="$style.brandMark">
+          <component
+            :is="ICONS.logo"
+            aria-hidden="true"
+            :size="26"
+            weight="bold"
+          />
+        </span>
+        <span :class="$style.brandName">Subsonic Player for webOS</span>
+      </div>
 
-      <template #actions>
-        <ThemeSwitcher />
-      </template>
-    </HeaderWithAction>
+      <ThemeSwitcher />
+    </header>
 
-    <LoginForm :error :loading @submit="onFormSubmit" />
-  </div>
+    <div :class="$style.intro">
+      <p :class="$style.eyebrow">YOUR MUSIC, YOUR SERVER</p>
+      <h1 id="login-title">Welcome back</h1>
+      <p :class="$style.description">
+        Connect to your music server to continue listening.
+      </p>
+    </div>
+
+    <LoginForm :class="$style.form" :error :loading @submit="onFormSubmit" />
+
+    <p :class="$style.footer">
+      Sign in with your Subsonic or Navidrome account.
+    </p>
+  </section>
 </template>
 
 <style module>
 .login {
   position: relative;
-  max-width: 500px;
-  padding: var(--space-40);
+  width: min(100%, 540px);
+  padding: clamp(28px, 4vw, 48px);
   background-color: var(--background-color);
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-large);
-  box-shadow: var(--box-shadow-large);
+  border-radius: 24px;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 25%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(40px, 6vh, 64px);
+}
+
+.brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+}
+
+.brandMark {
+  display: grid;
+  flex: 0 0 48px;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  color: var(--theme-color);
+}
+
+.brandName {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.intro {
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--theme-color);
+  letter-spacing: 0.14em;
+}
+
+.intro h1 {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.description {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--secondary-font-color);
+}
+
+.form {
+  display: block;
+}
+
+.form :global(input),
+.form :global(.formButton) {
+  border-radius: 8px;
+}
+
+.footer {
+  margin: 24px 0 0;
+  font-size: 14px;
+  color: var(--secondary-font-color);
+  text-align: center;
+}
+
+@media (width <= 600px) {
+  .login {
+    padding: 28px 24px;
+  }
+
+  .header {
+    margin-bottom: 40px;
+  }
 }
 </style>

@@ -47,11 +47,7 @@ const trackHeaderNames = TRACK_HEADER_NAMES.albumTracks;
       <div class="trackCell trackOptions" />
     </div>
 
-    <div
-      v-for="page in trackPages"
-      :key="page.startIndex"
-      data-webos-grid-page
-    >
+    <div v-for="page in trackPages" :key="page.startIndex" data-webos-grid-page>
       <AlbumTracksListItem
         v-for="track in page.items"
         :key="track.id"

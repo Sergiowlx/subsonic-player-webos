@@ -217,7 +217,9 @@ export function useAudioPlayer() {
   function setMediaSessionPositionState() {
     if (
       !(
-        'mediaSession' in navigator && navigator.mediaSession && typeof navigator.mediaSession.setPositionState === 'function' &&
+        'mediaSession' in navigator &&
+        navigator.mediaSession &&
+        typeof navigator.mediaSession.setPositionState === 'function' &&
         hasCurrentTrack.value &&
         !isRadioStation.value
       )

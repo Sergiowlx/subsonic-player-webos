@@ -43,9 +43,8 @@ defineEmits<{
   width: 100% !important;
   height: 100% !important;
   margin: 0 !important;
-  clip: auto !important;
-  clip-path: none !important;
   opacity: 0;
+
   &:checked ~ .track {
     background-color: var(--theme-color);
   }

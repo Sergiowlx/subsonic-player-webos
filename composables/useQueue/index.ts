@@ -40,9 +40,9 @@ export function useQueue() {
   }
 
   return {
+    closeQueuePlayer,
     isQueueListOpened,
     isQueuePlayerOpened,
-    closeQueuePlayer,
     resetQueue,
     toggleQueueList,
     toggleQueuePlayer,

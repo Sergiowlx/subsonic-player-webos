@@ -117,8 +117,8 @@ function onDragStart(event: DragEvent) {
 
   position: relative;
   display: flex;
-  flex-wrap: wrap;
   flex-shrink: 0;
+  flex-wrap: wrap;
   gap: var(--figure-spacing);
   width: var(--width-height-100);
   max-width: var(--figure-width-height);

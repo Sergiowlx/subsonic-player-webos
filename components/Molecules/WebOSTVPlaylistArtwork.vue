@@ -17,8 +17,9 @@ let requested = false;
 const artworkImages = computed(() => {
   if (imageIds.value.length < 2) return imageIds.value;
 
-  return Array.from({ length: 4 }, (_, index) =>
-    imageIds.value[index % imageIds.value.length],
+  return Array.from(
+    { length: 4 },
+    (_, index) => imageIds.value[index % imageIds.value.length],
   );
 });
 
@@ -57,8 +58,8 @@ onUnmounted(() => observer?.disconnect());
   <figure ref="artworkRef" :class="$style.artwork">
     <div
       v-if="!artworkImages.length"
-      :class="$style.placeholder"
       aria-hidden="true"
+      :class="$style.placeholder"
     >
       <component :is="ICONS.playlist" :size="48" />
     </div>
@@ -78,12 +79,12 @@ onUnmounted(() => observer?.disconnect());
 <style module>
 .artwork {
   display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
   background: var(--secondary-background-color);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 
 .cover {
@@ -93,18 +94,18 @@ onUnmounted(() => observer?.disconnect());
 }
 
 .cover:only-of-type {
-  grid-column: 1 / -1;
   grid-row: 1 / -1;
+  grid-column: 1 / -1;
 }
 
 .placeholder {
   display: flex;
+  grid-row: 1 / -1;
+  grid-column: 1 / -1;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
   color: var(--secondary-font-color);
-  grid-column: 1 / -1;
-  grid-row: 1 / -1;
 }
 </style>

@@ -109,15 +109,10 @@ watch(rowPages, () => {
       :getKey="(_page, index) => index"
       :itemHeight="pageHeight"
       :items="rowPages"
-      :minItemsToVirtualize="
-        Math.ceil(minItemsToVirtualize / columnCount / 2)
-      "
+      :minItemsToVirtualize="Math.ceil(minItemsToVirtualize / columnCount / 2)"
     >
       <template #default="{ index: pageIndex, item: page }">
-        <div
-          data-webos-grid-page
-          :style="{ height: pageHeight + 'px' }"
-        >
+        <div data-webos-grid-page :style="{ height: pageHeight + 'px' }">
           <div
             v-for="(row, pageRowIndex) in page"
             :key="pageIndex * 2 + pageRowIndex"
@@ -129,12 +124,20 @@ watch(rowPages, () => {
               v-for="(item, colIndex) in row"
               :key="
                 getKey
-                  ? getKey(item, (pageIndex * 2 + pageRowIndex) * columnCount + colIndex)
+                  ? getKey(
+                      item,
+                      (pageIndex * 2 + pageRowIndex) * columnCount + colIndex,
+                    )
                   : (pageIndex * 2 + pageRowIndex) * columnCount + colIndex
               "
               :style="{
                 marginRight: colIndex < columnCount - 1 ? gap + 'px' : '0',
-                width: 'calc((100% - ' + (columnCount - 1) * gap + 'px) / ' + columnCount + ')',
+                width:
+                  'calc((100% - ' +
+                  (columnCount - 1) * gap +
+                  'px) / ' +
+                  columnCount +
+                  ')',
               }"
             >
               <slot

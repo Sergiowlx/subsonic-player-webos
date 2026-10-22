@@ -5,15 +5,15 @@ const route = useRoute();
 
 const navigation = [
   {
+    icon: ICONS.music,
     key: 'library',
     label: 'All',
-    icon: ICONS.music,
     to: { name: ROUTE_NAMES.library },
   },
   {
+    icon: ICONS.album,
     key: 'albums',
     label: 'Albums',
-    icon: ICONS.album,
     to: {
       name: ROUTE_NAMES.albums,
       params: {
@@ -22,27 +22,27 @@ const navigation = [
     },
   },
   {
+    icon: ICONS.artist,
     key: 'artists',
     label: 'Artist',
-    icon: ICONS.artist,
     to: { name: ROUTE_NAMES.artists },
   },
   {
+    icon: ICONS.playlist,
     key: 'playlists',
     label: 'Playlists',
-    icon: ICONS.playlist,
     to: { name: ROUTE_NAMES.playlists },
   },
   {
+    icon: ICONS.genre,
     key: 'genres',
     label: 'Genres',
-    icon: ICONS.genre,
     to: { name: ROUTE_NAMES.genres },
   },
   {
+    icon: ICONS.podcast,
     key: 'podcasts',
     label: 'Podcast',
-    icon: ICONS.podcast,
     to: { name: ROUTE_NAMES.podcasts },
   },
 ] as const;
@@ -51,10 +51,7 @@ const activeKey = computed(() => {
   if (route.name === ROUTE_NAMES.albums) return 'albums';
   if (route.name === ROUTE_NAMES.artists) return 'artists';
   if (route.name === ROUTE_NAMES.playlists) return 'playlists';
-  if (
-    route.name === ROUTE_NAMES.genres ||
-    route.name === ROUTE_NAMES.genre
-  ) {
+  if (route.name === ROUTE_NAMES.genres || route.name === ROUTE_NAMES.genre) {
     return 'genres';
   }
   if (
@@ -69,7 +66,7 @@ const activeKey = computed(() => {
 </script>
 
 <template>
-  <nav class="webosLibraryNavigation" aria-label="Your library">
+  <nav aria-label="Your library" class="webosLibraryNavigation">
     <ul class="webosLibraryTabs">
       <li v-for="item in navigation" :key="item.key">
         <ButtonLink

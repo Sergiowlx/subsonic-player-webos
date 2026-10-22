@@ -99,10 +99,7 @@ useHead({
 
   <h1 ref="title">{{ genre }}</h1>
 
-  <PageNavigation
-    class="webosGenreNavigation"
-    :navigation="GENRE_NAVIGATION"
-  />
+  <PageNavigation class="webosGenreNavigation" :navigation="GENRE_NAVIGATION" />
 
   <LoadingData :class="viewLayout" :status="loadingStatus">
     <AlbumsList

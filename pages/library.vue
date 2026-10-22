@@ -7,8 +7,8 @@ import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import AlbumItem from '@/components/Organisms/AlbumItem.vue';
 import ArtistItem from '@/components/Organisms/ArtistItem.vue';
-import PodcastItem from '@/components/Organisms/PodcastItem.vue';
 import PlaylistsList from '@/components/Organisms/PlaylistsList.vue';
+import PodcastItem from '@/components/Organisms/PodcastItem.vue';
 import WebOSTVPlaylistsGrid from '@/components/Organisms/WebOSTVPlaylistsGrid.vue';
 import { isWebOSTV } from '@/utils/webos';
 
@@ -73,19 +73,19 @@ async function addAlbumToQueue(album: Album) {
   }
 }
 
-async function onPlayAlbum(album: Album) {
-  const tracks = await getMediaTracks(album);
-
-  if (tracks) {
-    await playTracks(tracks);
-  }
-}
-
 async function onAddPodcastToQueue(podcast: Podcast) {
   const episodes = await getMediaTracks(podcast);
 
   if (episodes) {
     await addTracksToQueue(episodes);
+  }
+}
+
+async function onPlayAlbum(album: Album) {
+  const tracks = await getMediaTracks(album);
+
+  if (tracks) {
+    await playTracks(tracks);
   }
 }
 
