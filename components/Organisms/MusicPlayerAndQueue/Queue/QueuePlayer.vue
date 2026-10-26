@@ -21,7 +21,7 @@ const {
   rewindTrack,
 } = useAudioPlayer();
 const { getImageUrl } = useAPI();
-const { toggleQueueList, toggleQueuePlayer } = useQueue();
+const { openQueueList, toggleQueueList, toggleQueuePlayer } = useQueue();
 const isTV =
   typeof window !== 'undefined' &&
   (window.location.protocol === 'file:' ||
@@ -196,14 +196,20 @@ const artworkBackground = computed(() => {
               v-if="isTV"
               :class="[$style.tvNowPlayingControls, 'tvNowPlayingControls']"
             >
-              <ShuffleButton v-if="!isRadioStation" />
+              <ShuffleButton
+                v-if="!isRadioStation"
+                class="webosNowPlayingShuffle"
+              />
 
               <MainPlayerControls
-                :class="$style.tvTransportControls"
+                :class="[$style.tvTransportControls, 'webosNowPlayingTransport']"
                 :showSeekControls="false"
               />
 
-              <RepeatButton v-if="!isRadioStation" />
+              <RepeatButton
+                v-if="!isRadioStation"
+                class="webosNowPlayingRepeat"
+              />
 
               <ButtonLink
                 ref="openQueueList"
@@ -213,7 +219,7 @@ const artworkBackground = computed(() => {
                 iconWeight="bold"
                 :showText="isTV"
                 title="Queue"
-                @click="toggleQueueList"
+                @click="openQueueList"
               >
                 Queue
               </ButtonLink>

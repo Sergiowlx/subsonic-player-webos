@@ -1,7 +1,29 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`podcasts > matches the snapshot 1`] = `
-"<div class="centerItems spaceBetween">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<div class="centerItems spaceBetween">
   <h1>Podcasts</h1>
   <div class="centerItems"><button class="centerItems buttonLink" draggable="false" type="button" id="refresh-data-button" title="Refresh page data">
       <pharrowsclockwise aria-hidden="true" class="icon" size="32" weight="regular"></pharrowsclockwise><span class="clamp text visuallyHidden">Refresh page data</span>
@@ -19,7 +41,29 @@ exports[`podcasts > matches the snapshot 1`] = `
 `;
 
 exports[`podcasts > when getPodcastsAndNewestPodcastEpisodes does return data > matches the snapshot 1`] = `
-"<div class="centerItems spaceBetween">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<div class="centerItems spaceBetween">
   <h1>Podcasts</h1>
   <div class="centerItems"><button class="centerItems buttonLink" draggable="false" type="button" id="refresh-data-button" title="Refresh page data">
       <pharrowsclockwise aria-hidden="true" class="icon" size="32" weight="regular"></pharrowsclockwise><span class="clamp text visuallyHidden">Refresh page data</span>
@@ -41,7 +85,29 @@ exports[`podcasts > when getPodcastsAndNewestPodcastEpisodes does return data > 
 `;
 
 exports[`podcasts > when getPodcastsAndNewestPodcastEpisodes does return data > when viewLayout is gridLayout > matches the snapshot 1`] = `
-"<div class="centerItems spaceBetween">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<div class="centerItems spaceBetween">
   <h1>Podcasts</h1>
   <div class="centerItems"><button class="centerItems buttonLink" draggable="false" type="button" id="refresh-data-button" title="Refresh page data">
       <pharrowsclockwise aria-hidden="true" class="icon" size="32" weight="regular"></pharrowsclockwise><span class="clamp text visuallyHidden">Refresh page data</span>
@@ -63,7 +129,29 @@ exports[`podcasts > when getPodcastsAndNewestPodcastEpisodes does return data > 
 `;
 
 exports[`podcasts > when getPodcastsAndNewestPodcastEpisodes does return data > when viewLayout is listLayout > matches the snapshot 1`] = `
-"<div class="centerItems spaceBetween">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<div class="centerItems spaceBetween">
   <h1>Podcasts</h1>
   <div class="centerItems"><button class="centerItems buttonLink" draggable="false" type="button" id="refresh-data-button" title="Refresh page data">
       <pharrowsclockwise aria-hidden="true" class="icon" size="32" weight="regular"></pharrowsclockwise><span class="clamp text visuallyHidden">Refresh page data</span>

@@ -44,7 +44,7 @@ Built with [Nuxt 4][nuxt], a modern [Vue 3][vue] framework, this open-source app
    - Dark/Light Mode support.
    - Keyboard shortcut (Press `h` to see menu).
    - Context menu access via right-click (desktop) or long press (mobile) for quick actions on tracks, albums, playlists, and more.
-   - Easily drag and drop your favorite tracks, albums, and podcast episodes right into the queue or your playlist in the sidebar (available only on desktop).
+   - Easily drag and drop your favorite tracks, albums, and podcast episodes right into the queue or a playlist (available only on desktop).
 
 4. Progressive Web App (PWA) Feature
    - Seamlessly download the app icon to the home screen, providing the convenience of launching the app just like a traditional native application.

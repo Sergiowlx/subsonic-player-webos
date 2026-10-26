@@ -1,78 +1,22 @@
 # webOS Release Guide
 
-## Prerequisites
+## Release process
 
-- webOS SDK installed (for `ares-package`)
-- `yarn` installed
-- Git repository in clean state
+Keep `package.json` and `webos/appinfo.json` on the same semantic version. The current release is `2.1.0`.
 
-## Release Steps
+After merging the release commit into `main`, create and push its matching tag:
 
-### 1. Update Version Numbers
-
-Edit two files with the new version (for this redesign, `2.0.0`):
-
-**package.json** (line 95):
-
-```json
-"version": "2.0.0"
+```bash
+git tag v2.1.0
+git push origin main v2.1.0
 ```
 
-**webos/appinfo.json** (line 4):
+Pushing a `v*` tag runs `.github/workflows/build-webos-ipk.yml`. The workflow checks that the tag matches the app version, builds the static webOS app, packages the IPK, generates the webOSbrew manifest, and publishes a GitHub release with both files attached. It also keeps an Actions artifact for seven days.
 
-```json
-"version": "2.0.0"
-```
-
-### 2. Build webOS Package
+For a manual package build, install the LG webOS SDK and run:
 
 ```bash
 yarn build:webos
 ```
 
-This creates: `com.subsonic.player_2.0.0_all.ipk`
-
-### 3. Generate Homebrew Manifest
-
-```bash
-yarn manifest
-```
-
-This creates: `com.subsonic.player.v2.manifest.json`
-
-### 4. Create GitHub Release
-
-1. Go to: https://github.com/Sergiowlx/subsonic-player-webos/releases/new
-2. Click "Choose a tag" → enter `v2.0.0` → "Create new tag"
-3. Title: `v2.0.0 — Complete webOS TV interface redesign`
-4. Description: Summarize changes (see step 5 for how to generate)
-5. Attach both files:
-   - `com.subsonic.player_2.0.0_all.ipk`
-   - `com.subsonic.player.v2.manifest.json`
-6. Click "Publish release"
-
-### 5. Generate Release Notes (Optional)
-
-```bash
-git log v1.0.2-webos-legacy.1..HEAD --oneline --no-merges | grep -v dependabot
-```
-
-Replace the starting tag with the previous release tag when preparing later releases.
-
-### 6. Commit and Tag
-
-```bash
-git add package.json webos/appinfo.json
-git commit -m "release: v2.0.0"
-git tag v2.0.0
-git push origin main v2.0.0
-```
-
-## Summary Checklist
-
-- [ ] Update `package.json` version
-- [ ] Update `webos/appinfo.json` version
-- [ ] Run `yarn build:webos`
-- [ ] Run `yarn manifest`
-- [ ] Create GitHub release with both files attached
-- [ ] Commit, tag, and push
+The package is named `com.subsonic.player_<version>_all.ipk`. Install and validate that package on the target LG TV before describing the release as verified on-device.

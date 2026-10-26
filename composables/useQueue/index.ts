@@ -32,6 +32,28 @@ export function useQueue() {
     toggleLockScroll();
   }
 
+  function closeQueueList() {
+    if (!isQueueListOpened.value) return;
+
+    isQueueListOpened.value = false;
+    toggleLockScroll();
+  }
+
+  function openQueueList() {
+    isQueueListOpened.value = true;
+    toggleLockScroll();
+
+    if (import.meta.client && isWebOSTV()) {
+      nextTick(() => {
+        document
+          .querySelector<HTMLButtonElement>(
+            '.webosQueueList .webosQueueUpcomingPlay, .webosQueueList button',
+          )
+          ?.focus();
+      });
+    }
+  }
+
   function resetQueue() {
     isQueueListOpened.value = false;
     isQueuePlayerOpened.value = false;
@@ -40,9 +62,11 @@ export function useQueue() {
   }
 
   return {
+    closeQueueList,
     closeQueuePlayer,
     isQueueListOpened,
     isQueuePlayerOpened,
+    openQueueList,
     resetQueue,
     toggleQueueList,
     toggleQueuePlayer,

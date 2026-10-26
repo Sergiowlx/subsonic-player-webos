@@ -34,7 +34,12 @@ export default defineNuxtPlugin((nuxtApp) => {
     return;
   }
 
-  const { closeQueuePlayer, isQueuePlayerOpened } = useQueue();
+  const {
+    closeQueueList,
+    closeQueuePlayer,
+    isQueueListOpened,
+    isQueuePlayerOpened,
+  } = useQueue();
 
   // Check if we're on a file system path and need to redirect
   const currentPath = window.location.pathname;
@@ -55,6 +60,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // Track currently focused element for .focused CSS class
   let currentFocusedElement: HTMLElement | null = null;
+  let hasReceivedNavigationInput = false;
 
   /**
    * Update .focused class on elements
@@ -129,17 +135,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       const eventTarget = event.target as HTMLElement | null;
       const activeTarget = document.activeElement as HTMLElement | null;
-      // Only route to the sidebar when the wheel event actually came from it.
-      // A stale focused link must not capture scrolling over the settings area.
-      const sidebar = eventTarget?.closest('[class*="sidebarNavigation"]');
-      const sidebarNav = sidebar?.querySelector('nav');
-
-      if (sidebarNav) {
-        event.preventDefault();
-        sidebarNav.scrollTop += delta;
-        return;
-      }
-
       const gridPage =
         eventTarget?.closest('[data-webos-grid-page]') ??
         activeTarget?.closest('[data-webos-grid-page]');
@@ -159,14 +154,27 @@ export default defineNuxtPlugin((nuxtApp) => {
         return;
       }
 
+      const scrollContainer =
+        eventTarget?.closest<HTMLElement>('[data-webos-scrollable]') ??
+        activeTarget?.closest<HTMLElement>('[data-webos-scrollable]');
+      if (scrollContainer) {
+        const maxScrollTop =
+          scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        scrollContainer.scrollTop = Math.max(
+          0,
+          Math.min(maxScrollTop, scrollContainer.scrollTop + delta),
+        );
+        event.preventDefault();
+        return;
+      }
+
       event.preventDefault();
       window.scrollBy(0, Math.sign(delta) * window.innerHeight * 0.72);
     },
     { passive: false },
   );
 
-  // Keep the shared desktop sidebar, player, and five-column grid on TV.
-  // TV-specific sizing and remote focus are handled by webos-tv.css.
+  // Use the TV's fixed logical viewport for stable focus and grid layout.
   const viewport = document.querySelector('meta[name="viewport"]');
   if (viewport) {
     viewport.setAttribute('content', 'width=1280, initial-scale=1');
@@ -193,6 +201,10 @@ export default defineNuxtPlugin((nuxtApp) => {
    * to allow jumping directly between album images
    */
   function shouldSkipElement(element: Element): boolean {
+    if (element.closest('[data-webos-skip-focus]')) {
+      return true;
+    }
+
     // Skip all elements inside track seeker (progress bar) - use skip buttons instead
     if (element.closest('[class*="trackSeeker"]')) {
       return true;
@@ -216,12 +228,11 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   /**
    * Navigation zones for deterministic navigation
-   * - 'sidebar': inside the sidebar navigation (Browse, Your library, Playlists)
-   * - 'header': top < 70px and not in sidebar/player (user menu, dark mode)
+   * - 'header': top < 70px (top navigation and account controls)
    * - 'player': inside the music player
    * - 'content': main content area (albums, tracks, page tabs, etc.)
    */
-  type NavigationZone = 'content' | 'header' | 'player' | 'sidebar';
+  type NavigationZone = 'content' | 'header' | 'player';
 
   function getNavigationZone(element: Element): NavigationZone {
     // 1. Check if inside the music player FIRST (highest priority)
@@ -229,29 +240,19 @@ export default defineNuxtPlugin((nuxtApp) => {
       return 'player';
     }
 
-    // 2. Keep the desktop sidebar in its own navigation zone and retain the
-    // mobile selector for small browser windows.
-    if (
-      element.closest(
-        '[class*="sidebarNavigation"], [class*="mobileNavigation"]',
-      )
-    ) {
-      return 'sidebar';
-    }
-
-    // 3. Position-based header check
+    // 2. Position-based header check
     const rect = element.getBoundingClientRect();
     if (rect.top < 70) {
       return 'header';
     }
 
-    // 4. Default to content
+    // 3. Default to content
     return 'content';
   }
 
   /**
    * Check if element is inside the music player (not just any fixed element)
-   * This specifically targets the music player and queue, not header/sidebar
+   * This specifically targets the music player and queue, not the header
    */
   function isInsidePlayer(element: Element): boolean {
     // Check if inside the music player
@@ -350,22 +351,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   /**
-   * Find the index of the current element in the focusable list
-   */
-  function findCurrentIndex(
-    allElements: HTMLElement[],
-    currentNode: Element | null,
-  ): number {
-    if (!currentNode) return -1;
-    for (let i = 0; i < allElements.length; i++) {
-      if (currentNode.isEqualNode(allElements[i])) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  /**
    * Get element's bounding rect with some useful computed properties
    */
   function getElementRect(el: HTMLElement): {
@@ -459,44 +444,22 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       const targetZone = getNavigationZone(element);
 
-      // Zone-based navigation rules:
-      // - In content: stay in content (skip sidebar/header/player)
-      // - In sidebar: can go RIGHT to content, UP/DOWN stays in sidebar
-      // - In header: can go DOWN to content
-      // - In player: can go UP to content
+      // Keep directional movement within the current area. The player and
+      // header should only be reached when a spatial neighbor exists there.
 
       if (currentZone === 'content') {
         // When in main content:
-        // - UP/DOWN: stay in content (don't jump to header/sidebar/player)
+        // - UP/DOWN: stay in content (don't jump to header/player)
         // - LEFT: stay in content
         // - RIGHT: stay in content
-        if (targetZone === 'header') {
-          continue; // Skip header when navigating from content
-        }
-        if (targetZone === 'sidebar') {
-          continue; // Skip sidebar when navigating from content
+        if (targetZone === 'header' && direction !== 'up') {
+          continue; // Only UP from content may enter the header
         }
         if (targetZone === 'player') {
           continue; // Skip player - only accessible from bottom of content
         }
-      } else if (currentZone === 'sidebar') {
-        // When in sidebar:
-        // - UP/DOWN: stay in sidebar
-        // - RIGHT: go to content
-        // - LEFT: stay in sidebar (or nowhere to go)
-        if (
-          (direction === 'up' || direction === 'down') &&
-          targetZone !== 'sidebar'
-        ) {
-          continue;
-        }
       } else if (currentZone === 'header') {
-        // When in header:
-        // - DOWN: go to content
-        // - UP: nowhere
-        if (direction === 'down' && targetZone === 'sidebar') {
-          continue; // Don't go from header to sidebar
-        }
+        // When in header, DOWN can enter content and UP stops at the edge.
         if (targetZone === 'player') {
           continue; // Don't go from header to player
         }
@@ -610,61 +573,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   /**
-   * Simple linear navigation (fallback)
-   */
-  function navigateLinear(amount: number): void {
-    const allElements = getFocusableElements();
-
-    if (allElements.length === 0) return;
-
-    const currentElement = document.activeElement;
-
-    if (
-      !currentElement ||
-      currentElement === document.body ||
-      !isVisible(currentElement)
-    ) {
-      navigationInit();
-      return;
-    }
-
-    const currentIndex = findCurrentIndex(allElements, currentElement);
-    let newIndex = currentIndex + amount;
-
-    // Wrap around
-    if (newIndex < 0) newIndex = allElements.length - 1;
-    if (newIndex >= allElements.length) newIndex = 0;
-
-    if (allElements[newIndex]) {
-      const targetElement = allElements[newIndex];
-      const isInSwiper = targetElement.closest('swiper-slide');
-      targetElement.focus();
-      if (!isInSwiper && currentElement instanceof HTMLElement) {
-        scrollToFocusedElement(currentElement, targetElement);
-      }
-    }
-  }
-
-  /**
    * Handle arrow key navigation
    */
   function handleArrowUp(): void {
-    const currentElement = document.activeElement as HTMLElement;
-    const currentZone = currentElement
-      ? getNavigationZone(currentElement)
-      : null;
-
-    // If in player, allow going UP to content
-    if (currentZone === 'player') {
-      if (!navigateSpatial('up')) {
-        navigateLinear(-1);
-      }
-      return;
-    }
-
-    if (!navigateSpatial('up')) {
-      navigateLinear(-1);
-    }
+    navigateSpatial('up');
   }
 
   function handleArrowDown(): void {
@@ -674,7 +586,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       : null;
 
     // If in content and no elements found below, try to reach player
-    if (currentZone === 'content' && !navigateSpatial('down')) {
+    if (currentZone === 'content') {
+      if (navigateSpatial('down')) return;
+
       // Check if player exists and has focusable elements
       const playerElements = getFocusableElements().filter(
         (el) => getNavigationZone(el) === 'player',
@@ -686,30 +600,30 @@ export default defineNuxtPlugin((nuxtApp) => {
           behavior: 'auto',
           block: 'center',
         });
-      } else {
-        navigateLinear(1);
       }
-    } else if (!navigateSpatial('down')) {
-      navigateLinear(1);
+      return;
     }
+
+    navigateSpatial('down');
   }
 
   function handleArrowLeft(): void {
-    if (!navigateSpatial('left')) {
-      navigateLinear(-1);
-    }
+    navigateSpatial('left');
   }
 
   function handleArrowRight(): void {
-    if (!navigateSpatial('right')) {
-      navigateLinear(1);
-    }
+    navigateSpatial('right');
   }
 
   /**
    * Handle back button
    */
   function handleBack(): void {
+    if (isQueueListOpened.value) {
+      closeQueueList();
+      return;
+    }
+
     if (isQueuePlayerOpened.value) {
       closeQueuePlayer();
       return;
@@ -785,41 +699,15 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     }
 
-    // Start in the shared desktop sidebar so the TV opens on the current page,
-    // rather than leaving focus on the search submit button in the header.
-    const activeSidebarLink = document.querySelector(
-      'aside [class*="sidebarCurrentLink"]',
-    ) as HTMLElement | null;
-    const firstSidebarLink = document.querySelector(
-      'aside [class*="sidebarNavigation"] a[href]',
-    ) as HTMLElement | null;
-    const sidebarLink = activeSidebarLink ?? firstSidebarLink;
+    // Start in page content when possible, instead of focusing the decorative
+    // brand mark or a header control as soon as the app opens.
+    const firstContentElement = allElements.find((element) =>
+      element.closest('main'),
+    );
 
-    if (sidebarLink && isVisible(sidebarLink)) {
-      sidebarLink.focus();
+    if (firstContentElement) {
+      firstContentElement.focus();
       return;
-    }
-
-    // Try to find a good initial element to focus on layouts without a sidebar.
-    // Priority: 1) submit button, 2) first input, 3) first link, 4) first button.
-    const prioritySelectors = [
-      'button[type="submit"]',
-      'input:not([type="hidden"])',
-      'a[href]',
-      'button',
-    ];
-
-    for (const selector of prioritySelectors) {
-      const element = document.querySelector(selector) as HTMLElement;
-      if (element && isVisible(element)) {
-        element.focus();
-        return;
-      }
-    }
-
-    // Fallback to first focusable element
-    if (allElements.length > 0) {
-      allElements[0].focus();
     }
   }
 
@@ -827,6 +715,7 @@ export default defineNuxtPlugin((nuxtApp) => {
    * Main keydown event handler
    */
   function onKeyDown(evt: KeyboardEvent): void {
+    hasReceivedNavigationInput = true;
     const keyCode = evt.keyCode;
 
     // Log for debugging
@@ -898,12 +787,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // Watch for DOM changes and re-initialize if needed
   const observer = new MutationObserver(() => {
-    // Only re-focus if current focus is invalid
+    // Move initial focus into the page once content appears.
     const activeElement = document.activeElement;
+    const focusIsInPrimaryNavigation =
+      activeElement instanceof HTMLElement &&
+      Boolean(activeElement.closest('.tvPrimaryNavigation'));
+
     if (
       !activeElement ||
       activeElement === document.body ||
-      !isVisible(activeElement)
+      !isVisible(activeElement) ||
+      (focusIsInPrimaryNavigation && !hasReceivedNavigationInput)
     ) {
       setTimeout(navigationInit, 100);
     }

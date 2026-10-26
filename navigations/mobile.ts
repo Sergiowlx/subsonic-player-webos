@@ -1,4 +1,6 @@
-export const MOBILE_NAVIGATION: SidebarItem[] = [
+import type { NavigationItem } from './types';
+
+export const MOBILE_NAVIGATION: NavigationItem[] = [
   {
     icon: ICONS.discover,
     title: 'Browse',

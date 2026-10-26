@@ -1,8 +1,30 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`[[sortBy]] > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -38,8 +60,30 @@ exports[`[[sortBy]] > matches the snapshot 1`] = `
 `;
 
 exports[`[[sortBy]] > when status is error > when albumsData.album is an empty array > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -75,8 +119,30 @@ exports[`[[sortBy]] > when status is error > when albumsData.album is an empty a
 `;
 
 exports[`[[sortBy]] > when status is error > when albumsData.album is not an empty array > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -112,8 +178,30 @@ exports[`[[sortBy]] > when status is error > when albumsData.album is not an emp
 `;
 
 exports[`[[sortBy]] > when status is pending > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -147,8 +235,30 @@ exports[`[[sortBy]] > when status is pending > matches the snapshot 1`] = `
 `;
 
 exports[`[[sortBy]] > when status is pending > when albumsData.album is an empty array > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -182,8 +292,30 @@ exports[`[[sortBy]] > when status is pending > when albumsData.album is an empty
 `;
 
 exports[`[[sortBy]] > when status is pending > when albumsData.album is not an empty array > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -217,8 +349,30 @@ exports[`[[sortBy]] > when status is pending > when albumsData.album is not an e
 `;
 
 exports[`[[sortBy]] > when status is success > when albumsData.album is an empty array > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">
@@ -254,8 +408,30 @@ exports[`[[sortBy]] > when status is success > when albumsData.album is an empty
 `;
 
 exports[`[[sortBy]] > when status is success > when albumsData.album is not an empty array > matches the snapshot 1`] = `
-"<h1>Albums</h1>
-<nav class="pageNavigation">
+"<nav aria-label="Your library" class="webosLibraryNavigation">
+  <ul class="webosLibraryTabs">
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTabActive webosLibraryTab webosLibraryTabActive" draggable="false" aria-current="page">
+        <phmusicnotes aria-hidden="true" class="icon" size="18" weight="regular"></phmusicnotes><span class="clamp text">All</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phvinylrecord aria-hidden="true" class="icon" size="18" weight="regular"></phvinylrecord><span class="clamp text">Albums</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phusersthree aria-hidden="true" class="icon" size="18" weight="regular"></phusersthree><span class="clamp text">Artist</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phplaylist aria-hidden="true" class="icon" size="18" weight="regular"></phplaylist><span class="clamp text">Playlists</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phwaveform aria-hidden="true" class="icon" size="18" weight="regular"></phwaveform><span class="clamp text">Genres</span>
+      </a></li>
+    <li><a class="centerItems buttonLink webosLibraryTab webosLibraryTab" draggable="false">
+        <phapplepodcastslogo aria-hidden="true" class="icon" size="18" weight="regular"></phapplepodcastslogo><span class="clamp text">Podcast</span>
+      </a></li>
+  </ul>
+</nav>
+<h1>Albums</h1>
+<nav class="pageNavigation webosAlbumSortNavigation">
   <div class="overflowShadow">
     <div class="content">
       <ul class="centerItems navigation">

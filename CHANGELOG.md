@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-10-23
+
+### Added
+
+- Added Radio and Bookmarks destinations to the TV library experience.
+- Added individual removal controls and scrolling to the TV queue.
+
+### Changed
+
+- Refined the TV navigation, library tabs, album and artist grids, login screen, player bar, and Now Playing view.
+- Enlarged the current-track artwork and metadata in the queue overlay.
+- Replaced flexbox `gap` spacing with Chromium 79-compatible margins in TV controls.
+
+### Fixed
+
+- Kept queue scrolling inside its list when the webOS remote sends wheel events to the page body.
+- Removed unused sidebar and server-profile navigation code from the TV app.
+
 ## [1.0.1] - 2025-03-28
 
 ### Added

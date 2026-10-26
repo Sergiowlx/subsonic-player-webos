@@ -9,13 +9,32 @@ import MusicLogo from '@/components/Molecules/MusicLogo.vue';
 import PageNavigation from '@/components/Molecules/PageNavigation.vue';
 import SearchForm from '@/components/Molecules/SearchForm.vue';
 import MusicPlayerAndQueue from '@/components/Organisms/MusicPlayerAndQueue/MusicPlayerAndQueue.vue';
-import SidebarNavigation from '@/components/Organisms/SidebarNavigation/SidebarNavigation.vue';
 
 const route = useRoute();
 const user = useUser();
-const { closeQueuePlayer, isQueuePlayerOpened } = useQueue();
+const {
+  closeQueuePlayer,
+  isQueueListOpened,
+  isQueuePlayerOpened,
+} = useQueue();
 const { logoutAndRedirect } = useAuth();
 const { startScan } = useMediaLibrary();
+const isHeaderScrolled = ref(false);
+
+function updateHeaderScrollState() {
+  isHeaderScrolled.value = window.scrollY > 0;
+}
+
+onMounted(() => {
+  if (!isWebOSTV()) return;
+
+  updateHeaderScrollState();
+  window.addEventListener('scroll', updateHeaderScrollState, { passive: true });
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', updateHeaderScrollState);
+});
 
 async function onSubmit(term: string) {
   await navigateTo({
@@ -38,14 +57,20 @@ const showPageNavigation = computed(() =>
       :class="[
         'centerItems',
         $style.header,
-        { nowPlayingHeader: isQueuePlayerOpened },
+        {
+          headerScrolled: isHeaderScrolled,
+          nowPlayingHeader: isQueuePlayerOpened,
+          tvQueueListOpen: isQueueListOpened,
+        },
       ]"
       @click.capture="closeQueuePlayer"
     >
       <div class="spaceBetween inner centerItems">
         <MusicLogo class="mobileOnly" />
 
-        <MusicLogo :class="$style.tvLogo" />
+        <span :class="$style.tvLogo" aria-hidden="true">
+          <component :is="ICONS.logo" :size="40" weight="regular" />
+        </span>
 
         <nav
           aria-label="Primary navigation"
@@ -129,9 +154,6 @@ const showPageNavigation = computed(() =>
               >
                 Files
               </DropdownItem>
-              <DropdownItem is="a" :href="user.server" target="_blank">
-                Server
-              </DropdownItem>
               <DropdownItem ref="scan" @click="startScan">Scan</DropdownItem>
               <DropdownDivider />
               <DropdownItem
@@ -147,11 +169,7 @@ const showPageNavigation = computed(() =>
       </div>
     </header>
 
-    <aside>
-      <SidebarNavigation class="desktopOnly" />
-
-      <MobileNavigation class="mobileOnly" />
-    </aside>
+    <MobileNavigation class="mobileOnly" />
 
     <main :class="['main', $style.mainContent]">
       <div
@@ -195,10 +213,6 @@ const showPageNavigation = computed(() =>
   background-color: var(--background-color);
   border-bottom: 0;
   box-shadow: none;
-
-  @media (--tablet-up) {
-    margin-left: var(--sidebar-width);
-  }
 }
 
 .search {
@@ -207,13 +221,45 @@ const showPageNavigation = computed(() =>
   width: var(--search-width);
 
   @media (--tablet-up) {
-    --search-width: 45%;
+    display: none;
   }
 }
 
-.tvLogo,
+.tvLogo {
+  display: none;
+
+  @media (--tablet-up) {
+    display: flex;
+    flex: 0 0 auto;
+    margin-right: var(--space-24);
+  }
+}
+
 .tvPrimaryNavigation {
   display: none;
+
+  @media (--tablet-up) {
+    display: flex;
+    flex: 1 1 auto;
+    gap: clamp(16px, 2.5vw, 36px);
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+}
+
+:global(.tvPrimaryLink) {
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--secondary-font-color);
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+:global(.tvPrimaryLinkActive) {
+  color: var(--font-color);
 }
 
 .secondary {
@@ -227,25 +273,22 @@ const showPageNavigation = computed(() =>
   flex: 1;
   min-height: 100vh;
   overflow: hidden;
-
-  @media (--tablet-up) {
-    margin-left: var(--sidebar-width);
-  }
 }
 
 .mainContentInner {
   --main-width: 100vw;
   --main-padding-top: calc(var(--header-height) + var(--space-40));
   --main-padding-bottom: calc(
-    var(--sidebar-bottom) + var(--space-40) + var(--header-height)
+    var(--media-player-height) + var(--space-40) + var(--header-height)
   );
 
   width: var(--main-width);
   padding: var(--main-padding-top) 0 var(--main-padding-bottom);
 
   @media (--tablet-up) {
-    --main-width: calc(100vw - var(--sidebar-width));
-    --main-padding-bottom: calc(var(--sidebar-bottom) + var(--space-40));
+    --main-padding-bottom: calc(
+      var(--media-player-height) + var(--space-40)
+    );
   }
 }
 

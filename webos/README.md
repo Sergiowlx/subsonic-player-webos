@@ -43,7 +43,7 @@ cp -r .output/public/* webos/
 ares-package webos --outdir ./
 
 # Install on TV
-ares-install com.subsonic.player_2.0.0_all.ipk -d YOUR_TV_NAME
+ares-install com.subsonic.player_2.1.0_all.ipk -d YOUR_TV_NAME
 ```
 
 ### 3. Launch on TV
@@ -123,7 +123,7 @@ yarn dev
 ```bash
 # Build and deploy to TV
 yarn build:webos
-ares-install com.subsonic.player_2.0.0_all.ipk -d YOUR_TV_NAME
+ares-install com.subsonic.player_2.1.0_all.ipk -d YOUR_TV_NAME
 ares-launch com.subsonic.player -d YOUR_TV_NAME
 
 # Debug on TV
@@ -136,6 +136,6 @@ Quick redeploy cycle:
 ```bash
 ares-launch --close com.subsonic.player
 yarn build:webos
-while ! ares-install com.subsonic.player_2.0.0_all.ipk; do echo next try; done
+while ! ares-install com.subsonic.player_2.1.0_all.ipk; do echo next try; done
 ares-inspect  --app com.subsonic.player --open
 ```

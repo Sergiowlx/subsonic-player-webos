@@ -1,7 +1,13 @@
 name: Build webOS IPK
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -25,6 +31,12 @@ jobs:
       - name: Install LG webOS packaging tools
         run: npm install --global @webos-tools/cli
 
+      - name: Verify tag matches app version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          APP_VERSION="$(node -p "require('./webos/appinfo.json').version")"
+          test "${GITHUB_REF_NAME#v}" = "$APP_VERSION"
+
       - name: Build and package app
         run: bash webos/package-webos.sh
 
@@ -40,3 +52,23 @@ jobs:
             webos/*.ipk
           if-no-files-found: error
           retention-days: 7
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Subsonic Player for webOS ${{ github.ref_name }}
+          body: |
+            ## TV interface and queue refinements
+
+            - Refined TV navigation, library browsing, playback controls, and the Now Playing view.
+            - Added queue scrolling and individual track removal, with larger current-track artwork and details.
+            - Improved layout and scrolling compatibility with Chromium 79 on webOS 6.
+            - Preserves the existing Subsonic/Navidrome playback and audio-quality settings.
+
+            Download the IPK asset below and install it with webOS Dev Manager or the LG webOS CLI.
+          files: |
+            ./*.ipk
+            com.subsonic.player.v2.manifest.json
+          fail_on_unmatched_files: true
+          make_latest: true

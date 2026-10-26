@@ -9,7 +9,7 @@ exports[`PlaylistsList > matches the snapshot 1`] = `
 
 exports[`PlaylistsList > when the playlists prop is not an empty array > matches the snapshot 1`] = `
 "<section class="mediaListWrapper" style="--loop-rows-mobile: 1; --loop-rows-tablet: 2; --loop-rows-desktop: 2; --loop-grid-gap: 24px;">
-  <article class="interactionWrapper playlistsListItem" draggable="false">
+  <article class="interactionWrapper playlistsListItem" draggable="false" data-test-id="playlist">
     <div class="centerItems playlistDetails">
       <figure class="imageLink"><a class="interactionLink" draggable="false" title="Go to playlist playlist-0">
           <div class="centerAll preloadImage">
@@ -36,7 +36,7 @@ exports[`PlaylistsList > when the playlists prop is not an empty array > matches
       </div>
     </div>
   </article>
-  <article class="interactionWrapper playlistsListItem" draggable="false">
+  <article class="interactionWrapper playlistsListItem" draggable="false" data-test-id="playlist">
     <div class="centerItems playlistDetails">
       <figure class="imageLink"><a class="interactionLink" draggable="false" title="Go to playlist playlist-1">
           <div class="centerAll preloadImage">
@@ -63,7 +63,7 @@ exports[`PlaylistsList > when the playlists prop is not an empty array > matches
       </div>
     </div>
   </article>
-  <article class="interactionWrapper playlistsListItem" draggable="false">
+  <article class="interactionWrapper playlistsListItem" draggable="false" data-test-id="playlist">
     <div class="centerItems playlistDetails">
       <figure class="imageLink"><a class="interactionLink" draggable="false" title="Go to playlist playlist-2">
           <div class="centerAll preloadImage">
@@ -90,7 +90,7 @@ exports[`PlaylistsList > when the playlists prop is not an empty array > matches
       </div>
     </div>
   </article>
-  <article class="interactionWrapper playlistsListItem" draggable="false">
+  <article class="interactionWrapper playlistsListItem" draggable="false" data-test-id="playlist">
     <div class="centerItems playlistDetails">
       <figure class="imageLink"><a class="interactionLink" draggable="false" title="Go to playlist playlist-3">
           <div class="centerAll preloadImage">
@@ -117,7 +117,7 @@ exports[`PlaylistsList > when the playlists prop is not an empty array > matches
       </div>
     </div>
   </article>
-  <article class="interactionWrapper playlistsListItem" draggable="false">
+  <article class="interactionWrapper playlistsListItem" draggable="false" data-test-id="playlist">
     <div class="centerItems playlistDetails">
       <figure class="imageLink"><a class="interactionLink" draggable="false" title="Go to playlist playlist-4">
           <div class="centerAll preloadImage">

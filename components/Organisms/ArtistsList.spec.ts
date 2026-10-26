@@ -11,6 +11,13 @@ import { getFormattedArtistsMock } from '@/test/helpers';
 
 import ArtistsList from './ArtistsList.vue';
 
+const isWebOSTVMock = vi.hoisted(() => vi.fn(() => false));
+
+vi.mock('@/utils/webos', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/utils/webos')>()),
+  isWebOSTV: isWebOSTVMock,
+}));
+
 const viewLayoutMock = ref<Layout>('gridLayout');
 
 mockNuxtImport('useViewLayout', () => () => ({
@@ -30,6 +37,8 @@ describe('ArtistsList', () => {
   let wrapper: VueWrapper;
 
   beforeEach(() => {
+    isWebOSTVMock.mockReturnValue(false);
+    viewLayoutMock.value = 'gridLayout';
     wrapper = factory();
   });
 
@@ -58,8 +67,17 @@ describe('ArtistsList', () => {
       expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('shows the GridWrapper component', () => {
-      expect(wrapper.findComponent(GridWrapper).exists()).toBe(true);
+    it('uses the virtual grid for the regular browser grid layout', () => {
+      expect(wrapper.find('[data-webos-grid-page]').exists()).toBe(true);
+      expect(wrapper.findComponent(GridWrapper).exists()).toBe(false);
+    });
+
+    it('uses the virtual grid in the TV layout', () => {
+      isWebOSTVMock.mockReturnValue(true);
+      wrapper = factory({ artists: getFormattedArtistsMock(5) });
+
+      expect(wrapper.find('[data-webos-grid-page]').exists()).toBe(true);
+      expect(wrapper.findComponent(GridWrapper).exists()).toBe(false);
     });
 
     it('shows the correct number of the ArtistItem component', () => {
@@ -70,13 +88,27 @@ describe('ArtistsList', () => {
       expect(wrapper.findComponent(NoMediaMessage).exists()).toBe(false);
     });
 
-    describe.each([
-      ['gridLayout', gridWrapperPropsMock.gridView],
-      ['listLayout', gridWrapperPropsMock.listView],
-    ])('when viewLayout is %s', (layout, expectedProps) => {
+    describe('when viewLayout is gridLayout', () => {
       beforeEach(() => {
-        viewLayoutMock.value = layout as Layout;
+        viewLayoutMock.value = 'gridLayout';
       });
+
+      it('matches the snapshot', () => {
+        expect(wrapper.html()).toMatchSnapshot();
+      });
+
+      it('uses the virtual grid', () => {
+        expect(wrapper.find('[data-webos-grid-page]').exists()).toBe(true);
+        expect(wrapper.findComponent(GridWrapper).exists()).toBe(false);
+      });
+    });
+
+    describe('when viewLayout is listLayout', () => {
+      beforeEach(() => {
+        viewLayoutMock.value = 'listLayout';
+      });
+
+      const expectedProps = gridWrapperPropsMock.listView;
 
       it('matches the snapshot', () => {
         expect(wrapper.html()).toMatchSnapshot();

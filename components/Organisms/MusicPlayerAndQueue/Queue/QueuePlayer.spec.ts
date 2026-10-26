@@ -181,8 +181,8 @@ describe('QueuePlayer', () => {
       expect(wrapper.findComponent(ShuffleButton).exists()).toBe(true);
     });
 
-    it('shows the MediaInformation component', () => {
-      expect(wrapper.findComponent(MediaInformation).exists()).toBe(true);
+    it('does not show the removed MediaInformation control', () => {
+      expect(wrapper.findComponent(MediaInformation).exists()).toBe(false);
     });
 
     it('shows the time progress element', () => {

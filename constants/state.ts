@@ -39,8 +39,6 @@ export const STATE_NAMES = {
   queuePlayerOpened: 'queue-player-opened',
   radioStations: 'radio-stations',
   recentAlbums: 'recent-albums',
-  sideBarCollapsed: 'sidebar-collapsed',
-  sideBarWidth: 'sidebar-width',
   snacks: 'snacks',
   theme: 'theme',
   userAuthenticated: 'user-authenticated',

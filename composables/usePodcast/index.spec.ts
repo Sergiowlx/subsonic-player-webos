@@ -226,14 +226,21 @@ describe('usePodcast', () => {
       it('calls the getPodcasts function with the correct parameters', () => {
         expect(fetchDataMock).toHaveBeenCalledWith(
           '/getPodcasts',
-          expect.any(Object),
+          expect.objectContaining({
+            query: { includeEpisodes: false },
+          }),
+          { notifyOnError: false },
         );
       });
 
       it('calls the getNewestPodcasts function with the correct parameters', () => {
         expect(fetchDataMock).toHaveBeenCalledWith(
           '/getNewestPodcasts',
-          expect.any(Object),
+          expect.objectContaining({
+            query: { count: 15 },
+            transform: expect.any(Function),
+          }),
+          { notifyOnError: false },
         );
       });
     });
@@ -288,14 +295,21 @@ describe('usePodcast', () => {
       it('calls the getPodcasts function with the correct parameters', () => {
         expect(fetchDataMock).toHaveBeenCalledWith(
           '/getPodcasts',
-          expect.any(Object),
+          expect.objectContaining({
+            query: { includeEpisodes: false },
+          }),
+          { notifyOnError: false },
         );
       });
 
       it('calls the getNewestPodcasts function with the correct parameters', () => {
         expect(fetchDataMock).toHaveBeenCalledWith(
           '/getNewestPodcasts',
-          expect.any(Object),
+          expect.objectContaining({
+            query: { count: 15 },
+            transform: expect.any(Function),
+          }),
+          { notifyOnError: false },
         );
       });
     });
@@ -361,14 +375,21 @@ describe('usePodcast', () => {
         it('calls the getPodcast function with the correct parameters', () => {
           expect(fetchDataMock).toHaveBeenCalledWith(
             '/getPodcasts',
-            expect.any(Object),
+            expect.objectContaining({
+              query: { id: 'podcastId', includeEpisodes: true },
+            }),
+            { notifyOnError: false },
           );
         });
 
         it('calls the getNewestPodcastEpisodes function with the correct parameters', () => {
           expect(fetchDataMock).toHaveBeenCalledWith(
             '/getNewestPodcasts',
-            expect.any(Object),
+            expect.objectContaining({
+              query: { count: 15 },
+              transform: expect.any(Function),
+            }),
+            { notifyOnError: false },
           );
         });
       });
@@ -435,14 +456,21 @@ describe('usePodcast', () => {
         it('calls the getPodcast function with the correct parameters', () => {
           expect(fetchDataMock).toHaveBeenCalledWith(
             '/getPodcasts',
-            expect.any(Object),
+            expect.objectContaining({
+              query: { id: 'podcastId', includeEpisodes: true },
+            }),
+            { notifyOnError: false },
           );
         });
 
         it('calls the getNewestPodcastEpisodes function with the correct parameters', () => {
           expect(fetchDataMock).toHaveBeenCalledWith(
             '/getNewestPodcasts',
-            expect.any(Object),
+            expect.objectContaining({
+              query: { count: 15 },
+              transform: expect.any(Function),
+            }),
+            { notifyOnError: false },
           );
         });
       });

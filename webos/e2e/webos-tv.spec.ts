@@ -50,33 +50,27 @@ test.describe('webOS TV Layout', () => {
   });
 
   test.describe('Visual Layout', () => {
-    test('desktop sidebar is shown and mobile navigation is hidden', async ({
+    test('sidebar is not rendered and top navigation is visible', async ({
       page,
     }) => {
       const sidebar = page.locator('aside [class*="sidebarNavigation"]');
-      await expect(sidebar).toBeVisible();
+      await expect(sidebar).toHaveCount(0);
       await expect(
         page.locator('aside [class*="mobileNavigation"]'),
       ).toBeHidden();
-
-      const position = await sidebar.evaluate((el) => {
-        const style = window.getComputedStyle(el);
-        return {
-          position: style.position,
-          width: el.getBoundingClientRect().width,
-        };
-      });
-
-      expect(position.position).toBe('fixed');
-      expect(position.width).toBeGreaterThan(200);
+      await expect(
+        page.getByRole('navigation', { name: 'Primary navigation' }),
+      ).toBeVisible();
     });
 
-    test('main content has left margin for sidebar', async ({ page }) => {
+    test('main content does not reserve space for a sidebar', async ({
+      page,
+    }) => {
       const main = page.locator('main[class*="mainContent"]');
       const marginLeft = await main.evaluate((el) =>
         window.getComputedStyle(el).getPropertyValue('margin-left'),
       );
-      expect(Number.parseFloat(marginLeft)).toBeGreaterThan(200);
+      expect(Number.parseFloat(marginLeft)).toBe(0);
     });
 
     test('hover actions hidden (no mouse on TV)', async ({ page }) => {

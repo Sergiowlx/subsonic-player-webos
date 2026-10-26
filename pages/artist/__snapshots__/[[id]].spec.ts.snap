@@ -41,8 +41,10 @@ exports[`[[id]] > when getArtist does returns data > _ > when artistData.similar
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <h2>Similar Tracks</h2>
     <tracks-list-stub tracks="[object Object],[object Object],[object Object],[object Object],[object Object]"></tracks-list-stub>
@@ -82,8 +84,10 @@ exports[`[[id]] > when getArtist does returns data > _ > when artistData.topTrac
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <h2>Top Tracks</h2>
     <tracks-list-stub tracks="[object Object],[object Object],[object Object],[object Object],[object Object]"></tracks-list-stub>
     <!--v-if-->
@@ -127,8 +131,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.biography i
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
@@ -167,8 +173,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.genres is a
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
@@ -208,8 +216,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.lastFmUrl i
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
@@ -249,8 +259,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.musicBrainz
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
@@ -289,8 +301,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.similarArti
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <h2>Similar Artists</h2>
@@ -330,8 +344,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.totalAlbums
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
@@ -370,8 +386,10 @@ exports[`[[id]] > when getArtist does returns data > when artistData.totalTracks
         </div>
       </div>
     </section>
-    <h2>Albums</h2>
-    <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    <section class="webosArtistAlbumsSection">
+      <h2>Albums</h2>
+      <albums-list-stub albums="[object Object]" hideartist="true"></albums-list-stub>
+    </section>
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->

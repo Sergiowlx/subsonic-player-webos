@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import FavouriteButton from '@/components/Molecules/FavouriteButton.vue';
 import MediaInformation from '@/components/Organisms/MusicPlayerAndQueue/Controls/MediaInformation.vue';
 import PlaybackRateButton from '@/components/Organisms/MusicPlayerAndQueue/Controls/PlaybackRateButton.vue';
@@ -7,6 +8,7 @@ import VolumeControl from '@/components/Organisms/MusicPlayerAndQueue/Controls/V
 
 const { currentTime, currentTrack, isPodcastEpisode, isRadioStation } =
   useAudioPlayer();
+const { openQueueList } = useQueue();
 const isTV = isWebOSTV();
 </script>
 
@@ -34,7 +36,18 @@ const isTV = isWebOSTV();
       :type="currentTrack.type"
     />
 
-    <QueueButton v-if="!isTV" />
+    <ButtonLink
+      v-if="isTV"
+      class="webosQueueButton"
+      :icon="ICONS.queue"
+      :showText="false"
+      title="Open queue"
+      @click="openQueueList"
+    >
+      Queue
+    </ButtonLink>
+
+    <QueueButton v-else />
   </div>
 </template>
 

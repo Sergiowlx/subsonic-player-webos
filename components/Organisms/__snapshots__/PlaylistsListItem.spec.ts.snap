@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`PlaylistsListItem > matches the snapshot 1`] = `
-"<article class="interactionWrapper playlistsListItem" draggable="false">
+"<article class="interactionWrapper playlistsListItem" draggable="false" data-test-id="playlist">
   <div class="centerItems playlistDetails">
     <figure class="imageLink"><a class="interactionLink" draggable="false" title="Go to playlist playlist-0">
         <div class="centerAll preloadImage">

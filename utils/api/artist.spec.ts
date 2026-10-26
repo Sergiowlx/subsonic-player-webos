@@ -14,7 +14,7 @@ describe('fetchAndMergeArtistData', () => {
     vi.clearAllMocks();
   });
 
-  describe('when getArtistInfo2 returns null', () => {
+  describe('when getArtistInfo2 returns null but getArtist succeeds', () => {
     beforeEach(() => {
       fetchFnMock
         .mockResolvedValueOnce({
@@ -22,15 +22,26 @@ describe('fetchAndMergeArtistData', () => {
         })
         .mockResolvedValueOnce({
           data: {
-            artist: {
-              name: 'name',
-            },
+            artist: artistDataMock,
           },
+        })
+        .mockResolvedValueOnce({
+          data: null,
+        })
+        .mockResolvedValueOnce({
+          data: null,
         });
     });
 
-    it('returns the correct response', async () => {
-      expect(await fetchAndMergeArtistData('id', fetchFnMock)).toBeNull();
+    it('returns the artist from the core Subsonic endpoint', async () => {
+      expect(await fetchAndMergeArtistData('id', fetchFnMock)).toEqual(
+        expect.objectContaining({
+          id: 'id',
+          name: 'name',
+          similarTracks: [],
+          topTracks: [],
+        }),
+      );
     });
   });
 

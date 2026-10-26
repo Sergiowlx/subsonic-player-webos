@@ -41,6 +41,113 @@ const swiper = useSwiper(swiperRef, {
   },
 });
 
+let edgeMoveTimer: ReturnType<typeof setTimeout> | undefined;
+let pointerEdgeDirection: -1 | 0 | 1 = 0;
+
+function clearPointerEdgeMove() {
+  if (edgeMoveTimer) {
+    clearTimeout(edgeMoveTimer);
+    edgeMoveTimer = undefined;
+  }
+
+  pointerEdgeDirection = 0;
+}
+
+function moveCarouselFromPointerEdge() {
+  const instance = swiper.instance.value;
+  const carousel = swiperRef.value;
+  if (!isTV || !pointerEdgeDirection || !carousel) return;
+
+  if (instance) {
+    const nextIndex = instance.activeIndex + pointerEdgeDirection;
+    if (nextIndex < 0 || nextIndex >= instance.slides.length) {
+      clearPointerEdgeMove();
+      return;
+    }
+
+    swiper.to(nextIndex, 220);
+  } else {
+    // Older webOS Chromium cannot initialize Swiper's custom element. In that
+    // fallback mode the container is a native horizontal strip, so move it by
+    // one card whenever the pointer stays near either edge.
+    const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+    if (maxScrollLeft <= 0) {
+      clearPointerEdgeMove();
+      return;
+    }
+
+    const carouselBounds = carousel.getBoundingClientRect();
+    const visibleSlides = Array.from(
+      carousel.querySelectorAll<HTMLElement>('swiper-slide'),
+    ).filter((slide) => {
+      const bounds = slide.getBoundingClientRect();
+      return (
+        bounds.width > 0 &&
+        bounds.right > carouselBounds.left &&
+        bounds.left < carouselBounds.right
+      );
+    });
+    const referenceSlide =
+      pointerEdgeDirection > 0
+        ? visibleSlides[visibleSlides.length - 1]
+        : visibleSlides[0];
+    const slideBounds = referenceSlide?.getBoundingClientRect();
+    const slideGap = referenceSlide
+      ? Number.parseFloat(window.getComputedStyle(referenceSlide).marginRight) || 16
+      : 16;
+    const step = (slideBounds?.width || carousel.clientWidth / 5) + slideGap;
+    const nextScrollLeft = Math.max(
+      0,
+      Math.min(
+        maxScrollLeft,
+        carousel.scrollLeft + pointerEdgeDirection * step,
+      ),
+    );
+
+    if (nextScrollLeft === carousel.scrollLeft) {
+      clearPointerEdgeMove();
+      return;
+    }
+
+    carousel.scrollLeft = nextScrollLeft;
+  }
+
+  edgeMoveTimer = setTimeout(moveCarouselFromPointerEdge, 650);
+}
+
+function onPointerMove(event: MouseEvent) {
+  if (!isTV) return;
+  if (event.buttons !== 0) {
+    clearPointerEdgeMove();
+    return;
+  }
+
+  const bounds = swiperRef.value?.getBoundingClientRect();
+  if (!bounds || bounds.width === 0) return;
+
+  const edgeSize = Math.min(72, bounds.width * 0.12);
+  const direction: -1 | 0 | 1 =
+    event.clientX <= bounds.left + edgeSize
+      ? -1
+      : event.clientX >= bounds.right - edgeSize
+        ? 1
+        : 0;
+
+  if (direction === pointerEdgeDirection) return;
+
+  if (edgeMoveTimer) {
+    clearTimeout(edgeMoveTimer);
+    edgeMoveTimer = undefined;
+  }
+  pointerEdgeDirection = direction;
+
+  if (direction) {
+    edgeMoveTimer = setTimeout(moveCarouselFromPointerEdge, 350);
+  }
+}
+
+onBeforeUnmount(clearPointerEdgeMove);
+
 function onRemoteKeydown(event: KeyboardEvent) {
   if (!isTV || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
     return;
@@ -81,20 +188,30 @@ function onRemoteKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div :class="['mBL', $style.carouselSwiper]">
+  <div
+    :class="['mBL', $style.carouselSwiper]"
+    @mousemove="onPointerMove"
+    @mouseleave="clearPointerEdgeMove"
+  >
     <swiper-container ref="swiperRef" @keydown="onRemoteKeydown">
       <slot />
     </swiper-container>
 
     <ButtonLink
       :class="$style.previous"
+      data-webos-skip-focus
       :icon="ICONS.previous"
       @click="swiper.prev()"
     >
       Previous slide
     </ButtonLink>
 
-    <ButtonLink :class="$style.next" :icon="ICONS.next" @click="swiper.next()">
+    <ButtonLink
+      :class="$style.next"
+      data-webos-skip-focus
+      :icon="ICONS.next"
+      @click="swiper.next()"
+    >
       Next slide
     </ButtonLink>
   </div>

@@ -585,7 +585,7 @@ export function useAudioPlayer() {
     await playNextTrack();
   }
 
-  async function removeTrackFromQueueList(id: string) {
+  async function removeTrackFromQueueList(id: string, queueIndex?: number) {
     const tempCurrentTrackId = currentTrack.value.id;
     const removedTrackWasPlaying = isPlaying.value;
 
@@ -594,7 +594,13 @@ export function useAudioPlayer() {
       return;
     }
 
-    const index = getIndex(queueList.value, id);
+    const index =
+      queueIndex !== undefined &&
+      queueIndex >= 0 &&
+      queueIndex < queueList.value.length &&
+      queueList.value[queueIndex]?.id === id
+        ? queueIndex
+        : getIndex(queueList.value, id);
 
     // If index not found.
     if (index === -1) {

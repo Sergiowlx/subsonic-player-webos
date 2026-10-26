@@ -10,7 +10,6 @@ const {
   accentColorRgb,
   restoreSettings: restoreWebOSTVSettings,
 } = useWebOSTVSettings();
-const { width } = useSidebar();
 const { showMediaPlayer } = useAudioPlayer();
 
 const loading = ref(true);
@@ -24,9 +23,8 @@ hook('page:finish', () => {
 useHead({
   bodyAttrs: {
     style: {
-      '--sidebar-bottom': () =>
+      '--player-overlay-height': () =>
         showMediaPlayer.value ? 'var(--media-player-height)' : '0px',
-      '--sidebar-width': width,
       '--theme-color': () => accentColor.value,
       '--theme-color-rgb': () => accentColorRgb.value,
     },

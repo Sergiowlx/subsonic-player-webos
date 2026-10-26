@@ -30,14 +30,14 @@ The app is built as a **Single Page Application (SPA)** using Nuxt's static gene
 Implemented in `plugins/webos-input.client.ts`:
 - **DPAD Support:** Maps remote arrows to spatial navigation between focusable elements.
 - **Focus Management:** Uses a `.focused` CSS class for reliable visual indicators (native `:focus` can be inconsistent on old webOS).
-- **Navigation Zones:** Deterministic logic for jumping between Sidebar, Header, Content, and Player.
+- **Navigation Zones:** Deterministic logic for moving between Header, Content, and Player.
 - **Viewport:** Forced to `1280px` width to trigger a stable desktop-style layout regardless of physical TV resolution.
 
 ### TV-Specific Styling
 Located in `assets/css/global/webos-tv.css`:
 - **10-foot UI:** Increased font sizes and spacing for couch viewing.
 - **No Hover:** Interactive elements that rely on hover are modified or hidden.
-- **Layout Overrides:** Mobile bottom-nav is transformed into a left-side vertical sidebar on TV.
+- **Layout Overrides:** TVs use the top Home, Search, and Your library navigation; the mobile bottom navigation stays limited to small screens.
 - **Compatibility Fallbacks:** Explicit heights for `aspect-ratio` and fixed values for `clamp()`.
 
 ## 🔄 Maintenance Strategy (Minimal-Fork)

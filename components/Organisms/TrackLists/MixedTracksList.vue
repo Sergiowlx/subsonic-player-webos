@@ -21,16 +21,26 @@ function getTrackPageHeight() {
 
   const rootStyle = getComputedStyle(document.documentElement);
   const rootFontSize = Number.parseFloat(rootStyle.fontSize) || 16;
-  const rowHeightRem =
-    Number.parseFloat(rootStyle.getPropertyValue('--webos-track-row-height')) ||
-    4.75;
-  const rowGapRem =
-    Number.parseFloat(rootStyle.getPropertyValue('--webos-track-row-gap')) ||
-    0.5;
+  const toPixels = (value: string, fallback: number) => {
+    const parsedValue = Number.parseFloat(value);
+    if (!Number.isFinite(parsedValue)) return fallback;
 
-  // The TV stylesheet converts these dimensions to rem; VirtualList's spacer
-  // uses inline px, so calculate its stride from the rendered root font size.
-  return Math.round((rowHeightRem + rowGapRem) * rootFontSize * 2);
+    return value.trim().endsWith('rem')
+      ? parsedValue * rootFontSize
+      : parsedValue;
+  };
+  const rowHeight = toPixels(
+    rootStyle.getPropertyValue('--webos-track-row-height'),
+    76,
+  );
+  const rowGap = toPixels(
+    rootStyle.getPropertyValue('--webos-track-row-gap'),
+    8,
+  );
+
+  // Keep the virtual page spacer in sync with the TV row dimensions whether
+  // the stylesheet expresses them in pixels or root-relative units.
+  return Math.round((rowHeight + rowGap) * 2);
 }
 
 const TRACK_PAGE_HEIGHT = getTrackPageHeight();

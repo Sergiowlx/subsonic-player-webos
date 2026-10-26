@@ -18,12 +18,16 @@ exports[`QueuePlayer > matches the snapshot 1`] = `
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <!--v-if-->
             <!--v-if-->
@@ -58,9 +62,7 @@ exports[`QueuePlayer > matches the snapshot 1`] = `
             </button><button class="centerItems buttonLink" draggable="false" type="button" title="Turn on repeat all">
               <phrepeat aria-hidden="true" class="icon" color="currentColor" size="24" weight="regular"></phrepeat><span class="clamp text visuallyHidden">Turn on repeat all</span>
             </button>
-            <!--v-if--><button class="centerItems buttonLink" draggable="false" type="button" title="Media information">
-              <phinfo aria-hidden="true" class="icon" size="24" weight="regular"></phinfo><span class="clamp text visuallyHidden"> Media information </span>
-            </button>
+            <!--v-if-->
           </div>
         </div>
       </div>
@@ -89,12 +91,16 @@ exports[`QueuePlayer > when currentTrack value does not have a favourite key > m
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -155,7 +161,6 @@ exports[`QueuePlayer > when currentTrack value does not have a favourite key > m
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -184,12 +189,16 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > matches the snapsho
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -245,7 +254,6 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > matches the snapsho
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -274,12 +282,16 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -335,7 +347,6 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -364,12 +375,16 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -429,7 +444,6 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -458,12 +472,16 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -519,7 +537,6 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -548,12 +565,16 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -613,7 +634,6 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -642,12 +662,16 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -703,7 +727,6 @@ exports[`QueuePlayer > when isPodcastEpisode value is true > when currentTrack v
                 <!--v-if-->
               </teleport-stub>
             </div>
-            <!--v-if-->
           </div>
         </div>
       </div>
@@ -732,12 +755,16 @@ exports[`QueuePlayer > when isRadioStation value is true > matches the snapshot 
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -782,7 +809,6 @@ exports[`QueuePlayer > when isRadioStation value is true > matches the snapshot 
           <div class="centerAll spaceBetween secondaryOptions"><button class="centerItems buttonLink alignRight" draggable="false" type="button" title="Like track">
               <phheart aria-hidden="true" class="icon" size="24" weight="regular"></phheart><span class="clamp text visuallyHidden">Like track</span>
             </button>
-            <!--v-if-->
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
@@ -814,12 +840,16 @@ exports[`QueuePlayer > when isTrack value is true > when currentTrackMock.album 
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <!--v-if-->
             <div class="marqueeScroll">
@@ -864,9 +894,7 @@ exports[`QueuePlayer > when isTrack value is true > when currentTrackMock.album 
             </button><button class="centerItems buttonLink" draggable="false" type="button" title="Turn on repeat all">
               <phrepeat aria-hidden="true" class="icon" color="currentColor" size="24" weight="regular"></phrepeat><span class="clamp text visuallyHidden">Turn on repeat all</span>
             </button>
-            <!--v-if--><button class="centerItems buttonLink" draggable="false" type="button" title="Media information">
-              <phinfo aria-hidden="true" class="icon" size="24" weight="regular"></phinfo><span class="clamp text visuallyHidden"> Media information </span>
-            </button>
+            <!--v-if-->
           </div>
         </div>
       </div>
@@ -895,12 +923,16 @@ exports[`QueuePlayer > when isTrack value is true > when currentTrackMock.artist
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -940,9 +972,7 @@ exports[`QueuePlayer > when isTrack value is true > when currentTrackMock.artist
             </button><button class="centerItems buttonLink" draggable="false" type="button" title="Turn on repeat all">
               <phrepeat aria-hidden="true" class="icon" color="currentColor" size="24" weight="regular"></phrepeat><span class="clamp text visuallyHidden">Turn on repeat all</span>
             </button>
-            <!--v-if--><button class="centerItems buttonLink" draggable="false" type="button" title="Media information">
-              <phinfo aria-hidden="true" class="icon" size="24" weight="regular"></phinfo><span class="clamp text visuallyHidden"> Media information </span>
-            </button>
+            <!--v-if-->
           </div>
         </div>
       </div>
@@ -971,12 +1001,16 @@ exports[`QueuePlayer > when isTrack value is true > when the track does not have
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <!--v-if-->
             <div class="marqueeScroll">
@@ -1021,9 +1055,7 @@ exports[`QueuePlayer > when isTrack value is true > when the track does not have
             </button><button class="centerItems buttonLink" draggable="false" type="button" title="Turn on repeat all">
               <phrepeat aria-hidden="true" class="icon" color="currentColor" size="24" weight="regular"></phrepeat><span class="clamp text visuallyHidden">Turn on repeat all</span>
             </button>
-            <!--v-if--><button class="centerItems buttonLink" draggable="false" type="button" title="Media information">
-              <phinfo aria-hidden="true" class="icon" size="24" weight="regular"></phinfo><span class="clamp text visuallyHidden"> Media information </span>
-            </button>
+            <!--v-if-->
           </div>
         </div>
       </div>
@@ -1052,12 +1084,16 @@ exports[`QueuePlayer > when isTrack value is true > when the track does not have
       <div class="trackDetailsWrapper">
         <div class="mBAllL column trackDetails">
           <div>
-            <div class="marqueeScroll" inert="">
-              <div class="bulletList inner">
-                <div class="content">
-                  <h2 class="strong mBXS">queue-track-0-name</h2>
+            <!--v-if-->
+            <div class="">
+              <div class="marqueeScroll" inert="">
+                <div class="bulletList inner">
+                  <div class="content">
+                    <h2 class="strong mBXS">queue-track-0-name</h2>
+                  </div>
                 </div>
               </div>
+              <!--v-if-->
             </div>
             <div class="marqueeScroll">
               <div class="bulletList inner">
@@ -1097,9 +1133,7 @@ exports[`QueuePlayer > when isTrack value is true > when the track does not have
             </button><button class="centerItems buttonLink" draggable="false" type="button" title="Turn on repeat all">
               <phrepeat aria-hidden="true" class="icon" color="currentColor" size="24" weight="regular"></phrepeat><span class="clamp text visuallyHidden">Turn on repeat all</span>
             </button>
-            <!--v-if--><button class="centerItems buttonLink" draggable="false" type="button" title="Media information">
-              <phinfo aria-hidden="true" class="icon" size="24" weight="regular"></phinfo><span class="clamp text visuallyHidden"> Media information </span>
-            </button>
+            <!--v-if-->
           </div>
         </div>
       </div>

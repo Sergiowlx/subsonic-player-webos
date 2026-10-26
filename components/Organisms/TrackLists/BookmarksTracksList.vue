@@ -37,7 +37,7 @@ const trackHeaderNames = TRACK_HEADER_NAMES.bookmarkTracks;
   <div
     v-if="bookmarks.length"
     ref="tracksWrapper"
-    class="trackTable withPreview"
+    class="trackTable withPreview webosTrackTable"
   >
     <div class="trackHeader">
       <div class="trackCell">{{ trackHeaderNames[0] }}</div>

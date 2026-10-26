@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ButtonLink from '@/components/Atoms/ButtonLink.vue';
 import HeaderWithAction from '@/components/Atoms/HeaderWithAction.vue';
+import LibraryNavigation from '@/components/Molecules/LibraryNavigation.vue';
 import LoadingData from '@/components/Molecules/LoadingData.vue';
 import RefreshButton from '@/components/Molecules/RefreshButton.vue';
 import RadioStationsList from '@/components/Organisms/TrackLists/RadioStationsList.vue';
@@ -48,6 +49,8 @@ useHead({
 </script>
 
 <template>
+  <LibraryNavigation />
+
   <HeaderWithAction>
     <h1>Radio Stations</h1>
 

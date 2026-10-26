@@ -26,7 +26,13 @@ exports[`FilesList > when route params does have an Id > matches the snapshot 1`
           <div class="iconImage">
             <pharrowurightup class="icon"></pharrowurightup>
           </div>
-        </div> ... <p class="visuallyHidden">Go back</p>
+        </div>
+        <div class="marqueeScroll" inert="">
+          <div class="bulletList inner">
+            <div class="content"> Go back </div>
+          </div>
+        </div>
+        <p class="visuallyHidden">Go back</p>
       </a></div>
   </div>
   <div class="trackRow">
@@ -52,7 +58,13 @@ exports[`FilesList > when the folders prop is not an empty array > matches the s
           <div class="iconImage">
             <pharrowurightup class="icon"></pharrowurightup>
           </div>
-        </div> ... <p class="visuallyHidden">Go back</p>
+        </div>
+        <div class="marqueeScroll" inert="">
+          <div class="bulletList inner">
+            <div class="content"> Go back </div>
+          </div>
+        </div>
+        <p class="visuallyHidden">Go back</p>
       </a></div>
   </div>
   <div class="lazyLoadContent trackRow" data-test-id="folder">
@@ -64,6 +76,7 @@ exports[`FilesList > when the folders prop is not an empty array > matches the s
           </div>
         </div>
       </a></div>
+    <!--v-if-->
   </div>
   <div class="lazyLoadContent trackRow" data-test-id="folder">
     <div class="trackCell"><a draggable="false">
@@ -74,6 +87,7 @@ exports[`FilesList > when the folders prop is not an empty array > matches the s
           </div>
         </div>
       </a></div>
+    <!--v-if-->
   </div>
   <div class="lazyLoadContent trackRow" data-test-id="folder">
     <div class="trackCell"><a draggable="false">
@@ -84,6 +98,7 @@ exports[`FilesList > when the folders prop is not an empty array > matches the s
           </div>
         </div>
       </a></div>
+    <!--v-if-->
   </div>
   <div class="lazyLoadContent trackRow" data-test-id="folder">
     <div class="trackCell"><a draggable="false">
@@ -94,6 +109,7 @@ exports[`FilesList > when the folders prop is not an empty array > matches the s
           </div>
         </div>
       </a></div>
+    <!--v-if-->
   </div>
   <div class="lazyLoadContent trackRow" data-test-id="folder">
     <div class="trackCell"><a draggable="false">
@@ -104,6 +120,7 @@ exports[`FilesList > when the folders prop is not an empty array > matches the s
           </div>
         </div>
       </a></div>
+    <!--v-if-->
   </div>
   <!--v-if-->
 </div>"
@@ -117,7 +134,13 @@ exports[`FilesList > when the tracks prop is not an empty array > matches the sn
           <div class="iconImage">
             <pharrowurightup class="icon"></pharrowurightup>
           </div>
-        </div> ... <p class="visuallyHidden">Go back</p>
+        </div>
+        <div class="marqueeScroll" inert="">
+          <div class="bulletList inner">
+            <div class="content"> Go back </div>
+          </div>
+        </div>
+        <p class="visuallyHidden">Go back</p>
       </a></div>
   </div>
   <!--v-if-->

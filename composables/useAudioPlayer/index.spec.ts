@@ -23,7 +23,7 @@ Object.defineProperty(globalThis.navigator, 'mediaSession', {
 
 globalThis.MediaMetadata = vi.fn();
 
-type CB = (...args: unknown[]) => void;
+type CB = (...args: unknown[]) => Promise<void> | void;
 
 let onBufferedCb: CB;
 let onCanPlayCb: CB;
@@ -71,6 +71,10 @@ mockNuxtImport('useQueue', () => () => ({
 
 mockNuxtImport('useMediaLibrary', () => () => ({
   scrobble: vi.fn(),
+}));
+
+mockNuxtImport('useAlbum', () => () => ({
+  getDiscoverAlbums: vi.fn(() => Promise.resolve()),
 }));
 
 const createBookmarkMock = vi.fn();
@@ -1753,9 +1757,9 @@ describe('useAudioPlayer', () => {
     });
 
     describe('when onEnded event is called', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         result.composable.queueList.value = queueTracks;
-        onEndedCb();
+        await onEndedCb();
       });
 
       describe(`when track type is not ${MEDIA_TYPE.podcastEpisode}`, () => {
@@ -1765,12 +1769,12 @@ describe('useAudioPlayer', () => {
       });
 
       describe(`when track type is ${MEDIA_TYPE.podcastEpisode}`, () => {
-        beforeAll(() => {
+        beforeAll(async () => {
           result.composable.queueList.value = getFormattedQueueTracksMock(6, {
             type: MEDIA_TYPE.podcastEpisode,
           });
 
-          onEndedCb();
+          await onEndedCb();
         });
 
         it('calls the deleteBookmark function', () => {
@@ -1779,9 +1783,9 @@ describe('useAudioPlayer', () => {
       });
 
       describe('when repeat value is 1', () => {
-        beforeAll(() => {
+        beforeAll(async () => {
           result.composable.repeat.value = 1;
-          onEndedCb();
+          await onEndedCb();
         });
 
         it('calls the audio load function with the first track', () => {
@@ -1794,9 +1798,9 @@ describe('useAudioPlayer', () => {
       });
 
       describe('when repeat value is -1', () => {
-        beforeAll(() => {
+        beforeAll(async () => {
           result.composable.repeat.value = -1;
-          onEndedCb();
+          await onEndedCb();
         });
 
         it('calls the audio load function with next track', () => {
@@ -1808,13 +1812,13 @@ describe('useAudioPlayer', () => {
         });
 
         describe('when track is the last track in queueList value', () => {
-          beforeAll(() => {
-            onEndedCb();
-            onEndedCb();
-            onEndedCb();
-            onEndedCb();
+          beforeAll(async () => {
+            await onEndedCb();
+            await onEndedCb();
+            await onEndedCb();
+            await onEndedCb();
             vi.clearAllMocks();
-            onEndedCb();
+            await onEndedCb();
           });
 
           it('calls the audio load function with the first track', () => {
@@ -1832,9 +1836,9 @@ describe('useAudioPlayer', () => {
       });
 
       describe('when repeat value is infinity', () => {
-        beforeAll(() => {
+        beforeAll(async () => {
           result.composable.repeat.value = Number.POSITIVE_INFINITY;
-          onEndedCb();
+          await onEndedCb();
         });
 
         it('calls the audio load function with next track', () => {
@@ -1846,13 +1850,13 @@ describe('useAudioPlayer', () => {
         });
 
         describe('when track is the last track in queueList value', () => {
-          beforeAll(() => {
-            onEndedCb();
-            onEndedCb();
-            onEndedCb();
-            onEndedCb();
+          beforeAll(async () => {
+            await onEndedCb();
+            await onEndedCb();
+            await onEndedCb();
+            await onEndedCb();
             vi.clearAllMocks();
-            onEndedCb();
+            await onEndedCb();
           });
 
           it('calls the audio load function with the first track', () => {

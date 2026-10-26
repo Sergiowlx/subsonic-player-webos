@@ -9,11 +9,20 @@ const isTV = isWebOSTV();
 
 <template>
   <div :class="['centerItems', $style.playerControls]">
-    <ShuffleButton v-if="!isRadioStation" />
+    <ShuffleButton
+      v-if="!isRadioStation"
+      class="webosPlayerShuffleControl"
+    />
 
-    <MainPlayerControls :showSeekControls="!isTV" />
+    <MainPlayerControls
+      class="webosPlayerMainControls"
+      :showSeekControls="!isTV"
+    />
 
-    <RepeatButton v-if="!isRadioStation" />
+    <RepeatButton
+      v-if="!isRadioStation"
+      class="webosPlayerRepeatControl"
+    />
   </div>
 </template>
 

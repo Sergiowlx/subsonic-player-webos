@@ -202,6 +202,7 @@ useHead({
 
       <template v-if="favourites.tracks.length">
         <HeaderSeeAllLink
+          class="webosHomeFavouriteTracksHeading"
           :to="{
             name: ROUTE_NAMES.favourites,
             params: {
@@ -214,6 +215,7 @@ useHead({
         </HeaderSeeAllLink>
 
         <TracksList
+          class="webosHomeFavouriteTracksList"
           :tracks="favourites.tracks.slice(0, PREVIEW_TRACK_COUNT)"
           @addToPlaylist="addToPlaylistModal"
           @addToQueue="addTrackToQueue"

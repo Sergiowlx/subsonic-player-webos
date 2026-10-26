@@ -50,8 +50,6 @@ export const ICONS = {
   search: 'PhMagnifyingGlass',
   setting: 'PhGear',
   shuffle: 'PhShuffle',
-  sidebarCollapsed: 'PhTextIndent',
-  sidebarNotCollapsed: 'PhTextOutdent',
   signOut: 'PhSignOut',
   skipBack: 'PhSkipBack',
   skipForward: 'PhSkipForward',

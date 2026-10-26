@@ -32,9 +32,7 @@ exports[`TracksListItem > matches the snapshot 1`] = `
               </div>
             </div>
           </div>
-        </div><button class="centerItems buttonLink alignRight desktopOnly desktopOnly" draggable="false" type="button" title="Like track">
-          <phheart aria-hidden="true" class="icon" size="24" weight="regular"></phheart><span class="clamp text visuallyHidden">Like track</span>
-        </button>
+        </div>
       </div>
     </div>
     <div class="trackCell trackSecondary">
@@ -119,9 +117,7 @@ exports[`TracksListItem > when track.album is undefined > matches the snapshot 1
               </div>
             </div>
           </div>
-        </div><button class="centerItems buttonLink alignRight desktopOnly desktopOnly" draggable="false" type="button" title="Like track">
-          <phheart aria-hidden="true" class="icon" size="24" weight="regular"></phheart><span class="clamp text visuallyHidden">Like track</span>
-        </button>
+        </div>
       </div>
     </div>
     <div class="trackCell trackSecondary">
@@ -197,9 +193,7 @@ exports[`TracksListItem > when track.artists is an empty array > matches the sna
               </div>
             </div>
           </div>
-        </div><button class="centerItems buttonLink alignRight desktopOnly desktopOnly" draggable="false" type="button" title="Like track">
-          <phheart aria-hidden="true" class="icon" size="24" weight="regular"></phheart><span class="clamp text visuallyHidden">Like track</span>
-        </button>
+        </div>
       </div>
     </div>
     <div class="trackCell trackSecondary">

@@ -1,645 +1,111 @@
-# AGENTS.md - AI Agent Guide for Subsonic Player (webOS Fork)
+# AGENTS.md — Subsonic Player for webOS
 
-**Last Updated:** 2025-12-13
+Updated: 2026-10-23
 
-## 🎯 Repository Overview
+## Project purpose and current state
 
-This is a **webOS TV fork** of the Subsonic Player web application. The upstream project is a modern Nuxt 3-based web client for Subsonic music servers, and this fork adds minimal, isolated changes to make it work on LG webOS TVs.
+This repository is Sergio's webOS TV fork of the web-based Subsonic Player. It connects to Subsonic-compatible servers, including Navidrome, and packages the client as a webOS IPK.
 
-### Key Repositories
+- Upstream project: https://github.com/VD39/subsonic-player
+- This fork: https://github.com/Sergiowlx/subsonic-player-webos
+- Current released version: 2.1.0
+- webOS application ID: com.subsonic.player
+- Target device: LG C1 running webOS 6. The reported TV user agent uses Chromium 79.
+- Framework: Nuxt 4, Vue 3, TypeScript, Vite.
+- Node version: 20.19.0 from .nvmrc. Dependencies use Yarn Classic 1.22.22.
 
-- **Upstream (Web App):** https://github.com/VD39/subsonic-player.git
-- **This Fork (webOS):** https://github.com/pando85/subsonic-player-webos.git
+The v2.1.0 release builds on the TV-oriented interface redesign. It retains the Subsonic client and audio-quality settings while refining navigation, library browsing, playback controls, queue presentation, and webOS 6 compatibility.
 
-### Critical Context
+Do not bump the app version, create a release, install an IPK on a device, or publish changes unless the user asks for that step.
 
-⚠️ **IMPORTANT: This is a minimal fork strategy**
+## Important development rules
 
-- The **upstream maintains the web application** (desktop, mobile, PWA)
-- **We maintain the webOS TV port** (this repository)
-- Changes must be **isolated and non-invasive** to allow easy syncing from upstream
-- When making changes, ALWAYS consider: "Can this be merged easily when upstream updates?"
+1. Keep the regular web client working while making TV changes. Prefer the existing TV-specific components, styles, and runtime detection; when a shared component must change, keep both paths covered.
+2. Do not treat a desktop preview as proof of correct webOS rendering. Desktop browser and TV differ in Chromium version, remote key events, focus behavior, codecs, and device scaling.
+3. Build all interactive TV features for a remote control. Do not make hover the only way to discover or operate a control. Verify visible focus and directional movement.
+4. Preserve the Subsonic/Navidrome API behavior, multi-library filtering, playback state, and the audio-quality settings.
+5. Keep static app resources compatible with the webOS file:// launch path. Authentication and TV preferences use local storage because cookie behavior is not reliable there.
+6. Do not refresh snapshots blindly. The v2 redesign intentionally changed many snapshots; review snapshot diffs when a UI change is intentional.
+7. Keep release version fields aligned when the user requests a release: package.json, webos/appinfo.json, and any generated manifest/IPK filename.
 
-## 🏗️ Architecture
+## Architecture map
 
-### Base Technology Stack (Upstream)
+- pages/: Nuxt routes for Discover, search, library, albums, artists, playlists, podcasts, genres, queue, login, and media detail pages.
+- layouts/default.vue: shared app shell, top navigation, playback bar, and route content.
+- components/Atoms, components/Molecules, components/Organisms: reusable UI pieces, player, lists, cards, navigation, and TV-specific library cards.
+- composables/: API, authentication, library, album, artist, playlist, search, audio player, playback state, and TV preferences.
+- utils/api/: endpoint-specific request and merge logic.
+- utils/Formatters/: converts Subsonic responses into UI models.
+- utils/webos.ts: file-protocol and TV-preview detection plus local-storage authentication helpers.
+- plugins/webos-input.client.ts: webOS/keyboard focus and directional remote navigation.
+- assets/css/global/webos-tv.css: TV-only layout, focus, and sizing rules.
+- webos/: app metadata, manifest generation, static packaging, and deployment documentation.
+- .github/workflows/: build, test, IPK packaging, and release workflows.
 
-- **Framework:** Nuxt 3 (Vue 3)
-- **Build:** Vite
-- **UI:** Custom CSS with PostCSS
-- **State Management:** Vue Composables
-- **Audio:** Native HTMLAudioElement API
-- **Icons:** @phosphor-icons/vue
-- **Responsive:** CSS Grid + Flexbox
+TV presentation is enabled by isWebOSTV() in utils/webos.ts. It detects the file:// app and the browser preview query parameter ?webos=true; a session-storage preview flag is also supported. Keep this detection centralized.
 
-### webOS Additions (This Fork)
+The desktop sidebar implementation has been removed. Tablet/TV layouts use Home, Search, and Your library in the top bar; small screens retain the bottom navigation. Your Library includes Radio, and Podcasts surfaces saved podcast resume points under Continue listening. The floating player and Now Playing view open the queue overlay directly. The TV remote plugin starts focus in main content and does not wrap focus to unrelated controls at directional edges. CarouselSwiper supports both DPAD card navigation and pointer-edge paging on TV.
 
-- **Platform Detection:** `file://` protocol check
-- **Navigation:** Custom spatial DPAD navigation plugin
-- **Build:** Static SPA generation (no SSR)
-- **Packaging:** webOS SDK (`ares-*` CLI tools)
+VirtualGrid and VirtualList implement TV-friendly rendering and paging. The TV grid uses a seven-column desktop layout at 1080p and groups two rows into a navigation page. Avoid replacing it with a long, individually stepped list without checking remote behavior and performance.
 
-## 📁 Repository Structure
+The audio player is shared across platforms. See composables/useAudioPlayer/ and components/Organisms/MusicPlayerAndQueue/. TV-specific Now Playing styling is in the music player component and webos-tv.css. Maintain album, artist, queue, shuffle, repeat, and favourite interactions when changing its layout.
 
-### Core Application Files (Upstream - DO NOT MODIFY unless necessary)
+TV-specific settings, including accent color, scrobbling, podcast/radio visibility, and stream bitrate, live in composables/useWebOSTVSettings/. The app uses these settings in the TV settings view and player/API behavior.
 
-```
-components/       # Vue UI components (Atoms, Molecules, Organisms)
-composables/      # Vue composables for business logic
-  useAudioPlayer/ # Audio playback management
-  useAuth/        # Authentication
-  usePlaylist/    # Playlist operations
-  useQueue/       # Queue management
-pages/            # Nuxt pages (auto-routing)
-layouts/          # Layout components
-middleware/       # Route middleware
-navigations/      # Navigation configuration
-utils/            # Utility functions
-types/            # TypeScript types
-assets/css/       # Global styles
-plugins/          # Nuxt plugins
-```
+## Preview and scale checks
 
-### webOS-Specific Files (THIS FORK - Safe to modify)
+For a quick TV-style browser preview:
 
-```
-plugins/
-  └── webos-input.client.ts          # TV remote navigation plugin ⭐
+1. Start the app with yarn dev.
+2. Open http://localhost:3000/?webos=true.
+3. Use a 16:9 viewport at 1920x1080 first. Also check 3840x2160 if that is the TV output mode.
+4. Test keyboard arrows, Enter, Backspace/Escape, focus visibility, scrolling, the top bar, library tabs, floating player, and Now Playing.
 
-assets/css/global/
-  └── webos-tv.css                   # TV-specific styling ⭐
+Connecting a computer to the TV over HDMI is useful for checking physical size, viewing distance, overscan, and how the layout feels on the actual panel. Set the TV to the intended resolution, use browser full screen and 100% zoom, and confirm the browser content viewport. HDMI still runs the computer browser: it does not reproduce the TV's webOS Chromium, webOS media stack, IPK environment, or Magic Remote behavior.
 
-webos/                                # webOS packaging directory ⭐
-  ├── appinfo.json                   # App metadata
-  ├── package-webos.sh               # Build script
-  ├── README.md                      # webOS documentation
-  └── DEPLOYMENT.md                  # Deployment guide
+Only an IPK installed and launched on the LG TV validates those device-specific behaviors. Use ares-inspect for the TV Web Inspector when Developer Mode and the webOS SDK are configured. Record the webOS version, resolution, route, and remote action with any reported UI defect.
 
-WEBOS_GUIDE.md                        # Comprehensive webOS guide ⭐
-```
+Recommended device QA routes: login, Discover, Search, every Your Library tab, album detail, artist detail, playlist detail, Queue, Now Playing, and Settings. Check the top and bottom of long pages as well as the floating player overlap, image loading, focus movement, and text clipping.
 
-### Modified Configuration Files (Merge carefully on upstream sync)
+## Build, package, deploy
 
-```
-nuxt.config.ts      # Added: ssr: false, nitro.preset: 'static', webOS configs
-package.json        # Added: build:webos script
-assets/css/main.css # Added: @import for webos-tv.css
-```
+The standard webOS packaging script is webos/package-webos.sh. It runs a static Nuxt generation with WEBOS_BUILD=true, copies .output/public into webos/, rewrites absolute asset paths for file://, removes module-only preload markup, generates the webOS manifest, and packages with ares-package when the webOS CLI is available.
 
-## 🔄 Upstream Sync Strategy
+Typical commands from the repository root:
 
-### What We Changed from Upstream
+- Development preview: yarn dev
+- Full test suite: yarn test:once
+- Type check: yarn check-types
+- Lint: yarn lint
+- webOS static build and IPK: yarn build:webos
+- List configured TVs: ares-device --list
+- Install: ares-install com.subsonic.player_2.1.0_all.ipk -d TV_NAME
+- Launch: ares-launch com.subsonic.player -d TV_NAME
+- Inspect: ares-inspect com.subsonic.player -d TV_NAME
+- TV logs: ares-log -f com.subsonic.player -d TV_NAME
 
-**1. Configuration Files (3 files modified):**
+The packaging script needs Bash and the LG webOS CLI tools, especially ares-package, ares-install, and ares-launch. Follow webos/README.md and webos/DEPLOYMENT.md for SDK setup. Verify the version in webos/appinfo.json before naming or installing an IPK.
 
-- `nuxt.config.ts` - Lines 36-38, 52-60, 78, 107-110, 162
-  - `ssr: false` - webOS doesn't support SSR
-  - `nitro.preset: 'static'` - Generate static files
-  - `app.baseURL: './'` - Relative paths for `file://` protocol
-  - `experimental.appManifest: false` - Disable fetch()-based features
-  - PWA disabled for webOS builds via `WEBOS_BUILD` env var
+## Tests and current verification notes
 
-- `package.json` - Line 63
-  - Added: `"build:webos": "./webos/package-webos.sh"`
+Vitest configuration is in vitest.config.mjs. The project uses Nuxt Test Utils and Istanbul coverage, with configured global thresholds of 85% for statements, lines, functions, and branches.
 
-- `assets/css/main.css` - Last line
-  - Added: `@import url('./global/webos-tv.css');`
+Nuxt configuration omits @vite-pwa/nuxt only when VITEST=true. This isolates a Vite PWA virtual-module resolution issue in the test environment; it does not disable PWA behavior in development or production builds.
 
-**2. New Files Added (webOS-only):**
+On 2026-10-23, the complete local run reported 177 test files and 4,282 passing tests with no failed assertions or unhandled errors. The process still exited non-zero because current measured coverage was below the configured gate: 83.47% lines, 83.00% statements, and 72.51% branches (functions passed). Do not report the run as fully green, lower thresholds, or add blanket coverage exclusions without reviewing the cause. Newly added TV entry and layout paths need meaningful automated or device-level coverage.
 
-- `plugins/webos-input.client.ts` (~534 lines)
-- `assets/css/global/webos-tv.css` (~115 lines)
-- `webos/*` (entire directory)
-- `WEBOS_GUIDE.md` (~547 lines)
+The 139 recorded snapshot updates correspond to the released v2 interface redesign. The assertions that failed before the updates were stale expectations for the redesign, newer Subsonic API version/format fields, and async handlers. Relevant behavior tests were updated. A focused rerun of the affected 10 test files passed 454 tests; after the final ArtistsList selector adjustment, that file passed 15 tests. Vue type checking passed. A lint run under Windows was noisy because the checkout uses CRLF with core.autocrlf=true while Prettier expects LF; confirm lint in a Linux/WSL checkout or use the repository's expected line-ending setup.
 
-**Total Impact:** 3 modified files, ~1200 new lines in isolated files
+Never use --update as a way to clear failures without inspecting the changed snapshots. Avoid weakening the configured coverage gate just to make the command exit successfully.
 
-### How to Sync from Upstream
+## AI handoff notes
 
-```bash
-# Fetch latest changes
-git fetch upstream
+Before editing, inspect git status and the current branch. Preserve user changes and do not use another checkout's preview files as a source of truth without comparing commits. Read the relevant component, composable, and tests before changing behavior.
 
-# Rebase onto upstream (preferred over merge)
-git rebase upstream/main
+When reporting work, distinguish:
+- unit/component tests from visual checks,
+- desktop preview from real TV validation,
+- passing assertions from coverage-threshold status,
+- a locally built IPK from a release published to GitHub.
 
-# If conflicts occur, they'll likely be in:
-# 1. nuxt.config.ts
-# 2. package.json
-# 3. assets/css/main.css
-```
-
-### Conflict Resolution Rules
-
-**If `nuxt.config.ts` has conflicts:**
-
-- ✅ KEEP: `ssr: false`
-- ✅ KEEP: `nitro.preset: 'static'`
-- ✅ KEEP: `app.baseURL: './'`
-- ✅ KEEP: All `experimental.*` webOS settings
-- ✅ KEEP: All `features.inlineStyles` webOS logic
-- ✅ KEEP: PWA `disable` and `injectRegister` conditional logic
-- ⚠️ REVIEW: Any new modules or dependencies added upstream
-
-**If `package.json` has conflicts:**
-
-- ✅ KEEP: `"build:webos": "./webos/package-webos.sh"`
-- ⚠️ MERGE: New dependencies from upstream
-
-**If `assets/css/main.css` has conflicts:**
-
-- ✅ KEEP: `@import url('./global/webos-tv.css');` at the end
-
-### Safe Zones vs. Danger Zones
-
-**🟢 SAFE to modify (webOS-only, won't conflict):**
-
-- `plugins/webos-input.client.ts`
-- `assets/css/global/webos-tv.css`
-- `webos/*` directory
-- `WEBOS_GUIDE.md`
-
-**🟡 MODIFY WITH CAUTION (merge conflicts likely):**
-
-- `nuxt.config.ts`
-- `package.json`
-- `assets/css/main.css`
-
-**🔴 AVOID modifying (upstream territory):**
-
-- `components/**`
-- `composables/**`
-- `pages/**`
-- `layouts/**`
-- Other core application files
-
-### Adding webOS-Specific Features
-
-**Pattern: Feature Flags (Preferred)**
-
-When you need webOS-specific behavior in existing files, use runtime detection:
-
-```typescript
-// In any Vue/Nuxt file
-const isWebOS =
-  typeof window !== 'undefined' && window.location.protocol === 'file:';
-
-if (isWebOS) {
-  // TV-specific behavior
-} else {
-  // Desktop/mobile behavior
-}
-```
-
-**Alternative: CSS Scoping**
-
-```css
-/* In webos-tv.css */
-body.webosTV .someElement {
-  /* TV-specific styles */
-}
-```
-
-The `webosTV` class is automatically added by `plugins/webos-input.client.ts:36`.
-
-## 🎮 webOS TV Navigation System
-
-### How It Works
-
-**1. Platform Detection (`plugins/webos-input.client.ts:20-26`)**
-
-```typescript
-const isWebOS = window.location.protocol === 'file:';
-```
-
-webOS apps run via `file://` protocol, which is our detection mechanism.
-
-**2. Body Class Addition (`plugins/webos-input.client.ts:36`)**
-
-```typescript
-document.body.classList.add('webosTV');
-```
-
-Enables all TV-specific CSS in `webos-tv.css`.
-
-**3. Viewport Forcing (`plugins/webos-input.client.ts`)**
-
-```typescript
-viewport.setAttribute('content', 'width=1280, initial-scale=1');
-```
-
-Keeps the shared desktop sidebar, header, player, and five-column grid active.
-TV-specific CSS scales controls and focus states for the remote.
-
-**4. Spatial Navigation Algorithm**
-
-The plugin implements a custom spatial navigation system:
-
-- **Focusable Elements** (`lines 136-152`): Scans DOM for `a`, `button`, `input`, etc.
-- **Element Filtering** (`lines 62-101`): Skips hidden/unwanted elements
-- **Direction Finding** (`lines 183-269`): Calculates nearest element in arrow direction
-- **Smart Scrolling**: Auto-scrolls focused elements into view
-
-**5. Key Mappings** (`lines 444-497`):
-
-- Arrow Keys (37-40): Spatial navigation
-- Enter (13): Click/activate
-- Back (461 webOS, 10009 Samsung): Navigate back
-- Escape (27): Back
-- Backspace (8): Back (except in inputs)
-
-**6. Focus Initialization** (`lines 382-439`):
-
-- Detail pages (album/artist): Focus "Play All" button
-- Other pages: Focus the active desktop sidebar link, then fall back to the first focusable element
-- Runs on page load and route changes
-
-### Navigation Behavior Differences
-
-**On List/Discovery Pages (albums, artists, genres):**
-
-- Use the desktop sidebar and horizontal desktop carousels
-- Only album/artist images are focusable in media grids
-- Title links and artist names are skipped (CSS: `pointer-events: none`)
-- Action buttons (hover overlays) are hidden
-
-**On Detail Pages (individual album/artist/playlist):**
-
-- "Play All" button gets initial focus
-- All track buttons are focusable
-- Full keyboard control
-
-### Styling System (`assets/css/global/webos-tv.css`)
-
-**Focus States:**
-
-- Uses theme color: `var(--theme-color, #6313bc)`
-- 3-4px outline with offset
-- Compatible with light/dark themes
-
-**TV-specific behavior:**
-
-- Hover effects hidden
-- Mouse cursor hidden
-- Title/artist links non-interactive
-- Search remains visible in the desktop header
-
-**Track Row Enhancement:**
-
-- Entire row highlights on focus
-- Play button scales up (1.15x)
-
-## 🛠️ Build & Deployment
-
-### Development Workflow
-
-```bash
-# Standard web development (works in browser)
-yarn dev
-# Test at http://localhost:3000
-# Simulate TV: Use arrow keys, set viewport to 1920x1080
-
-# Build for webOS TV
-yarn build:webos
-# Output: com.subsonic.player_1.0.0_all.ipk
-
-# Install on TV (requires webOS SDK)
-ares-install com.subsonic.player_1.0.0_all.ipk -d TV_NAME
-
-# Launch on TV
-ares-launch com.subsonic.player -d TV_NAME
-
-# Debug on TV (Chrome DevTools)
-ares-inspect com.subsonic.player -d TV_NAME
-```
-
-### What `build:webos` Does (`webos/package-webos.sh`)
-
-1. Sets `WEBOS_BUILD=true` environment variable
-2. Runs `yarn build` (Nuxt static generation)
-3. Copies `.output/public/*` to `webos/`
-4. Generates icons from PWA assets
-5. Packages with `ares-package --no-minify`
-6. Creates `.ipk` installer file
-
-### Why Static SPA?
-
-webOS TV apps run in a Chromium-based browser environment:
-
-- ✅ HTML, CSS, JS fully supported
-- ✅ Modern Web APIs (Audio, Storage, etc.)
-- ❌ NO Node.js runtime
-- ❌ NO server-side rendering
-- ❌ NO fetch() with `file://` protocol
-
-Therefore: `ssr: false` + `nitro.preset: 'static'`
-
-## 🎨 UI/UX Considerations
-
-### Design Principles for webOS
-
-**1. 10-Foot UI:**
-
-- Text must be readable from 3 meters away
-- Focus indicators must be highly visible
-- Touch targets: 44px minimum
-
-**2. No Hover States:**
-
-- TV has no mouse cursor
-- All actions must be accessible via keyboard/remote
-- Hover-only features are disabled
-
-**3. Simplified Navigation:**
-
-- Reduce focusable elements (less clutter)
-- Clear visual hierarchy
-- Predictable spatial navigation
-
-**4. Performance:**
-
-- TV hardware is slower than desktop
-- Minimize animations
-- Optimize image sizes (use 300-500px, not full resolution)
-
-### Responsive Breakpoints
-
-The app uses media queries, and webOS forces a 1280px viewport:
-
-```css
-/* From assets/css/breakpoints.css */
-@custom-media --phone-only (width < 769px);
-@custom-media --tablet-up (width >= 769px); /* ← webOS uses this */
-@custom-media --desktop-up (width >= 1281px);
-```
-
-webOS uses 1280px → triggers `--tablet-up` and the five-column grid breakpoint.
-
-## 🧪 Testing Guidelines
-
-### Browser Testing (Desktop)
-
-```bash
-yarn dev
-```
-
-**Simulate TV:**
-
-1. Open DevTools (F12)
-2. Set viewport: 1920x1080
-3. Use ONLY keyboard (arrow keys, Enter, Escape)
-4. Check focus visibility
-5. Test navigation flows
-
-### TV Testing (Physical Hardware)
-
-```bash
-yarn build:webos
-ares-install com.subsonic.player_1.0.0_all.ipk -d TV_NAME
-ares-inspect com.subsonic.player -d TV_NAME  # Debug
-```
-
-**Test Checklist:**
-
-- [ ] Navigation with remote arrow keys
-- [ ] Focus visible on all elements
-- [ ] "Play All" button gets initial focus on album pages
-- [ ] Audio playback works (user-initiated)
-- [ ] Back button navigates correctly
-- [ ] Login/logout flows
-- [ ] Queue persistence (localStorage)
-- [ ] Network error handling
-
-## 🐛 Common Issues & Solutions
-
-### Issue: App doesn't start on TV
-
-**Cause:** webOS app not properly packaged or installed
-**Solution:**
-
-```bash
-# Check installation
-ares-install --list -d TV_NAME
-
-# View logs
-ares-log -f com.subsonic.player -d TV_NAME
-
-# Verify TV is in developer mode
-ares-setup-device
-```
-
-### Issue: Navigation doesn't work
-
-**Cause:** Plugin not loaded or `webosTV` class missing
-**Solution:**
-
-- Check console: `[webOS] TV input plugin enabled`
-- Verify `file://` protocol detection
-- Inspect `<body>` element for `webosTV` class
-
-### Issue: Audio won't play
-
-**Cause:** webOS enforces user-initiated playback
-**Solution:**
-
-- First play MUST follow user interaction (Enter key)
-- Check codec support (MP3/AAC recommended)
-- Verify Subsonic server URL is accessible from TV network
-
-### Issue: Focus goes to wrong elements
-
-**Cause:** Spatial navigation algorithm or element filtering
-**Solution:**
-
-- Review `shouldSkipElement()` logic (lines 62-101)
-- Check if elements are visible: `isVisible()` (lines 106-131)
-- Adjust navigation scoring (lines 218-250)
-
-### Issue: Upstream merge conflicts
-
-**Cause:** Modified core files
-**Solution:**
-
-- Use feature flags instead of direct modifications
-- Keep changes in webOS-specific files
-- Document all core file changes clearly
-
-## 📝 Code Style & Conventions
-
-### File Naming
-
-- `*.client.ts` - Client-only plugins (not SSR)
-- `*.spec.ts` - Test files
-- `*.vue` - Vue components
-- Use kebab-case for CSS files
-- Use PascalCase for Vue components
-
-### CSS Guidelines
-
-- Use CSS variables: `var(--theme-color)`
-- Avoid `!important` (except in `webos-tv.css` for overrides)
-- Use logical properties: `inline-start` not `left`
-- Responsive with custom media queries
-
-### TypeScript
-
-- Strict mode enabled
-- Type check on build
-- Prefer `interface` over `type`
-- Use Vue 3 `<script setup>` syntax
-
-### Git Commit Style
-
-Check recent commits for patterns:
-
-```bash
-git log --oneline -20
-```
-
-Typical format:
-
-- `feat: add new feature`
-- `fix: resolve bug`
-- `docs: update documentation`
-- `webos: TV-specific changes`
-
-## 🔍 Important Files Reference
-
-### For Navigation Changes
-
-- `plugins/webos-input.client.ts:183-269` - Spatial navigation algorithm
-- `plugins/webos-input.client.ts:382-439` - Focus initialization
-
-### For Styling Changes
-
-- `assets/css/global/webos-tv.css` - All TV-specific styles
-- `nuxt.config.ts:6-15` - PWA icon generation
-
-### For Build Configuration
-
-- `nuxt.config.ts:34-174` - Main Nuxt config
-- `webos/package-webos.sh` - Build script
-- `webos/appinfo.json` - App metadata
-
-### For Audio Playback
-
-- `composables/useAudioPlayer/player.ts` - Audio player logic
-- Standard HTMLAudioElement - no webOS-specific changes needed
-
-### For Authentication
-
-- `composables/useAuth/` - Auth logic
-- `utils/storage.ts` - localStorage wrapper
-- No webOS-specific changes - works natively
-
-## 💡 Best Practices for AI Agents
-
-### When Making Changes
-
-**1. ALWAYS check upstream compatibility:**
-
-```bash
-# Before starting work
-git fetch upstream
-git log upstream/main..HEAD  # See what we changed
-```
-
-**2. Prefer webOS-specific files:**
-
-- New features → `plugins/webos-input.client.ts`
-- New styles → `assets/css/global/webos-tv.css`
-- Documentation → `WEBOS_GUIDE.md`
-
-**3. Use feature flags for core file changes:**
-
-```typescript
-if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
-  // webOS-specific code
-}
-```
-
-**4. Document everything:**
-
-- Add comments explaining WHY (not just WHAT)
-- Update `WEBOS_GUIDE.md` for major changes
-- Update this file (`AGENTS.md`) for architecture changes
-
-**5. Test thoroughly:**
-
-- Browser first (desktop simulation)
-- TV second (actual hardware)
-- Check both light and dark themes
-
-### When Reviewing Code
-
-**Check for:**
-
-- ❌ Direct modifications to upstream files (without feature flags)
-- ❌ Hover-dependent functionality
-- ❌ SSR-specific code
-- ❌ `fetch()` calls that won't work with `file://`
-- ✅ Focus states for new interactive elements
-- ✅ Keyboard/remote accessibility
-- ✅ TV performance considerations
-
-### When Debugging
-
-**Start here:**
-
-1. Check browser console (ares-inspect)
-2. Verify `file://` protocol and `webosTV` class
-3. Review focusable elements: `getFocusableElements()`
-4. Check TV logs: `ares-log -f`
-5. Compare with browser behavior
-
-## 🚀 Quick Reference Commands
-
-```bash
-# Development
-yarn dev                    # Start dev server
-yarn build                  # Standard web build
-yarn build:webos            # Build for webOS TV
-
-# Linting & Type Checking
-yarn lint                   # Run all linters
-yarn check-types            # TypeScript check
-
-# Testing
-yarn test                   # Run tests
-yarn test:once              # Single test run
-
-# Git Operations
-git fetch upstream          # Get upstream changes
-git rebase upstream/main    # Sync with upstream
-
-# webOS Operations
-ares-setup-device           # Setup TV connection
-ares-install *.ipk -d NAME  # Install app
-ares-launch com.subsonic.player -d NAME  # Launch
-ares-inspect com.subsonic.player -d NAME # Debug
-ares-log -f com.subsonic.player -d NAME  # View logs
-```
-
-## 📚 Additional Resources
-
-- **Full webOS Guide:** `WEBOS_GUIDE.md` (comprehensive deployment guide)
-- **webOS SDK Docs:** https://webostv.developer.lge.com/sdk/
-- **Nuxt 3 Docs:** https://nuxt.com/docs
-- **Subsonic API:** http://www.subsonic.org/pages/api.jsp
-- **Upstream Repo:** https://github.com/VD39/subsonic-player
-- **This Fork:** https://github.com/pando85/subsonic-player-webos
-
-## 🎯 TL;DR for AI Agents
-
-1. **This is a webOS TV fork** - upstream maintains web app, we maintain TV port
-2. **Keep changes isolated** - prefer webOS-specific files over modifying core
-3. **Use feature flags** - when core changes needed, use `file://` protocol detection
-4. **Sync often** - rebase from upstream regularly
-5. **3 modified files** - `nuxt.config.ts`, `package.json`, `main.css` (handle conflicts carefully)
-6. **Safe zones** - `plugins/webos-input.client.ts`, `assets/css/global/webos-tv.css`, `webos/`
-7. **Test on TV** - browser simulation is good, but hardware testing is required
-8. **No SSR, no fetch()** - static SPA only, `file://` protocol limitations
-9. **Focus is king** - all UI must work with keyboard/remote only
-10. **Document everything** - future you (or AI) will thank you
-
-
+For UI feedback from the user, ask for the exact TV route and a photo or short video when the mismatch cannot be reproduced locally. Use an HDMI preview to tune physical scale, then confirm the final result on the actual webOS TV before calling the TV layout verified.

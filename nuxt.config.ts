@@ -4,6 +4,7 @@ import { defineNuxtConfig } from 'nuxt/config';
 import { createPWAConfig } from './config/pwa.config';
 
 const IS_WEBOS_BUILD = process.env.WEBOS_BUILD === 'true';
+const IS_VITEST = process.env.VITEST === 'true';
 
 // Inline classic script that installs an on-screen error overlay BEFORE the
 // module bundle is parsed. Older webOS Chromium has no usable inspector, so
@@ -50,21 +51,20 @@ const WEBOS_ERROR_OVERLAY_SCRIPT = `
     };
   }
 
-  // Stub for Swiper custom element (<swiper-container>) — Ch53 has no
-  // customElements support, so swiper-element's .initialize() never gets
-  // attached. No-op stub keeps the app from crashing; sliders won't work
-  // but the rest of the UI does.
+  // Stub for Swiper custom element (<swiper-container>) — older Chromium has
+  // no usable customElements support, so swiper-element's .initialize() never
+  // gets attached. Keep the app alive and use its native horizontal-strip
+  // fallback for carousels.
   if (typeof Element !== 'undefined' && !Element.prototype.initialize) {
     Element.prototype.initialize = function(){};
   }
 
-  // Fallback CSS so swiper carousels render as horizontal scroll strips
-  // on Ch53 (without Swiper's runtime styles, slides default to 100% width
-  // and only one cover fits on screen). Keeps album covers usable.
+  // Fallback CSS so swiper carousels render as horizontal scroll strips on
+  // old Chromium. CarouselSwiper adds pointer-edge scrolling to this strip.
   try {
     var s = document.createElement('style');
     s.textContent =
-      'swiper-container{display:block;width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;-webkit-overflow-scrolling:touch}' +
+      'swiper-container{display:block;width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}' +
       'swiper-slide{display:inline-block;vertical-align:top;white-space:normal;width:auto;margin-right:16px}';
     (document.head || document.documentElement).appendChild(s);
   } catch(_) {}
@@ -204,7 +204,11 @@ export default defineNuxtConfig({
   imports: {
     dirs: IMPORT_DIRECTORIES,
   },
-  modules: ['@nuxt/eslint', '@vite-pwa/nuxt', 'nuxt-swiper'],
+  modules: [
+    '@nuxt/eslint',
+    ...(IS_VITEST ? [] : ['@vite-pwa/nuxt']),
+    'nuxt-swiper',
+  ],
   nitro: {
     imports: {
       dirs: IMPORT_DIRECTORIES,

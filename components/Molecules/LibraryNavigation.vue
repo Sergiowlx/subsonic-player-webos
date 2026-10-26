@@ -34,6 +34,12 @@ const navigation = [
     to: { name: ROUTE_NAMES.playlists },
   },
   {
+    icon: ICONS.radioStation,
+    key: 'radioStations',
+    label: 'Radio',
+    to: { name: ROUTE_NAMES.radioStations },
+  },
+  {
     icon: ICONS.genre,
     key: 'genres',
     label: 'Genres',
@@ -51,6 +57,7 @@ const activeKey = computed(() => {
   if (route.name === ROUTE_NAMES.albums) return 'albums';
   if (route.name === ROUTE_NAMES.artists) return 'artists';
   if (route.name === ROUTE_NAMES.playlists) return 'playlists';
+  if (route.name === ROUTE_NAMES.radioStations) return 'radioStations';
   if (route.name === ROUTE_NAMES.genres || route.name === ROUTE_NAMES.genre) {
     return 'genres';
   }
@@ -77,7 +84,7 @@ const activeKey = computed(() => {
             { webosLibraryTabActive: activeKey === item.key },
           ]"
           :icon="item.icon"
-          iconSize="small"
+          iconSize="medium"
           showText
           :to="item.to"
         >

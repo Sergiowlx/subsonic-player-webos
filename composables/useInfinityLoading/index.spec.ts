@@ -13,9 +13,18 @@ const config = vi.hoisted(() => ({
 mockNuxtImport('useRuntimeConfig', () => () => config);
 
 const mockData = {
-  playlist25: getPlaylistsMock(25),
-  playlist50: getPlaylistsMock(50),
-  playlist55: getPlaylistsMock(55),
+  playlist25: getPlaylistsMock(25).map((playlist, index) => ({
+    ...playlist,
+    id: `playlist-last-page-${index}`,
+  })),
+  playlist50: getPlaylistsMock(50).map((playlist, index) => ({
+    ...playlist,
+    id: `playlist-middle-page-${index}`,
+  })),
+  playlist55: getPlaylistsMock(55).map((playlist, index) => ({
+    ...playlist,
+    id: `playlist-first-page-${index}`,
+  })),
 };
 
 const { fetchMoreData, hasMore, items, LOAD_SIZE, resetInfinityLoading } =
@@ -36,8 +45,8 @@ describe('useInfinityLoading', () => {
 
   describe('when fetchMoreData function is called', () => {
     describe('when dataToFetch function returns no value', () => {
-      beforeAll(() => {
-        fetchMoreData(() => Promise.resolve(null));
+      beforeAll(async () => {
+        await fetchMoreData(() => Promise.resolve(null));
       });
 
       it('sets the correct hasMore value', () => {
@@ -50,8 +59,9 @@ describe('useInfinityLoading', () => {
     });
 
     describe(`when dataToFetch function returns more than the ${LOAD_SIZE}`, () => {
-      beforeAll(() => {
-        fetchMoreData(() => Promise.resolve(mockData.playlist55));
+      beforeAll(async () => {
+        resetInfinityLoading();
+        await fetchMoreData(() => Promise.resolve(mockData.playlist55));
       });
 
       it('sets the correct hasMore value', () => {
@@ -64,8 +74,8 @@ describe('useInfinityLoading', () => {
     });
 
     describe(`when dataToFetch function returns the same as the ${LOAD_SIZE}`, () => {
-      beforeAll(() => {
-        fetchMoreData(() => Promise.resolve(mockData.playlist50));
+      beforeAll(async () => {
+        await fetchMoreData(() => Promise.resolve(mockData.playlist50));
       });
 
       it('sets the correct hasMore value', () => {
@@ -81,8 +91,8 @@ describe('useInfinityLoading', () => {
     });
 
     describe(`when dataToFetch function returns the less than the ${LOAD_SIZE}`, () => {
-      beforeAll(() => {
-        fetchMoreData(() => Promise.resolve(mockData.playlist25));
+      beforeAll(async () => {
+        await fetchMoreData(() => Promise.resolve(mockData.playlist25));
       });
 
       it('sets the correct hasMore value', () => {

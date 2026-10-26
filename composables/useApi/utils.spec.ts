@@ -66,7 +66,7 @@ describe('getBaseOptions', () => {
           s: null,
           t: null,
           u: null,
-          v: '1.15.0',
+          v: '1.16.1',
         },
         // Returns empty string for invalid/missing server URL (defensive fix)
         baseURL: '',
@@ -83,7 +83,7 @@ describe('getBaseOptions', () => {
           s: 'salt',
           t: 'token',
           u: 'username',
-          v: '1.15.0',
+          v: '1.16.1',
         },
         baseURL: 'https://www.server.com/rest',
       });
